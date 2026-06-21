@@ -474,9 +474,9 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
       </div>
 
       <div style={{padding:"0 16px"}}>
-        <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center",marginBottom:12}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:8,marginBottom:12}}>
           {tabs.map(t=>(
-            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);setMsg(null);}} style={{padding:"9px 14px",borderRadius:12,fontSize:13,fontFamily:S.fontUI,background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:600,textTransform:"uppercase"}}>{t.e} {(TAB_CONFIG[t.id]||{}).label||t.id}</Btn>
+            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);setMsg(null);}} style={{padding:"10px 6px",borderRadius:12,fontSize:13,fontFamily:S.fontUI,textAlign:"center",background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:600,textTransform:"uppercase"}}>{t.e} {(TAB_CONFIG[t.id]||{}).label||t.id}</Btn>
           ))}
         </div>
 
