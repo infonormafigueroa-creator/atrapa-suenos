@@ -233,7 +233,7 @@ function Setup({onDone}) {
   );
 }
 
-function MsgCard({icon, label, quote, intro, more, onClose}) {
+function MsgCard({icon, label, quote, cont, onClose}) {
   const [expanded, setExpanded] = useState(false);
   const renderText = (t) => (t||"").split("\n").filter(l=>l.trim()).map((line,i)=>(
     <p key={i} style={{margin:"0 0 8px"}}>{line}</p>
@@ -250,17 +250,16 @@ function MsgCard({icon, label, quote, intro, more, onClose}) {
       {quote && (
         <>
           <p style={{
-            color:C.goldL,fontSize:17,fontStyle:"italic",
+            color:C.goldL,fontSize:20,fontStyle:"italic",
             fontFamily:S.fontFamily,lineHeight:1.5,margin:"0 0 12px"
           }}>"{quote}"</p>
           <hr style={{border:"none",borderTop:`1px solid ${C.border}`,margin:"0 0 12px"}}/>
         </>
       )}
-      <div style={{color:C.goldL,fontSize:15,fontFamily:S.fontUI,lineHeight:1.9}}>
-        {renderText(intro)}
-        {expanded && more && renderText(more)}
+      <div style={{color:C.goldL,fontSize:20,fontFamily:S.fontFamily,lineHeight:1.7}}>
+        {expanded && renderText(cont)}
       </div>
-      {more && !expanded && (
+      {cont && !expanded && (
         <Btn onClick={()=>setExpanded(true)} style={{width:"100%",marginTop:8,padding:"12px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.purpleL+"55",color:C.purpleL,fontSize:14,fontWeight:700,fontFamily:S.fontUI}}>Leer más ▾</Btn>
       )}
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:16}}>
@@ -413,35 +412,33 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
     const moodInfo = mood?`Estado de ánimo: ${mood}.`:"";
 
     const prompts = {
-      "Hoy":`Eres un coach espiritual. Hoy es ${todayFull}. El usuario es ${user.gender} y se llama ${user.name}. ${moodInfo}\nGenera EXACTAMENTE en este formato:\nFRASE: [Una frase poderosa corta en cursiva]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
-      "Amor Propio":`Coach de amor propio. Hoy es ${todayFull}. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre amor propio]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
-      "Noche":`Guía de cierre del día. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de paz nocturna]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
-      "Inspiración":`Coach inspiracional. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase inspiradora]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
-      "Afirmar":`Coach de afirmaciones. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Afirmación poderosa]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
-      "Gratitud":`Guía de gratitud. Hoy es ${todayFull}. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre gratitud]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
-      "Bienestar":`Coach de bienestar. Hoy es ${todayFull}. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre bienestar]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
-      "Astros":`Astrólogo. Hoy es ${todayFull}. ${zodiacInfo} Usuario ${user.gender}.\nFormato:\nFRASE: [Mensaje cósmico]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
-      "Amor":`Guía de amor. Hoy es ${todayFull}. ${loveInfo} Usuario ${user.gender}.\nFormato:\nFRASE: [Frase romántica]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
-      "Dinero":`Coach de abundancia. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre abundancia]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
-      "Propósito":`Coach de propósito. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre propósito]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
-      "Ritual ☀️":`Guía de rituales matutinos. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de bienvenida al día]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
-      "Ritual 🌙":`Guía de rituales nocturnos. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de cierre nocturno]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
-      "Mi Guía":`Terapeuta personal. Usuario ${user.gender}. ${moodInfo} ${zodiacInfo}\nFormato:\nFRASE: [Reflexión personal]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Hoy":`Eres un coach espiritual. El usuario es ${user.gender} y se llama ${user.name}. ${moodInfo}\nGenera EXACTAMENTE en este formato:\nFRASE: [Una frase poderosa corta en cursiva]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Amor Propio":`Coach de amor propio. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre amor propio]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Noche":`Guía de cierre del día. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de paz nocturna]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Inspiración":`Coach inspiracional. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase inspiradora]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Afirmar":`Coach de afirmaciones. Usuario ${user.gender}.\nFormato:\nFRASE: [Afirmación poderosa]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Gratitud":`Guía de gratitud. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre gratitud]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Bienestar":`Coach de bienestar. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre bienestar]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Astros":`Astrólogo. ${zodiacInfo} Usuario ${user.gender}.\nFormato:\nFRASE: [Mensaje cósmico]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Amor":`Guía de amor. ${loveInfo} Usuario ${user.gender}.\nFormato:\nFRASE: [Frase romántica]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Dinero":`Coach de abundancia. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre abundancia]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Propósito":`Coach de propósito. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre propósito]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Ritual ☀️":`Guía de rituales matutinos. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de bienvenida al día]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Ritual 🌙":`Guía de rituales nocturnos. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de cierre nocturno]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Mi Guía":`Terapeuta personal. Usuario ${user.gender}. ${moodInfo} ${zodiacInfo}\nFormato:\nFRASE: [Reflexión personal]\nCONT: [3 o 4 oraciones breves que continúan la frase, cálidas y personales, hablando de tú. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
     };
 
     try {
       const raw = await askClaude(prompts[tab]||prompts["Hoy"]);
       const fraseMatch = raw.match(/FRASE:\s*(.+)/);
-      const introMatch = raw.match(/INTRO:\s*([\s\S]+?)(?=MAS:|$)/);
-      const masMatch = raw.match(/MAS:\s*([\s\S]+)/);
+      const introMatch = raw.match(/CONT:\s*([\s\S]+)/);
       setMsg({
         quote: fraseMatch?fraseMatch[1].replace(/["""]/g,"").trim():null,
-        intro: introMatch?introMatch[1].trim():raw,
-        more: masMatch?masMatch[1].trim():"",
+        cont: introMatch?introMatch[1].trim():raw,
         ...TAB_CONFIG[tab]
       });
     } catch {
-      setMsg({quote:null,intro:"No se pudo generar el mensaje. Intenta de nuevo.",more:"",icon:"⚠️",label:"ERROR",color:C.muted});
+      setMsg({quote:"No se pudo generar el mensaje. Intenta de nuevo.",cont:"",icon:"⚠️",label:"ERROR",color:C.muted});
     }
     setLoading(false);
   }
