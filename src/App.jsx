@@ -233,7 +233,11 @@ function Setup({onDone}) {
   );
 }
 
-function MsgCard({icon, label, quote, body, onClose}) {
+function MsgCard({icon, label, quote, intro, more, onClose}) {
+  const [expanded, setExpanded] = useState(false);
+  const renderText = (t) => (t||"").split("\n").filter(l=>l.trim()).map((line,i)=>(
+    <p key={i} style={{margin:"0 0 8px"}}>{line}</p>
+  ));
   return (
     <Card style={{animation:"fadeUp .4s ease-out",marginTop:12}}>
       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:12}}>
@@ -253,10 +257,12 @@ function MsgCard({icon, label, quote, body, onClose}) {
         </>
       )}
       <div style={{color:C.goldL,fontSize:15,fontFamily:S.fontUI,lineHeight:1.9}}>
-        {body.split("\n").filter(l=>l.trim()).map((line,i)=>(
-          <p key={i} style={{margin:"0 0 8px"}}>{line}</p>
-        ))}
+        {renderText(intro)}
+        {expanded && more && renderText(more)}
       </div>
+      {more && !expanded && (
+        <Btn onClick={()=>setExpanded(true)} style={{width:"100%",marginTop:8,padding:"12px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.purpleL+"55",color:C.purpleL,fontSize:14,fontWeight:700,fontFamily:S.fontUI}}>Leer más ▾</Btn>
+      )}
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:16}}>
         <div style={{display:"flex",gap:14}}>
           <span style={{fontSize:22,cursor:"pointer"}}>🤍</span>
@@ -407,38 +413,42 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
     const moodInfo = mood?`Estado de ánimo: ${mood}.`:"";
 
     const prompts = {
-      "Hoy":`Eres un coach espiritual. Hoy es ${todayFull}. El usuario es ${user.gender} y se llama ${user.name}. ${moodInfo}\nGenera EXACTAMENTE en este formato:\nFRASE: [Una frase poderosa corta en cursiva]\nCUERPO: [12-15 oraciones personales, cálidas, en párrafos separados por salto de línea. Habla de "tú". Sin asteriscos.]`,
-      "Amor Propio":`Coach de amor propio. Hoy es ${todayFull}. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre amor propio]\nCUERPO: [12-15 oraciones sobre quererse, cuidarse. En párrafos. Sin asteriscos.]`,
-      "Noche":`Guía de cierre del día. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de paz nocturna]\nCUERPO: [12-15 oraciones de cierre, gratitud, descanso. En párrafos. Sin asteriscos.]`,
-      "Inspiración":`Coach inspiracional. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase inspiradora]\nCUERPO: [12-15 oraciones inspiradoras. En párrafos. Sin asteriscos.]`,
-      "Afirmar":`Coach de afirmaciones. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Afirmación poderosa]\nCUERPO: [12-15 afirmaciones en primera persona, separadas. Sin asteriscos.]`,
-      "Gratitud":`Guía de gratitud. Hoy es ${todayFull}. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre gratitud]\nCUERPO: [12-15 oraciones sobre gratitud y abundancia. En párrafos. Sin asteriscos.]`,
-      "Bienestar":`Coach de bienestar. Hoy es ${todayFull}. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre bienestar]\nCUERPO: [12-15 consejos de salud y bienestar. En párrafos. Sin asteriscos.]`,
-      "Astros":`Astrólogo. Hoy es ${todayFull}. ${zodiacInfo} Usuario ${user.gender}.\nFormato:\nFRASE: [Mensaje cósmico]\nCUERPO: [12-15 oraciones sobre energía del universo y alineación cósmica. En párrafos. Sin asteriscos.]`,
-      "Amor":`Guía de amor. Hoy es ${todayFull}. ${loveInfo} Usuario ${user.gender}.\nFormato:\nFRASE: [Frase romántica]\nCUERPO: [12-15 oraciones sobre amor y relaciones. En párrafos. Sin asteriscos.]`,
-      "Dinero":`Coach de abundancia. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre abundancia]\nCUERPO: [12-15 oraciones sobre prosperidad y dinero. En párrafos. Sin asteriscos.]`,
-      "Propósito":`Coach de propósito. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre propósito]\nCUERPO: [12-15 oraciones sobre metas y propósito de vida. En párrafos. Sin asteriscos.]`,
-      "Ritual ☀️":`Guía de rituales matutinos. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de bienvenida al día]\nCUERPO: [12-15 oraciones con ritual de mañana. En párrafos. Sin asteriscos.]`,
-      "Ritual 🌙":`Guía de rituales nocturnos. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de cierre nocturno]\nCUERPO: [12-15 oraciones con ritual de noche. En párrafos. Sin asteriscos.]`,
-      "Mi Guía":`Terapeuta personal. Usuario ${user.gender}. ${moodInfo} ${zodiacInfo}\nFormato:\nFRASE: [Reflexión personal]\nCUERPO: [12-15 oraciones de apoyo emocional profundo. En párrafos. Sin asteriscos.]`,
+      "Hoy":`Eres un coach espiritual. Hoy es ${todayFull}. El usuario es ${user.gender} y se llama ${user.name}. ${moodInfo}\nGenera EXACTAMENTE en este formato:\nFRASE: [Una frase poderosa corta en cursiva]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Amor Propio":`Coach de amor propio. Hoy es ${todayFull}. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre amor propio]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Noche":`Guía de cierre del día. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de paz nocturna]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Inspiración":`Coach inspiracional. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase inspiradora]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Afirmar":`Coach de afirmaciones. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Afirmación poderosa]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Gratitud":`Guía de gratitud. Hoy es ${todayFull}. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre gratitud]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Bienestar":`Coach de bienestar. Hoy es ${todayFull}. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre bienestar]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Astros":`Astrólogo. Hoy es ${todayFull}. ${zodiacInfo} Usuario ${user.gender}.\nFormato:\nFRASE: [Mensaje cósmico]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Amor":`Guía de amor. Hoy es ${todayFull}. ${loveInfo} Usuario ${user.gender}.\nFormato:\nFRASE: [Frase romántica]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Dinero":`Coach de abundancia. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre abundancia]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Propósito":`Coach de propósito. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre propósito]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Ritual ☀️":`Guía de rituales matutinos. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de bienvenida al día]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Ritual 🌙":`Guía de rituales nocturnos. Hoy es ${todayFull}. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de cierre nocturno]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
+      "Mi Guía":`Terapeuta personal. Usuario ${user.gender}. ${moodInfo} ${zodiacInfo}\nFormato:\nFRASE: [Reflexión personal]\nINTRO: [Exactamente 2 oraciones cálidas, poderosas y personales sobre el tema. Habla de tú, sin asteriscos.]\nMAS: [Exactamente 4 oraciones adicionales que profundizan el mensaje, cálidas y en párrafos. Sin asteriscos.]`,
     };
 
     try {
       const raw = await askClaude(prompts[tab]||prompts["Hoy"]);
       const fraseMatch = raw.match(/FRASE:\s*(.+)/);
-      const cuerpoMatch = raw.match(/CUERPO:\s*([\s\S]+)/);
+      const introMatch = raw.match(/INTRO:\s*([\s\S]+?)(?=MAS:|$)/);
+      const masMatch = raw.match(/MAS:\s*([\s\S]+)/);
       setMsg({
         quote: fraseMatch?fraseMatch[1].replace(/["""]/g,"").trim():null,
-        body: cuerpoMatch?cuerpoMatch[1].trim():raw,
+        intro: introMatch?introMatch[1].trim():raw,
+        more: masMatch?masMatch[1].trim():"",
         ...TAB_CONFIG[tab]
       });
     } catch {
-      setMsg({quote:null,body:"No se pudo generar el mensaje. Intenta de nuevo.",icon:"⚠️",label:"ERROR",color:C.muted});
+      setMsg({quote:null,intro:"No se pudo generar el mensaje. Intenta de nuevo.",more:"",icon:"⚠️",label:"ERROR",color:C.muted});
     }
     setLoading(false);
   }
 
   const cfg = TAB_CONFIG[activeTab]||TAB_CONFIG["Hoy"];
+
+  useEffect(()=>{ generateMsg("Hoy"); /* eslint-disable-next-line react-hooks/exhaustive-deps */ },[]);
 
   return (
     <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",paddingBottom:32}}>
@@ -463,6 +473,24 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
       </div>
 
       <div style={{padding:"0 16px"}}>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:12}}>
+          {tabs.map(t=>(
+            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);setMsg(null);}} style={{padding:"9px 14px",borderRadius:12,fontSize:13,fontFamily:S.fontUI,background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:activeTab===t.id?700:400}}>{t.e} {t.id}</Btn>
+          ))}
+        </div>
+
+        {!msg&&!loading&&(
+          <Card>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+              <span style={{fontSize:18}}>{cfg.icon}</span>
+              <span style={{color:cfg.color,fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,fontFamily:S.fontUI}}>{cfg.label}</span>
+            </div>
+            <Btn onClick={()=>generateMsg(activeTab)} style={{width:"100%",padding:"14px",borderRadius:12,background:`${cfg.color}22`,border:`1px solid ${cfg.color}55`,color:cfg.color,fontSize:15,fontWeight:700,fontFamily:S.fontUI}}>📖 Leer Mi Mensaje</Btn>
+          </Card>
+        )}
+        {loading&&<Card><Spinner/></Card>}
+        {msg&&!loading&&<MsgCard {...msg} onClose={()=>setMsg(null)}/>}
+
         <Btn style={{width:"100%",background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:12,padding:"13px",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:12,textAlign:"center"}}>🔑 Inicia Sesión Para Guardar Tu Progreso</Btn>
 
         <Card style={{marginBottom:12}}>
@@ -529,23 +557,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
           </div>
         </Card>
 
-        <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:12}}>
-          {tabs.map(t=>(
-            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);setMsg(null);}} style={{padding:"9px 14px",borderRadius:12,fontSize:13,fontFamily:S.fontUI,background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:activeTab===t.id?700:400}}>{t.e} {t.id}</Btn>
-          ))}
-        </div>
 
-        {!msg&&!loading&&(
-          <Card>
-            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
-              <span style={{fontSize:18}}>{cfg.icon}</span>
-              <span style={{color:cfg.color,fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,fontFamily:S.fontUI}}>{cfg.label}</span>
-            </div>
-            <Btn onClick={()=>generateMsg(activeTab)} style={{width:"100%",padding:"14px",borderRadius:12,background:`${cfg.color}22`,border:`1px solid ${cfg.color}55`,color:cfg.color,fontSize:15,fontWeight:700,fontFamily:S.fontUI}}>📖 Leer Mi Mensaje</Btn>
-          </Card>
-        )}
-        {loading&&<Card><Spinner/></Card>}
-        {msg&&!loading&&<MsgCard {...msg} onClose={()=>setMsg(null)}/>}
 
         <div style={{display:"flex",gap:10,marginTop:14}}>
           <Btn onClick={()=>generateMsg("Noche")} style={{flex:1,padding:"14px",borderRadius:12,background:C.cardDark,border:`1px solid ${C.border}`,color:C.text,fontSize:14,fontFamily:S.fontUI}}>🌙 Cierre Del Día</Btn>
