@@ -25,3 +25,7 @@ dist-ssr
 .env
 patch.cjs
 *.bak
+p2.b64
+p3.b64
+patch2.cjs
+patch3.cjs
