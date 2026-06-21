@@ -251,7 +251,7 @@ function MsgCard({icon, label, quote, cont, onClose}) {
         <>
           <p style={{
             color:C.goldL,fontSize:20,fontStyle:"italic",
-            fontFamily:S.fontFamily,lineHeight:1.5,margin:"0 0 12px"
+            fontFamily:S.fontFamily,lineHeight:1.5,margin:"0 0 12px",textAlign:"center",textWrap:"balance"
           }}>"{quote}"</p>
           <hr style={{border:"none",borderTop:`1px solid ${C.border}`,margin:"0 0 12px"}}/>
         </>
@@ -452,7 +452,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
       <div style={{padding:"16px 16px 12px",position:"sticky",top:0,zIndex:10,background:`linear-gradient(180deg,${C.bg}ff 80%,${C.bg}00)`}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
           <div>
-            <p style={{color:C.purpleL,fontSize:12,fontFamily:S.fontUI,margin:0}}>{dateDisplay}</p>
+            <p style={{color:C.purpleL,fontSize:15,fontWeight:700,fontFamily:S.fontUI,margin:0}}>{dateDisplay}</p>
             <div style={{display:"flex",alignItems:"center",gap:10,marginTop:2}}>
               <span style={{color:C.white,fontSize:18,fontWeight:800,fontFamily:S.fontUI}}>
                 {`Hola, ${user.name} 👋`}
@@ -470,9 +470,9 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
       </div>
 
       <div style={{padding:"0 16px"}}>
-        <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:12}}>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center",marginBottom:12}}>
           {tabs.map(t=>(
-            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);setMsg(null);}} style={{padding:"9px 14px",borderRadius:12,fontSize:13,fontFamily:S.fontUI,background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:activeTab===t.id?700:400,textTransform:"uppercase"}}>{t.e} {(TAB_CONFIG[t.id]||{}).label||t.id}</Btn>
+            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);setMsg(null);}} style={{padding:"9px 14px",borderRadius:12,fontSize:13,fontFamily:S.fontUI,background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:600,textTransform:"uppercase"}}>{t.e} {(TAB_CONFIG[t.id]||{}).label||t.id}</Btn>
           ))}
         </div>
 
