@@ -406,6 +406,9 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
 
   async function generateMsg(tab) {
     setLoading(true); setMsg(null);
+    var _day = new Date().toDateString();
+    var _key = "as_msg_" + tab;
+    try { var _s = localStorage.getItem(_key); if (_s) { var _o = JSON.parse(_s); if (_o.date === _day) { setMsg({quote:_o.quote, cont:_o.cont, ...TAB_CONFIG[tab]}); setLoading(false); return; } } } catch(e){}
     const todayFull = today.toLocaleDateString("es-ES",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
     const zodiacInfo = user.zodiac?`Signo zodiacal: ${user.zodiac}.`:"";
     const loveInfo = user.love?`Situación amorosa: ${user.love}.`:"";
@@ -437,6 +440,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
         cont: introMatch?introMatch[1].trim():raw,
         ...TAB_CONFIG[tab]
       });
+      try { var _qq = fraseMatch?fraseMatch[1].replace(/["\u201C\u201D]/g,"").trim():null; var _cc = introMatch?introMatch[1].trim():raw; localStorage.setItem(_key, JSON.stringify({date:_day, quote:_qq, cont:_cc})); } catch(e){}
     } catch {
       setMsg({quote:"No se pudo generar el mensaje. Intenta de nuevo.",cont:"",icon:"⚠️",label:"ERROR",color:C.muted});
     }

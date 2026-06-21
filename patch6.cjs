@@ -1,0 +1,5 @@
+const fs=require('fs');const path=process.argv[2];let c=fs.readFileSync(path,'utf8');let ok=true;
+function rep(n,s,r){if(c.indexOf(s)===-1){console.log("NO: "+n);ok=false;return}c=c.split(s).join(r);console.log("OK: "+n)}
+rep("cache-check",'    setLoading(true); setMsg(null);','    setLoading(true); setMsg(null);\n    var _day = new Date().toDateString();\n    var _key = "as_msg_" + tab;\n    try { var _s = localStorage.getItem(_key); if (_s) { var _o = JSON.parse(_s); if (_o.date === _day) { setMsg({quote:_o.quote, cont:_o.cont, ...TAB_CONFIG[tab]}); setLoading(false); return; } } } catch(e){}');
+rep("cache-save",'        ...TAB_CONFIG[tab]\n      });','        ...TAB_CONFIG[tab]\n      });\n      try { var _qq = fraseMatch?fraseMatch[1].replace(/["\\u201C\\u201D]/g,"").trim():null; var _cc = introMatch?introMatch[1].trim():raw; localStorage.setItem(_key, JSON.stringify({date:_day, quote:_qq, cont:_cc})); } catch(e){}');
+fs.writeFileSync(path,c);console.log(ok?"\nP6 OK":"\nP6 con avisos")
