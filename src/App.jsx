@@ -314,7 +314,7 @@ function MsgCard({icon, label, quote, cont, onClose}) {
   );
 }
 
-function Plans({onBack}) {
+function Plans({onBack, onActivate}) {
   return (
     <div style={{padding:"20px 16px",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto"}}>
       <Btn onClick={onBack} style={{
@@ -341,7 +341,7 @@ function Plans({onBack}) {
             <span style={{background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",borderRadius:20,padding:"6px 16px",fontSize:12,fontWeight:800,fontFamily:S.fontUI}}>ELITE</span>
           </div>
         ))}
-        <Btn style={{width:"100%",marginTop:20,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:17,fontWeight:900,fontFamily:S.fontUI}}>👑 Activar Elite — $9.99/mes o $79.99/año</Btn>
+        <Btn onClick={onActivate} style={{width:"100%",marginTop:20,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:17,fontWeight:900,fontFamily:S.fontUI}}>👑 Activar Elite — $9.99/mes o $79.99/año</Btn>
       </div>
     </div>
   );
@@ -660,7 +660,7 @@ export default function App() {
       {screen==="welcome"&&<Welcome onStart={()=>setScreen("setup")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
       {screen==="dashboard"&&<Dashboard user={user} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")}/>}
-      {screen==="plans"&&<Plans onBack={()=>setScreen("dashboard")}/>}
+      {screen==="plans"&&<Plans onBack={()=>setScreen("dashboard")} onActivate={()=>{setUser(u=>({...u,plan:"elite"}));setScreen("eliteSettings");}}/>}
       {screen==="eliteSettings"&&<EliteSettings user={user} onDone={handleEliteSettings}/>}
     </div>
   );
