@@ -181,7 +181,9 @@ function Setup({onDone}) {
       alignItems:"center",justifyContent:"center",
       padding:"24px 20px",position:"relative",zIndex:1
     }}>
-      <DreamCatcher size={140}/>
+      <div style={{margin:"20px 0",animation:"pulse 3s ease-in-out infinite"}}>
+        <DreamCatcher size={140}/>
+      </div>
       <h2 style={{
         color:C.gold,fontSize:24,fontWeight:800,fontFamily:S.fontFamily,
         textAlign:"center",margin:"12px 0 4px"
@@ -237,14 +239,14 @@ async function shareQuote(quote) {
   try {
     var cv = document.createElement("canvas"); cv.width=1080; cv.height=1080;
     var x = cv.getContext("2d");
-    var g = x.createLinearGradient(0,0,0,1080); g.addColorStop(0,"#1e0a4e"); g.addColorStop(0.5,"#0d0d2b"); g.addColorStop(1,"#06061a");
+    var TH=[["#1e0a4e","#0d0d2b","#06061a","#fde68a","#a78bfa"],["#0f2027","#203a43","#2c5364","#e0f7fa","#80deea"],["#42275a","#734b6d","#bc4e9c","#ffe9f5","#ffd6a5"],["#05010f","#0b132b","#1c2541","#ffffff","#9db4ff"],["#3a1c71","#d76d77","#ffaf7b","#fff8f0","#ffe9c7"],["#134e5e","#2c7a6b","#71b280","#eafff5","#cdeede"]]; var th=TH[new Date().getDate()%TH.length]; var g = x.createLinearGradient(0,0,0,1080); g.addColorStop(0,th[0]); g.addColorStop(0.5,th[1]); g.addColorStop(1,th[2]);
     x.fillStyle=g; x.fillRect(0,0,1080,1080);
-    x.fillStyle="#fcd34d"; for(var i=0;i<70;i++){ x.globalAlpha=Math.random()*0.6+0.2; x.beginPath(); x.arc(Math.random()*1080,Math.random()*1080,Math.random()*2+0.5,0,7); x.fill(); } x.globalAlpha=1;
-    x.fillStyle="#fde68a"; x.textAlign="center"; x.textBaseline="middle"; x.font="italic 58px Georgia";
+    x.fillStyle="#ffffff"; for(var i=0;i<70;i++){ x.globalAlpha=Math.random()*0.6+0.2; x.beginPath(); x.arc(Math.random()*1080,Math.random()*1080,Math.random()*2+0.5,0,7); x.fill(); } x.globalAlpha=1;
+    x.fillStyle=th[3]; x.textAlign="center"; x.textBaseline="middle"; x.font="italic 58px Georgia";
     var full = "\u201C"+(quote||"")+"\u201D"; var words=full.split(" "); var lines=[]; var ln="";
     for(var w=0;w<words.length;w++){ var tt=ln?ln+" "+words[w]:words[w]; if(x.measureText(tt).width>880 && ln){ lines.push(ln); ln=words[w]; } else { ln=tt; } } if(ln) lines.push(ln);
     var lh=82; var sy=520-(lines.length-1)*lh/2; for(var L=0;L<lines.length;L++){ x.fillText(lines[L],540,sy+L*lh); }
-    x.fillStyle="#a78bfa"; x.font="600 34px system-ui"; x.fillText("\u2728 Atrapa Sue\u00F1os \u2728",540,980);
+    x.fillStyle=th[4]; x.font="600 34px system-ui"; x.fillText("\u2728 Atrapa Sue\u00F1os \u2728",540,980);
     cv.toBlob(async function(b){ try { var f=new File([b],"atrapa-suenos.png",{type:"image/png"}); if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f],title:"Atrapa Sue\u00F1os"}); } else { var u=URL.createObjectURL(b); var a=document.createElement("a"); a.href=u; a.download="atrapa-suenos.png"; a.click(); URL.revokeObjectURL(u); } } catch(e){} },"image/png");
   } catch(e){}
 }
@@ -492,7 +494,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
       <div style={{padding:"0 16px"}}>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:8,marginBottom:12}}>
           {tabs.map(t=>(
-            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);setMsg(null);}} style={{padding:"10px 6px",borderRadius:12,fontSize:13,fontFamily:S.fontUI,textAlign:"center",background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:600,textTransform:"uppercase",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,minHeight:70}}><span style={{fontSize:20}}>{t.e}</span><span style={{lineHeight:1.15}}>{(TAB_CONFIG[t.id]||{}).tab||(TAB_CONFIG[t.id]||{}).label||t.id}</span></Btn>
+            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);generateMsg(t.id);}} style={{padding:"10px 6px",borderRadius:12,fontSize:13,fontFamily:S.fontUI,textAlign:"center",background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:600,textTransform:"uppercase",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,minHeight:70}}><span style={{fontSize:20}}>{t.e}</span><span style={{lineHeight:1.15}}>{(TAB_CONFIG[t.id]||{}).tab||(TAB_CONFIG[t.id]||{}).label||t.id}</span></Btn>
           ))}
         </div>
 
