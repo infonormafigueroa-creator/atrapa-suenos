@@ -233,6 +233,22 @@ function Setup({onDone}) {
   );
 }
 
+async function shareQuote(quote) {
+  try {
+    var cv = document.createElement("canvas"); cv.width=1080; cv.height=1080;
+    var x = cv.getContext("2d");
+    var g = x.createLinearGradient(0,0,0,1080); g.addColorStop(0,"#1e0a4e"); g.addColorStop(0.5,"#0d0d2b"); g.addColorStop(1,"#06061a");
+    x.fillStyle=g; x.fillRect(0,0,1080,1080);
+    x.fillStyle="#fcd34d"; for(var i=0;i<70;i++){ x.globalAlpha=Math.random()*0.6+0.2; x.beginPath(); x.arc(Math.random()*1080,Math.random()*1080,Math.random()*2+0.5,0,7); x.fill(); } x.globalAlpha=1;
+    x.fillStyle="#fde68a"; x.textAlign="center"; x.textBaseline="middle"; x.font="italic 58px Georgia";
+    var full = "\u201C"+(quote||"")+"\u201D"; var words=full.split(" "); var lines=[]; var ln="";
+    for(var w=0;w<words.length;w++){ var tt=ln?ln+" "+words[w]:words[w]; if(x.measureText(tt).width>880 && ln){ lines.push(ln); ln=words[w]; } else { ln=tt; } } if(ln) lines.push(ln);
+    var lh=82; var sy=520-(lines.length-1)*lh/2; for(var L=0;L<lines.length;L++){ x.fillText(lines[L],540,sy+L*lh); }
+    x.fillStyle="#a78bfa"; x.font="600 34px system-ui"; x.fillText("\u2728 Atrapa Sue\u00F1os \u2728",540,980);
+    cv.toBlob(async function(b){ try { var f=new File([b],"atrapa-suenos.png",{type:"image/png"}); if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f],title:"Atrapa Sue\u00F1os"}); } else { var u=URL.createObjectURL(b); var a=document.createElement("a"); a.href=u; a.download="atrapa-suenos.png"; a.click(); URL.revokeObjectURL(u); } } catch(e){} },"image/png");
+  } catch(e){}
+}
+
 function MsgCard({icon, label, quote, cont, onClose}) {
   const [expanded, setExpanded] = useState(false);
   const renderText = (t) => (t||"").split("\n").filter(l=>l.trim()).map((line,i)=>(
@@ -265,7 +281,7 @@ function MsgCard({icon, label, quote, cont, onClose}) {
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:16}}>
         <div style={{display:"flex",gap:14}}>
           <span style={{fontSize:22,cursor:"pointer"}}>🤍</span>
-          <span style={{fontSize:22,cursor:"pointer"}}>📤</span>
+          <span onClick={()=>shareQuote(quote)} style={{fontSize:22,cursor:"pointer"}}>📤</span>
         </div>
         <Btn onClick={onClose} style={{
           background:C.cardDark,border:`1px solid ${C.border}`,
