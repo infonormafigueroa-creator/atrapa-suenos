@@ -304,26 +304,6 @@ function Plans({onBack}) {
         fontSize:13,fontFamily:S.fontUI,marginBottom:20
       }}>← Volver</Btn>
 
-      <div style={{marginBottom:28}}>
-        <h3 style={{color:C.purpleL,fontSize:17,fontWeight:800,fontFamily:S.fontUI,margin:"0 0 16px"}}>
-          ✨ AtrapaSueños Plus — $5.99/Mes · $59.99/Año
-        </h3>
-        {[
-          {e:"💖",l:"Reflexiones Premium"},{e:"😊",l:"Guía Emocional"},
-          {e:"🏥",l:"Salud Personalizada"},{e:"🧠",l:"3 Consultas IA Por Día"},
-          {e:"🎨",l:"Fondos Premium"},{e:"📊",l:"Estadísticas Personales"},
-        ].map(({e,l})=>(
-          <div key={l} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 0",borderBottom:`1px solid ${C.border}`}}>
-            <div style={{display:"flex",alignItems:"center",gap:12}}>
-              <span style={{fontSize:22}}>{e}</span>
-              <span style={{color:C.text,fontSize:16,fontFamily:S.fontUI}}>{l}</span>
-            </div>
-            <span style={{background:C.purple,color:"white",borderRadius:20,padding:"6px 16px",fontSize:12,fontWeight:800,fontFamily:S.fontUI}}>PLUS</span>
-          </div>
-        ))}
-        <Btn style={{width:"100%",marginTop:20,padding:"16px",borderRadius:14,background:C.purple,color:"white",fontSize:16,fontWeight:800,fontFamily:S.fontUI}}>✨ Probar AtrapaSueños Plus</Btn>
-      </div>
-
       <div>
         <h3 style={{color:C.gold,fontSize:17,fontWeight:800,fontFamily:S.fontUI,margin:"0 0 16px"}}>
           👑 AtrapaSueños Elite — $12.99/Mes · $119.99/Año
@@ -396,14 +376,13 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
   const [msg, setMsg] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const planLabel = user.plan==="elite"?"Elite":user.plan==="plus"?"Plus":"Gratis";
-  const planColor = user.plan==="elite"?C.gold:user.plan==="plus"?C.purpleL:C.gold;
-  const planEmoji = user.plan==="elite"?"👑":user.plan==="plus"?"✨":"⭐";
+  const planLabel = user.plan==="elite"?"Elite":"Gratis";
+  const planColor = user.plan==="elite"?C.gold:C.gold;
+  const planEmoji = user.plan==="elite"?"👑":"⭐";
 
   const TABS_FREE = [{id:"Hoy",e:"🌅"},{id:"Amor Propio",e:"💖"},{id:"Inspiración",e:"💡"},{id:"Afirmar",e:"✨"},{id:"Gratitud",e:"🙏"},{id:"Noche",e:"🌙"}];
-  const TABS_PLUS = [...TABS_FREE, {id:"Bienestar",e:"🌿"}];
   const TABS_ELITE = [{id:"Astros",e:"♈"},{id:"Amor",e:"❤️"},{id:"Dinero",e:"💰"},{id:"Propósito",e:"🎯"},{id:"Ritual ☀️",e:"🌅"},{id:"Ritual 🌙",e:"🌙"},{id:"Mi Guía",e:"🧠"}];
-  const tabs = user.plan==="elite"?TABS_ELITE:user.plan==="plus"?TABS_PLUS:TABS_FREE;
+  const tabs = user.plan==="elite"?TABS_ELITE:TABS_FREE;
 
   const TAB_CONFIG = {
     "Hoy":{icon:"🌅",label:"MENSAJE DEL DÍA",tab:"HOY",color:C.purpleL},
@@ -583,7 +562,6 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
         </div>
 
         {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginTop:16,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>✨ Ver Planes Premium</Btn>}
-        {user.plan==="plus"&&<Btn onClick={onShowPlans} style={{width:"100%",marginTop:16,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>👑 Subir A AtrapaSueños Elite</Btn>}
         {user.plan==="free"&&<Btn onClick={()=>setMsg(null)} style={{width:"100%",marginTop:10,padding:"14px",borderRadius:12,background:C.cardDark,border:`1px solid ${C.border}`,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver Al Inicio</Btn>}
       </div>
     </div>
