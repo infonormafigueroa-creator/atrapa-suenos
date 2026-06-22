@@ -173,6 +173,7 @@ function Welcome({onStart}) {
 function Setup({onDone}) {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
+  const [birthday, setBirthday] = useState("");
   const ok = name.trim() && gender;
 
   return (
@@ -223,7 +224,25 @@ function Setup({onDone}) {
         ))}
       </div>
 
-      <Btn onClick={()=>ok&&onDone({name:name.trim(),gender})} disabled={!ok} style={{
+      <p style={{
+        color:C.gold,fontSize:16,fontWeight:700,fontFamily:S.fontUI,
+        margin:"0 0 8px",textAlign:"center"
+      }}>¿Cuándo Es Tu Cumpleaños?</p>
+      <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,margin:"0 0 12px",textAlign:"center"}}>
+        (Opcional) Para Sorprenderte En Tu Día 🎂
+      </p>
+      <input
+        type="date"
+        value={birthday} onChange={e=>setBirthday(e.target.value)}
+        style={{
+          width:"100%",maxWidth:340,background:C.cardDark,
+          border:"1px solid "+C.border,borderRadius:12,
+          padding:"16px 18px",color:C.goldL,fontSize:16,
+          fontFamily:S.fontUI,outline:"none",boxSizing:"border-box",marginBottom:28
+        }}
+      />
+
+      <Btn onClick={()=>ok&&onDone({name:name.trim(),gender,birthday})} disabled={!ok} style={{
         width:"100%",maxWidth:340,padding:"18px",borderRadius:14,
         background: ok ? `linear-gradient(135deg,${C.gold},${C.goldL})` : C.border,
         color: ok ? "#1a0a00" : C.muted,
@@ -374,6 +393,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
   const [showDreamInput, setShowDreamInput] = useState(false);
   const [dreamText, setDreamText] = useState("");
   const [msg, setMsg] = useState(null);
+  const [isBday, setIsBday] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const planLabel = user.plan==="elite"?"Elite":"Gratis";
@@ -446,7 +466,36 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
 
   const cfg = TAB_CONFIG[activeTab]||TAB_CONFIG["Hoy"];
 
-  useEffect(()=>{ generateMsg("Hoy"); /* eslint-disable-next-line react-hooks/exhaustive-deps */ },[]);
+  function isTodayBirthday(bd){
+    if(!bd) return false;
+    var p = bd.split("-");
+    if(p.length<3) return false;
+    var t = new Date();
+    return (parseInt(p[1],10)===t.getMonth()+1)&&(parseInt(p[2],10)===t.getDate());
+  }
+  async function generateBirthday(){
+    setLoading(true); setMsg(null); setIsBday(true);
+    var _day = new Date().toDateString();
+    var _key = "as_bday";
+    try { var _s = localStorage.getItem(_key); if (_s) { var _o = JSON.parse(_s); if (_o.date === _day) { setMsg({quote:_o.quote, cont:_o.cont, icon:"🎂", label:"¡FELIZ CUMPLEAÑOS!", color:C.gold}); setLoading(false); return; } } } catch(e){}
+    var _prompt = `Eres un coach espiritual cálido y cercano. Hoy es el cumpleaños de la persona. Genera una felicitación de cumpleaños emotiva y celebrativa.
+Formato EXACTO:
+FRASE: [Una frase corta y poderosa de felicitación de cumpleaños]
+CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo año de vida. Habla de tú con cariño. No menciones la fecha ni el nombre. Sin asteriscos.]`;
+    try {
+      const raw = await askClaude(_prompt);
+      const fraseMatch = raw.match(/FRASE:\s*(.+)/);
+      const introMatch = raw.match(/CONT:\s*([\s\S]+)/);
+      var _q = fraseMatch?fraseMatch[1].replace(/["\u201C\u201D]/g,"").trim():"¡Feliz cumpleaños! 🎂";
+      var _cc = introMatch?introMatch[1].trim():raw;
+      setMsg({quote:_q, cont:_cc, icon:"🎂", label:"¡FELIZ CUMPLEAÑOS!", color:C.gold});
+      try { localStorage.setItem(_key, JSON.stringify({date:_day, quote:_q, cont:_cc})); } catch(e){}
+    } catch {
+      setMsg({quote:"¡Feliz cumpleaños! 🎂", cont:"Hoy el universo celebra que naciste. Que este nuevo año te traiga luz, salud y sueños cumplidos. Gracias por existir y brillar con tu propia magia.", icon:"🎂", label:"¡FELIZ CUMPLEAÑOS!", color:C.gold});
+    }
+    setLoading(false);
+  }
+  useEffect(()=>{ if(isTodayBirthday(user.birthday)){ generateBirthday(); } else { generateMsg("Hoy"); } /* eslint-disable-next-line react-hooks/exhaustive-deps */ },[]);
 
   return (
     <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",paddingBottom:32}}>
@@ -470,6 +519,11 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
         </div>
       </div>
 
+      {isBday&&(
+        <div style={{margin:"0 16px 12px",padding:"14px 16px",borderRadius:14,background:C.gold+"22",border:"1px solid "+C.gold,textAlign:"center"}}>
+          <span style={{fontSize:15,fontWeight:800,fontFamily:S.fontUI,color:C.gold}}>🎂 ¡Hoy es tu día especial! 🎉</span>
+        </div>
+      )}
       <div style={{padding:"0 16px"}}>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:8,marginBottom:12}}>
           {tabs.map(t=>(
