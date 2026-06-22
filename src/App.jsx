@@ -143,9 +143,9 @@ function Welcome({onStart}) {
       }}>✨ TU GUÍA DE MOTIVACIÓN<br/>PARA CADA DÍA ✨</p>
 
       <p style={{
-        color:C.muted,fontSize:11,fontFamily:S.fontUI,
-        letterSpacing:0.5,margin:"0 0 28px",opacity:0.7,textAlign:"center"
-      }}>Inspiración · Bienestar Emocional · Crecimiento Personal</p>
+        color:C.goldL,fontSize:12,fontFamily:S.fontUI,fontWeight:700,
+        letterSpacing:1.5,margin:"0 0 28px",opacity:0.95,textAlign:"center"
+      }}>INSPIRACIÓN · MOTIVACIÓN · AFIRMACIÓN</p>
 
       <Btn onClick={onStart} style={{
         width:"100%",maxWidth:340,padding:"18px",borderRadius:14,
@@ -261,11 +261,12 @@ async function shareQuote(quote) {
     var TH=[["#1e0a4e","#0d0d2b","#06061a","#fde68a","#a78bfa"],["#0f2027","#203a43","#2c5364","#e0f7fa","#80deea"],["#42275a","#734b6d","#bc4e9c","#ffe9f5","#ffd6a5"],["#05010f","#0b132b","#1c2541","#ffffff","#9db4ff"],["#3a1c71","#d76d77","#ffaf7b","#fff8f0","#ffe9c7"],["#134e5e","#2c7a6b","#71b280","#eafff5","#cdeede"]]; var th=TH[new Date().getDate()%TH.length]; var g = x.createLinearGradient(0,0,0,1080); g.addColorStop(0,th[0]); g.addColorStop(0.5,th[1]); g.addColorStop(1,th[2]);
     x.fillStyle=g; x.fillRect(0,0,1080,1080);
     x.fillStyle="#ffffff"; for(var i=0;i<70;i++){ x.globalAlpha=Math.random()*0.6+0.2; x.beginPath(); x.arc(Math.random()*1080,Math.random()*1080,Math.random()*2+0.5,0,7); x.fill(); } x.globalAlpha=1;
-    x.fillStyle=th[3]; x.textAlign="center"; x.textBaseline="middle"; x.font="italic 58px Georgia";
+    x.fillStyle=th[3]; x.textAlign="center"; x.textBaseline="middle"; x.font="italic 76px Georgia";
     var full = "\u201C"+(quote||"")+"\u201D"; var words=full.split(" "); var lines=[]; var ln="";
-    for(var w=0;w<words.length;w++){ var tt=ln?ln+" "+words[w]:words[w]; if(x.measureText(tt).width>880 && ln){ lines.push(ln); ln=words[w]; } else { ln=tt; } } if(ln) lines.push(ln);
-    var lh=82; var sy=520-(lines.length-1)*lh/2; for(var L=0;L<lines.length;L++){ x.fillText(lines[L],540,sy+L*lh); }
-    x.fillStyle=th[4]; x.font="600 34px system-ui"; x.fillText("\u2728 Atrapa Sue\u00F1os \u2728",540,980);
+    for(var w=0;w<words.length;w++){ var tt=ln?ln+" "+words[w]:words[w]; if(x.measureText(tt).width>900 && ln){ lines.push(ln); ln=words[w]; } else { ln=tt; } } if(ln) lines.push(ln);
+    var lh=104; var sy=460-(lines.length-1)*lh/2; for(var L=0;L<lines.length;L++){ x.fillText(lines[L],540,sy+L*lh); }
+    x.fillStyle="#fbbf24"; x.font="700 54px system-ui"; x.fillText("\u2728 Atrapa Sue\u00F1os \u2728",540,946);
+    x.fillStyle="#f3d27a"; x.font="600 27px system-ui"; x.fillText("INSPIRACI\u00D3N \u00B7 MOTIVACI\u00D3N \u00B7 AFIRMACI\u00D3N",540,1000);
     cv.toBlob(async function(b){ try { var f=new File([b],"atrapa-suenos.png",{type:"image/png"}); if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f],title:"Atrapa Sue\u00F1os"}); } else { var u=URL.createObjectURL(b); var a=document.createElement("a"); a.href=u; a.download="atrapa-suenos.png"; a.click(); URL.revokeObjectURL(u); } } catch(e){} },"image/png");
   } catch(e){}
 }
