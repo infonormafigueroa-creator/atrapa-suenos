@@ -265,8 +265,8 @@ async function shareQuote(quote) {
     var full = "\u201C"+(quote||"")+"\u201D"; var words=full.split(" "); var lines=[]; var ln="";
     for(var w=0;w<words.length;w++){ var tt=ln?ln+" "+words[w]:words[w]; if(x.measureText(tt).width>900 && ln){ lines.push(ln); ln=words[w]; } else { ln=tt; } } if(ln) lines.push(ln);
     var lh=104; var sy=460-(lines.length-1)*lh/2; for(var L=0;L<lines.length;L++){ x.fillText(lines[L],540,sy+L*lh); }
-    x.fillStyle="#fbbf24"; x.font="700 54px system-ui"; x.fillText("\u2728 Atrapa Sue\u00F1os \u2728",540,946);
-    x.fillStyle="#f3d27a"; x.font="600 27px system-ui"; x.fillText("INSPIRACI\u00D3N \u00B7 MOTIVACI\u00D3N \u00B7 AFIRMACI\u00D3N",540,1000);
+    x.shadowColor="rgba(40,15,5,0.55)"; x.shadowBlur=12; x.shadowOffsetX=0; x.shadowOffsetY=3; x.fillStyle="#ffffff"; x.font="700 54px system-ui"; x.fillText("\u2728 Atrapa Sue\u00F1os \u2728",540,946);
+    x.fillStyle="#ffffff"; x.font="600 27px system-ui"; x.fillText("INSPIRACI\u00D3N \u00B7 MOTIVACI\u00D3N \u00B7 AFIRMACI\u00D3N",540,1000); x.shadowColor="transparent"; x.shadowBlur=0; x.shadowOffsetY=0;
     cv.toBlob(async function(b){ try { var f=new File([b],"atrapa-suenos.png",{type:"image/png"}); if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f],title:"Atrapa Sue\u00F1os"}); } else { var u=URL.createObjectURL(b); var a=document.createElement("a"); a.href=u; a.download="atrapa-suenos.png"; a.click(); URL.revokeObjectURL(u); } } catch(e){} },"image/png");
   } catch(e){}
 }
