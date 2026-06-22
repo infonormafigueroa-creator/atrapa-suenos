@@ -388,9 +388,9 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
   const tabs = user.plan==="elite"?TABS_ELITE:user.plan==="plus"?TABS_PLUS:TABS_FREE;
 
   const TAB_CONFIG = {
-    "Hoy":{icon:"🌅",label:"MENSAJE DEL DÍA",color:C.purpleL},
+    "Hoy":{icon:"🌅",label:"MENSAJE DEL DÍA",tab:"HOY",color:C.purpleL},
     "Amor Propio":{icon:"💖",label:"AMOR PROPIO",color:C.pink},
-    "Noche":{icon:"🌙",label:"CIERRE DEL DÍA",color:C.blue},
+    "Noche":{icon:"🌙",label:"CIERRE DEL DÍA",tab:"NOCHE",color:C.blue},
     "Inspiración":{icon:"💡",label:"INSPIRACIÓN",color:C.goldL},
     "Afirmar":{icon:"✨",label:"AFIRMACIÓN",color:C.purpleL},
     "Gratitud":{icon:"🙏",label:"GRATITUD",color:C.green},
@@ -476,7 +476,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
       <div style={{padding:"0 16px"}}>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:8,marginBottom:12}}>
           {tabs.map(t=>(
-            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);setMsg(null);}} style={{padding:"10px 6px",borderRadius:12,fontSize:13,fontFamily:S.fontUI,textAlign:"center",background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:600,textTransform:"uppercase"}}>{t.e} {(TAB_CONFIG[t.id]||{}).label||t.id}</Btn>
+            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);setMsg(null);}} style={{padding:"10px 6px",borderRadius:12,fontSize:13,fontFamily:S.fontUI,textAlign:"center",background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:600,textTransform:"uppercase",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,minHeight:70}}><span style={{fontSize:20}}>{t.e}</span><span style={{lineHeight:1.15}}>{(TAB_CONFIG[t.id]||{}).tab||(TAB_CONFIG[t.id]||{}).label||t.id}</span></Btn>
           ))}
         </div>
 
