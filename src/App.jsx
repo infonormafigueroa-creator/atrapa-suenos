@@ -306,7 +306,7 @@ function Plans({onBack}) {
 
       <div>
         <h3 style={{color:C.gold,fontSize:17,fontWeight:800,fontFamily:S.fontUI,margin:"0 0 16px"}}>
-          👑 AtrapaSueños Elite — $12.99/Mes · $119.99/Año
+          👑 AtrapaSueños Elite
         </h3>
         {[
           {e:"♈",l:"Horóscopo Profundo"},{e:"❤️",l:"Amor Personalizado"},
@@ -322,7 +322,7 @@ function Plans({onBack}) {
             <span style={{background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",borderRadius:20,padding:"6px 16px",fontSize:12,fontWeight:800,fontFamily:S.fontUI}}>ELITE</span>
           </div>
         ))}
-        <Btn style={{width:"100%",marginTop:20,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:17,fontWeight:900,fontFamily:S.fontUI}}>👑 Activar AtrapaSueños Elite</Btn>
+        <Btn style={{width:"100%",marginTop:20,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:17,fontWeight:900,fontFamily:S.fontUI}}>👑 Activar Elite — $9.99/mes o $79.99/año</Btn>
       </div>
     </div>
   );
@@ -561,7 +561,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
           <Btn style={{flex:1,padding:"14px",borderRadius:12,background:C.cardDark,border:`1px solid ${C.gold}55`,color:C.gold,fontSize:14,fontFamily:S.fontUI}}>⭐ Mi Sueño</Btn>
         </div>
 
-        {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginTop:16,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>✨ Ver Planes Premium</Btn>}
+        {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginTop:16,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>👑 Ver Plan Elite</Btn>}
         {user.plan==="free"&&<Btn onClick={()=>setMsg(null)} style={{width:"100%",marginTop:10,padding:"14px",borderRadius:12,background:C.cardDark,border:`1px solid ${C.border}`,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver Al Inicio</Btn>}
       </div>
     </div>

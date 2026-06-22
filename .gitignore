@@ -1,2 +1,8 @@
-p*.b64
+node_modules
+.env
+.env.*
+*.bak
+*.b64
 patch*.cjs
+.DS_Store
+dist
