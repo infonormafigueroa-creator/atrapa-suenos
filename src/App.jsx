@@ -396,6 +396,8 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
   const [dream, setDream] = useState("");
   const [showDreamInput, setShowDreamInput] = useState(false);
   const [dreamText, setDreamText] = useState("");
+  const [intention, setIntention] = useState("");
+  const [intentionText, setIntentionText] = useState("");
   const [msg, setMsg] = useState(null);
   const [isBday, setIsBday] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -558,25 +560,28 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         <Btn style={{width:"100%",background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:12,padding:"13px",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:12,textAlign:"center"}}>🔑 Inicia Sesión Para Guardar Tu Progreso</Btn>
 
         <Card style={{marginBottom:12}}>
-          {!showDreamInput?(
-            <Btn onClick={()=>setShowDreamInput(true)} style={{width:"100%",background:"none",textAlign:"left",padding:0,display:"flex",alignItems:"center",gap:12}}>
-              <span style={{fontSize:22}}>⭐</span>
-              <div>
-                <p style={{color:C.gold,fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:0}}>MI SUEÑO DEL DÍA</p>
-                <p style={{color:C.goldL,fontSize:14,fontStyle:"italic",fontFamily:S.fontFamily,margin:"2px 0 0"}}>
-                  {dream?`«${dream.slice(0,40)}...»`:"«Escribe tu intención para hoy...»"}
-                </p>
-              </div>
-              <span style={{marginLeft:"auto",color:C.muted}}>→</span>
-            </Btn>
-          ):(
-            <div>
-              <input value={dreamText} onChange={e=>setDreamText(e.target.value)} placeholder="¿Cuál es tu sueño para hoy?"
-                style={{width:"100%",background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:10,padding:"12px",color:C.goldL,fontSize:15,fontFamily:S.fontUI,outline:"none",boxSizing:"border-box",marginBottom:10}}/>
-              <div style={{display:"flex",gap:8}}>
-                <Btn onClick={()=>{setDream(dreamText);setShowDreamInput(false);}} style={{flex:1,background:`${C.gold}33`,border:`1px solid ${C.gold}`,borderRadius:10,padding:"10px",color:C.gold,fontSize:14,fontFamily:S.fontUI}}>Guardar ✓</Btn>
-                <Btn onClick={()=>setShowDreamInput(false)} style={{background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:10,padding:"10px 14px",color:C.muted,fontSize:14,fontFamily:S.fontUI}}>✕</Btn>
-              </div>
+          <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 6px",textAlign:"center"}}>⭐ Mi Intención Del Día</p>
+          {!dream ? (<>
+          <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 14px",textAlign:"center"}}>¿Qué energía deseas cultivar hoy?</p>
+          <div style={{display:"flex",flexWrap:"wrap",gap:8,justifyContent:"center",marginBottom:14}}>
+            {[["🕊️","Paz"],["💖","Amor Propio"],["🔥","Motivación"],["🌱","Crecimiento"],["⭐","Confianza"],["☀️","Alegría"],["🎯","Enfoque"],["☁️","Calma"],["🌅","Optimismo"],["🏋️","Disciplina"],["🙏","Gratitud"],["🌸","Perdón"]].map(([e,l])=>(
+              <button key={l} onClick={()=>setIntention(l)} style={{display:"flex",alignItems:"center",gap:6,background:intention===l?C.gold+"22":C.cardDark,border:"1px solid "+(intention===l?C.gold:C.border),borderRadius:20,padding:"8px 14px",color:intention===l?C.gold:C.text,fontSize:13,fontFamily:S.fontUI,cursor:"pointer",fontWeight:intention===l?700:400}}>
+                <span style={{fontSize:15}}>{e}</span>{l}
+              </button>
+            ))}
+          </div>
+          <div style={{display:"flex",justifyContent:"center",marginBottom:14}}>
+            <button onClick={()=>{const o=["Paz","Amor Propio","Motivación","Crecimiento","Confianza","Alegría","Enfoque","Calma","Optimismo","Disciplina","Gratitud","Perdón"];setIntention(o[Math.floor(Math.random()*o.length)]);}} style={{background:C.cardDark,border:"1px solid "+C.purple,borderRadius:20,padding:"8px 18px",color:C.purpleL,fontSize:13,fontFamily:S.fontUI,cursor:"pointer"}}>🎲 Elegir por mí</button>
+          </div>
+          <input value={intentionText} onChange={e=>setIntentionText(e.target.value)} placeholder="Escribe tu intención personal aquí..."
+            style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:10,padding:"12px",color:C.goldL,fontSize:15,fontFamily:S.fontUI,outline:"none",boxSizing:"border-box",marginBottom:10}}/>
+          <Btn onClick={()=>setDream(intentionText||intention)} style={{width:"100%",padding:"12px",borderRadius:10,background:"linear-gradient(135deg, "+C.purple+", "+C.purpleL+")",color:"#fff",fontSize:14,fontWeight:700,fontFamily:S.fontUI}}>Guardar Intención</Btn>
+          </>) : null}
+          {dream&&(
+            <div style={{background:C.purple+"22",border:"1px solid "+C.purple,borderRadius:12,padding:"16px",textAlign:"center"}}>
+              <p style={{color:C.purpleL,fontSize:11,margin:"0 0 6px",textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI}}>Tu intención de hoy</p>
+              <p style={{color:C.goldL,fontSize:19,fontWeight:700,fontFamily:S.fontUI,margin:"0 0 12px"}}>{dream}</p>
+              <button onClick={()=>{setDream("");setIntention("");setIntentionText("");}} style={{background:"none",border:"1px solid "+C.muted,borderRadius:20,padding:"6px 16px",color:C.muted,fontSize:12,fontFamily:S.fontUI,cursor:"pointer"}}>Cambiar</button>
             </div>
           )}
         </Card>
