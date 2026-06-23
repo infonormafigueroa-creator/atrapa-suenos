@@ -592,22 +592,6 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           </div>
         </Card>
 
-        <Card style={{marginBottom:12}}>
-          <p style={{color:C.purpleL,fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 10px"}}>🙏 CALENDARIO DE GRATITUD</p>
-          <div style={{display:"flex",justifyContent:"space-between"}}>
-            {WEEKDAYS.map((d,i)=>{
-              const isToday=d==="JU";
-              return (
-                <div key={d} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-                  <span style={{color:C.muted,fontSize:11,fontFamily:S.fontUI}}>{d}</span>
-                  <div style={{width:32,height:32,borderRadius:"50%",background:isToday?"transparent":C.cardDark,border:`2px solid ${isToday?C.gold:C.border}`,display:"flex",alignItems:"center",justifyContent:"center"}}>
-                    {isToday&&<div style={{width:6,height:6,borderRadius:"50%",background:C.gold}}/>}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
 
         <Card style={{marginBottom:12,display:"flex",alignItems:"center",gap:12}}>
           <span style={{fontSize:24}}>🔥</span>
@@ -623,9 +607,6 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
 
 
 
-        <div style={{display:"flex",gap:10,marginTop:14}}>
-          <Btn style={{flex:1,padding:"14px",borderRadius:12,background:C.cardDark,border:`1px solid ${C.gold}55`,color:C.gold,fontSize:14,fontFamily:S.fontUI}}>⭐ Mi Sueño</Btn>
-        </div>
 
         {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginTop:16,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>👑 Ver Plan Elite</Btn>}
         {user.plan==="free"&&<Btn onClick={()=>setMsg(null)} style={{width:"100%",marginTop:10,padding:"14px",borderRadius:12,background:C.cardDark,border:`1px solid ${C.border}`,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver Al Inicio</Btn>}
