@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { supabase } from "./supabaseClient";
 
 const C = {
   bg:       "#0d0d2b",
@@ -119,7 +120,7 @@ async function askClaude(prompt) {
   throw new Error("Sin respuesta");
 }
 
-function Welcome({onStart}) {
+function Welcome({onSignup, onLogin, onGuest}) {
   return (
     <div style={{
       minHeight:"100vh",display:"flex",flexDirection:"column",
@@ -147,7 +148,7 @@ function Welcome({onStart}) {
         letterSpacing:1.5,margin:"0 0 28px",opacity:0.95,textAlign:"center"
       }}>INSPIRACIÓN · MOTIVACIÓN · AFIRMACIÓN</p>
 
-      <Btn onClick={onStart} style={{
+      <Btn onClick={onSignup} style={{
         width:"100%",maxWidth:340,padding:"18px",borderRadius:14,
         background:`linear-gradient(135deg, ${C.gold}, ${C.goldL})`,
         color:"#1a0a00",fontSize:16,fontWeight:800,fontFamily:S.fontUI,
@@ -155,14 +156,14 @@ function Welcome({onStart}) {
         boxShadow:`0 4px 24px ${C.gold}55`,marginBottom:12
       }}>⭐ Crear Mi Cuenta</Btn>
 
-      <Btn onClick={onStart} style={{
+      <Btn onClick={onLogin} style={{
         width:"100%",maxWidth:340,padding:"16px",borderRadius:14,
         background:"transparent",border:`1.5px solid ${C.border}`,
         color:C.text,fontSize:16,fontWeight:700,fontFamily:S.fontUI,
         letterSpacing:1,textTransform:"uppercase",marginBottom:20
       }}>🔑 Iniciar Sesión</Btn>
 
-      <button onClick={onStart} style={{
+      <button onClick={onGuest} style={{
         background:"none",border:"none",color:C.muted,
         fontSize:14,cursor:"pointer",fontFamily:S.fontUI
       }}>Continuar sin cuenta →</button>
@@ -633,8 +634,59 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
   );
 }
 
+function Auth({ mode, onSuccess, onBack }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const isSignup = mode === "signup";
+  async function submit() {
+    setError("");
+    if (!email.trim() || !password) { setError("Escribe tu correo y contraseña."); return; }
+    if (password.length < 6) { setError("La contraseña debe tener al menos 6 caracteres."); return; }
+    setLoading(true);
+    try {
+      const res = isSignup
+        ? await supabase.auth.signUp({ email: email.trim(), password })
+        : await supabase.auth.signInWithPassword({ email: email.trim(), password });
+      if (res.error) {
+        const m = res.error.message || "";
+        if (m.includes("already registered")) setError("Ese correo ya tiene una cuenta. Inicia sesión.");
+        else if (m.includes("Invalid login")) setError("Correo o contraseña incorrectos.");
+        else setError(m);
+        setLoading(false);
+        return;
+      }
+      onSuccess();
+    } catch (e) {
+      setError("Algo salió mal. Intenta de nuevo.");
+      setLoading(false);
+    }
+  }
+  return (
+    <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px",position:"relative",zIndex:1}}>
+      <h2 style={{color:C.goldL,fontSize:26,fontFamily:S.fontTitle,margin:"0 0 8px",textAlign:"center"}}>{isSignup ? "Crear Mi Cuenta" : "Iniciar Sesión"}</h2>
+      <p style={{color:C.muted,fontSize:14,fontFamily:S.fontUI,margin:"0 0 24px",textAlign:"center"}}>{isSignup ? "Empieza tu camino de bienestar ✨" : "Bienvenida de vuelta 💛"}</p>
+      <input
+        type="email" value={email} onChange={e=>setEmail(e.target.value)}
+        placeholder="Tu correo electrónico"
+        style={{width:"100%",maxWidth:340,background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"16px 18px",color:C.goldL,fontSize:16,fontFamily:S.fontUI,outline:"none",boxSizing:"border-box",marginBottom:14}}
+      />
+      <input
+        type="password" value={password} onChange={e=>setPassword(e.target.value)}
+        placeholder="Tu contraseña (mínimo 6)"
+        style={{width:"100%",maxWidth:340,background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"16px 18px",color:C.goldL,fontSize:16,fontFamily:S.fontUI,outline:"none",boxSizing:"border-box",marginBottom:14}}
+      />
+      {error && <p style={{color:C.pink,fontSize:13,fontFamily:S.fontUI,margin:"0 0 14px",textAlign:"center",maxWidth:340}}>{error}</p>}
+      <Btn onClick={submit} disabled={loading} style={{width:"100%",maxWidth:340,padding:"18px",borderRadius:14,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",color:"#1a0a00",fontSize:16,fontWeight:800,fontFamily:S.fontUI,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>{loading ? "Un momento..." : (isSignup ? "⭐ Crear Cuenta" : "🔑 Entrar")}</Btn>
+      <button onClick={onBack} style={{background:"none",border:"none",color:C.muted,fontSize:14,cursor:"pointer",fontFamily:S.fontUI}}>← Volver</button>
+    </div>
+  );
+}
+
 export default function App() {
   const [screen, setScreen] = useState("welcome");
+  const [authMode, setAuthMode] = useState("signup");
   const [user, setUser] = useState({plan:"free"});
 
   function handleSetup(data) {
@@ -660,7 +712,8 @@ export default function App() {
         ))}
       </div>
       <Stars/>
-      {screen==="welcome"&&<Welcome onStart={()=>setScreen("setup")}/>}
+      {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>setScreen("setup")}/>}
+      {screen==="auth"&&<Auth mode={authMode} onSuccess={()=>setScreen("setup")} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
       {screen==="dashboard"&&<Dashboard user={user} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")}/>}
       {screen==="plans"&&<Plans onBack={()=>setScreen("dashboard")} onActivate={()=>{setUser(u=>({...u,plan:"elite"}));setScreen("eliteSettings");}}/>}
