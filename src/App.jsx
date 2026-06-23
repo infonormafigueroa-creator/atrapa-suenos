@@ -393,6 +393,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings}) {
   const today = new Date();
   const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
   const dateDisplay = dateStr.charAt(0).toUpperCase()+dateStr.slice(1);
+  const streak = 1;
 
   const [activeTab, setActiveTab] = useState("Hoy");
   const [mood, setMood] = useState("");
@@ -606,16 +607,28 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         </Card>
 
 
-        <Card style={{marginBottom:12,display:"flex",alignItems:"center",gap:12}}>
-          <span style={{fontSize:24}}>🔥</span>
-          <div>
-            <p style={{color:C.gold,fontWeight:700,fontSize:15,fontFamily:S.fontUI,margin:0}}>1 Día Seguidos</p>
-            <div style={{display:"flex",gap:6,marginTop:4}}>
-              {["JU"].map(d=>(
-                <span key={d} style={{background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:6,padding:"2px 8px",color:C.muted,fontSize:11,fontFamily:S.fontUI}}>{d}</span>
-              ))}
+        <Card style={{marginBottom:12}}>
+          <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
+            <span style={{fontSize:30}}>🔥</span>
+            <div>
+              <p style={{color:C.gold,fontWeight:800,fontSize:16,fontFamily:S.fontUI,margin:0,textAlign:"left"}}>Tu Racha</p>
+              <p style={{color:C.goldL,fontWeight:700,fontSize:14,fontFamily:S.fontUI,margin:"2px 0 0",textAlign:"left"}}>{streak} {streak===1?"día":"días seguidos"}</p>
             </div>
           </div>
+          <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,textAlign:"center",margin:"0 0 14px"}}>¡Empieza hoy! Cada día cuenta 🌟</p>
+          <p style={{color:C.purpleL,fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 10px",textAlign:"center"}}>🏅 Tus Insignias</p>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
+            {[7,14,30,60,100,180,365].map(d=>{
+              const done = streak>=d;
+              return (
+                <div key={d} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
+                  <div style={{width:36,height:36,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",background:done?C.gold:C.cardDark,border:"2px solid "+(done?C.gold:C.border),color:done?"#1a0a00":C.muted,fontSize:11,fontWeight:800,fontFamily:S.fontUI}}>{d}</div>
+                  <span style={{color:done?C.goldL:C.muted,fontSize:9,fontFamily:S.fontUI}}>días</span>
+                </div>
+              );
+            })}
+          </div>
+          <Btn style={{width:"100%",padding:"10px",borderRadius:10,background:C.cardDark,border:"1px solid "+C.border,color:C.purpleL,fontSize:13,fontFamily:S.fontUI}}>🏅 Ver todas las insignias</Btn>
         </Card>
 
 
