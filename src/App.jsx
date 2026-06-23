@@ -175,6 +175,8 @@ function Setup({onDone}) {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
   const [birthday, setBirthday] = useState("");
+  const [bMonth, setBMonth] = useState("");
+  const [bDay, setBDay] = useState("");
   const ok = name.trim() && gender;
 
   return (
@@ -225,23 +227,23 @@ function Setup({onDone}) {
         ))}
       </div>
 
-      <p style={{
-        color:C.gold,fontSize:16,fontWeight:700,fontFamily:S.fontUI,
-        margin:"0 0 8px",textAlign:"center"
-      }}>¿Cuándo Es Tu Cumpleaños?</p>
-      <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,margin:"0 0 12px",textAlign:"center"}}>
-        (Opcional) Para Sorprenderte En Tu Día 🎂
-      </p>
-      <input
-        type="date"
-        value={birthday} onChange={e=>setBirthday(e.target.value)}
-        style={{
-          width:"100%",maxWidth:340,background:C.cardDark,
-          border:"1px solid "+C.border,borderRadius:12,
-          padding:"16px 18px",color:C.goldL,fontSize:16,
-          fontFamily:S.fontUI,outline:"none",boxSizing:"border-box",marginBottom:28
-        }}
-      />
+      <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 10px",textAlign:"center"}}>🎂 ¿Cuándo es tu cumpleaños? (opcional)</p>
+      <div style={{display:"flex",gap:10,width:"100%",maxWidth:340,marginBottom:28}}>
+        <select value={bMonth} onChange={e=>{const m=e.target.value;setBMonth(m);setBirthday(m&&bDay?"0000-"+m+"-"+bDay:"");}}
+          style={{flex:2,background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"16px 14px",color:bMonth?C.goldL:C.muted,fontSize:16,fontFamily:S.fontUI,outline:"none",boxSizing:"border-box"}}>
+          <option value="">Mes</option>
+          {[["01","Enero"],["02","Febrero"],["03","Marzo"],["04","Abril"],["05","Mayo"],["06","Junio"],["07","Julio"],["08","Agosto"],["09","Septiembre"],["10","Octubre"],["11","Noviembre"],["12","Diciembre"]].map(([v,l])=>(
+            <option key={v} value={v}>{l}</option>
+          ))}
+        </select>
+        <select value={bDay} onChange={e=>{const d=e.target.value;setBDay(d);setBirthday(bMonth&&d?"0000-"+bMonth+"-"+d:"");}}
+          style={{flex:1,background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"16px 14px",color:bDay?C.goldL:C.muted,fontSize:16,fontFamily:S.fontUI,outline:"none",boxSizing:"border-box"}}>
+          <option value="">Día</option>
+          {Array.from({length:31},(_,i)=>String(i+1).padStart(2,"0")).map(d=>(
+            <option key={d} value={d}>{parseInt(d,10)}</option>
+          ))}
+        </select>
+      </div>
 
       <Btn onClick={()=>ok&&onDone({name:name.trim(),gender,birthday})} disabled={!ok} style={{
         width:"100%",maxWidth:340,padding:"18px",borderRadius:14,
@@ -274,6 +276,7 @@ async function shareQuote(quote) {
 
 function MsgCard({icon, label, quote, cont, onClose}) {
   const [expanded, setExpanded] = useState(false);
+  const [liked, setLiked] = useState(false);
   const renderText = (t) => (t||"").split("\n").filter(l=>l.trim()).map((line,i)=>(
     <p key={i} style={{margin:"0 0 8px"}}>{line}</p>
   ));
@@ -303,7 +306,7 @@ function MsgCard({icon, label, quote, cont, onClose}) {
       )}
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:16}}>
         <div style={{display:"flex",gap:14}}>
-          <span style={{fontSize:22,cursor:"pointer"}}>🤍</span>
+          <span onClick={()=>setLiked(!liked)} style={{fontSize:22,cursor:"pointer"}}>{liked?"❤️":"🤍"}</span>
           <span onClick={()=>shareQuote(quote)} style={{fontSize:22,cursor:"pointer"}}>📤</span>
         </div>
         <Btn onClick={onClose} style={{
@@ -516,13 +519,13 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
       <div style={{padding:"16px 16px 12px",position:"sticky",top:0,zIndex:10,background:`linear-gradient(180deg,${C.bg}ff 80%,${C.bg}00)`}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
           <div>
-            <p style={{color:C.purpleL,fontSize:15,fontWeight:700,fontFamily:S.fontUI,margin:0}}>{dateDisplay}</p>
-            <div style={{display:"flex",alignItems:"center",gap:10,marginTop:2}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginTop:0}}>
               <span style={{color:C.white,fontSize:18,fontWeight:800,fontFamily:S.fontUI}}>
                 {`Hola, ${user.name} 👋`}
               </span>
               <span style={{background:`${planColor}33`,border:`1px solid ${planColor}`,color:planColor,borderRadius:20,padding:"3px 12px",fontSize:11,fontWeight:800,fontFamily:S.fontUI}}>{planEmoji} {planLabel}</span>
             </div>
+            <p style={{color:C.purpleL,fontSize:14,fontWeight:600,fontFamily:S.fontUI,margin:"4px 0 0",textAlign:"left"}}>{dateDisplay}</p>
             {user.zodiac&&<p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,margin:"2px 0 0"}}>♋ {user.zodiac}</p>}
           </div>
           <div style={{display:"flex",gap:8}}>
@@ -595,6 +598,11 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
               </Btn>
             ))}
           </div>
+          {mood && (
+            <div style={{background:C.gold+"18",border:"1px solid "+C.gold,borderRadius:12,padding:"14px",textAlign:"center",marginTop:14}}>
+              <span style={{color:C.goldL,fontSize:18,fontWeight:700,fontFamily:S.fontUI}}>Hoy te sientes {(MOODS.find(m=>m.l===mood)||{}).e} {mood}</span>
+            </div>
+          )}
         </Card>
 
 
@@ -614,7 +622,6 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
 
 
         {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginTop:16,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>👑 Ver Plan Elite</Btn>}
-        {user.plan==="free"&&<Btn onClick={()=>setMsg(null)} style={{width:"100%",marginTop:10,padding:"14px",borderRadius:12,background:C.cardDark,border:`1px solid ${C.border}`,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver Al Inicio</Btn>}
       </div>
     </div>
   );
