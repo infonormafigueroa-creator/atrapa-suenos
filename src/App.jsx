@@ -389,7 +389,7 @@ function EliteSettings({user, onDone}) {
   );
 }
 
-function Dashboard({user, onShowPlans, onShowEliteSettings}) {
+function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin}) {
   const today = new Date();
   const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
   const dateDisplay = dateStr.charAt(0).toUpperCase()+dateStr.slice(1);
@@ -561,7 +561,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         {loading&&<Card><Spinner/></Card>}
         {msg&&!loading&&<MsgCard {...msg} onClose={()=>setMsg(null)}/>}
 
-        <Btn style={{width:"100%",background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:12,padding:"13px",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:12,textAlign:"center"}}>🔑 Inicia Sesión Para Guardar Tu Progreso</Btn>
+        {user.guest && <Btn onClick={onLogin} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"13px",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:12,textAlign:"center"}}>🔑 Inicia Sesión Para Guardar Tu Progreso</Btn>}
 
         <Card style={{marginBottom:12}}>
           <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 6px",textAlign:"center"}}>⭐ Mi Intención Del Día</p>
@@ -611,7 +611,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
             <span style={{fontSize:30}}>🔥</span>
             <div>
-              <p style={{color:C.gold,fontWeight:800,fontSize:16,fontFamily:S.fontUI,margin:0,textAlign:"left"}}>Tu Racha</p>
+              <p style={{color:C.gold,fontWeight:800,fontSize:16,fontFamily:S.fontUI,margin:0,textAlign:"left"}}>TU PROGRESO</p>
               <p style={{color:C.goldL,fontWeight:700,fontSize:14,fontFamily:S.fontUI,margin:"2px 0 0",textAlign:"left"}}>{streak} {streak===1?"día":"días seguidos"}</p>
             </div>
           </div>
@@ -645,6 +645,7 @@ function Auth({ mode, onSuccess, onBack }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
   const isSignup = mode === "signup";
   async function submit() {
     setError("");
@@ -678,11 +679,14 @@ function Auth({ mode, onSuccess, onBack }) {
         placeholder="Tu correo electrónico"
         style={{width:"100%",maxWidth:340,background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"16px 18px",color:C.goldL,fontSize:16,fontFamily:S.fontUI,outline:"none",boxSizing:"border-box",marginBottom:14}}
       />
-      <input
-        type="password" value={password} onChange={e=>setPassword(e.target.value)}
-        placeholder="Tu contraseña (mínimo 6)"
-        style={{width:"100%",maxWidth:340,background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"16px 18px",color:C.goldL,fontSize:16,fontFamily:S.fontUI,outline:"none",boxSizing:"border-box",marginBottom:14}}
-      />
+      <div style={{position:"relative",width:"100%",maxWidth:340,marginBottom:14}}>
+        <input
+          type={showPass ? "text" : "password"} value={password} onChange={e=>setPassword(e.target.value)}
+          placeholder="Tu contraseña (mínimo 6)"
+          style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"16px 48px 16px 18px",color:C.goldL,fontSize:16,fontFamily:S.fontUI,outline:"none",boxSizing:"border-box"}}
+        />
+        <span onClick={()=>setShowPass(!showPass)} style={{position:"absolute",right:16,top:"50%",transform:"translateY(-50%)",cursor:"pointer",fontSize:20,userSelect:"none"}}>{showPass ? "🙈" : "👁️"}</span>
+      </div>
       {error && <p style={{color:C.pink,fontSize:13,fontFamily:S.fontUI,margin:"0 0 14px",textAlign:"center",maxWidth:340}}>{error}</p>}
       <Btn onClick={submit} disabled={loading} style={{width:"100%",maxWidth:340,padding:"18px",borderRadius:14,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",color:"#1a0a00",fontSize:16,fontWeight:800,fontFamily:S.fontUI,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>{loading ? "Un momento..." : (isSignup ? "⭐ Crear Cuenta" : "🔑 Entrar")}</Btn>
       <button onClick={onBack} style={{background:"none",border:"none",color:C.muted,fontSize:14,cursor:"pointer",fontFamily:S.fontUI}}>← Volver</button>
@@ -718,6 +722,40 @@ export default function App() {
     setScreen("dashboard");
   }
 
+  async function handleAuthSuccess() {
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      const authUser = authData ? authData.user : null;
+      if (authUser) {
+        const { data: profile } = await supabase.from("profiles").select("*").eq("id", authUser.id).maybeSingle();
+        if (profile && profile.name) {
+          setUser({
+            name: profile.name,
+            gender: profile.gender,
+            birthday: profile.birthday,
+            plan: profile.plan || "free",
+            streak: profile.streak || 1
+          });
+          setScreen("dashboard");
+          return;
+        }
+      }
+    } catch (e) {}
+    setScreen("setup");
+  }
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData && sessionData.session) {
+          await handleAuthSuccess();
+        }
+      } catch (e) {}
+    })();
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, []);
+
   return (
     <div style={{
       minHeight:"100vh",
@@ -731,10 +769,10 @@ export default function App() {
         ))}
       </div>
       <Stars/>
-      {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>setScreen("setup")}/>}
-      {screen==="auth"&&<Auth mode={authMode} onSuccess={()=>setScreen("setup")} onBack={()=>setScreen("welcome")}/>}
+      {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{setUser(u=>({...u,guest:true}));setScreen("setup");}}/>}
+      {screen==="auth"&&<Auth mode={authMode} onSuccess={handleAuthSuccess} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
-      {screen==="dashboard"&&<Dashboard user={user} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")}/>}
+      {screen==="dashboard"&&<Dashboard user={user} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}}/>}
       {screen==="plans"&&<Plans onBack={()=>setScreen("dashboard")} onActivate={()=>{setUser(u=>({...u,plan:"elite"}));setScreen("eliteSettings");}}/>}
       {screen==="eliteSettings"&&<EliteSettings user={user} onDone={handleEliteSettings}/>}
     </div>
