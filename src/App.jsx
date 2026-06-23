@@ -342,7 +342,9 @@ function Plans({onBack, onActivate}) {
             <span style={{background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",borderRadius:20,padding:"6px 16px",fontSize:12,fontWeight:800,fontFamily:S.fontUI}}>ELITE</span>
           </div>
         ))}
-        <Btn onClick={onActivate} style={{width:"100%",marginTop:20,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:17,fontWeight:900,fontFamily:S.fontUI}}>👑 Activar Elite — $9.99/mes o $79.99/año</Btn>
+        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/28E28s4RYe6U4nqca91wY00";}} style={{width:"100%",marginTop:20,padding:"18px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:17,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Mensual — $9.99/mes</Btn>
+        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/4gM5kEfwC3sg4nq5LL1wY01";}} style={{width:"100%",marginTop:12,padding:"18px",borderRadius:14,background:C.cardDark,border:"2px solid "+C.gold,color:C.goldL,fontSize:17,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Anual — $79.99/año · Ahorra 33%</Btn>
+        <p onClick={onActivate} style={{textAlign:"center",marginTop:18,marginBottom:0,color:C.muted,fontSize:12,fontFamily:S.fontUI,cursor:"pointer",textDecoration:"underline"}}>🔧 Activar modo prueba</p>
       </div>
     </div>
   );
