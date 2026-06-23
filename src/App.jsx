@@ -695,9 +695,22 @@ export default function App() {
   const [authMode, setAuthMode] = useState("signup");
   const [user, setUser] = useState({plan:"free"});
 
-  function handleSetup(data) {
+  async function handleSetup(data) {
     setUser(u=>({...u,...data}));
     setScreen("dashboard");
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      const authUser = authData ? authData.user : null;
+      if (authUser) {
+        await supabase.from("profiles").upsert({
+          id: authUser.id,
+          name: data.name,
+          gender: data.gender,
+          birthday: data.birthday,
+          plan: "free"
+        });
+      }
+    } catch (e) {}
   }
 
   function handleEliteSettings(data) {
