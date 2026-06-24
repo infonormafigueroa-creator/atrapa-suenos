@@ -6,3 +6,8 @@ node_modules
 patch*.cjs
 .DS_Store
 dist
+p*.b64
+p*.b64~
+patch*.cjs
+rebuilt.cjs
+*.lines
