@@ -793,7 +793,8 @@ export default function App() {
           name: data.name,
           gender: data.gender,
           birthday: data.birthday,
-          plan: "free"
+          plan: "free",
+          email: authUser.email
         });
       }
     } catch (e) {}
@@ -822,7 +823,7 @@ export default function App() {
           } else {
             nuevaRacha = 1;
           }
-          try { await supabase.from("profiles").update({ streak: nuevaRacha, last_active: hoyStr }).eq("id", authUser.id); } catch (e) {}
+          try { await supabase.from("profiles").update({ streak: nuevaRacha, last_active: hoyStr, email: authUser.email }).eq("id", authUser.id); } catch (e) {}
           setBg(profile.background || "noche");
           setUser({
             name: profile.name,
