@@ -270,24 +270,24 @@ function Setup({onDone}) {
   );
 }
 
-async function shareQuote(quote) {
+async function shareQuote(quote, bg) {
   try {
     var cv = document.createElement("canvas"); cv.width=1080; cv.height=1080;
     var x = cv.getContext("2d");
-    var TH=[["#1e0a4e","#0d0d2b","#06061a","#fde68a","#a78bfa"],["#0f2027","#203a43","#2c5364","#e0f7fa","#80deea"],["#42275a","#734b6d","#bc4e9c","#ffe9f5","#ffd6a5"],["#05010f","#0b132b","#1c2541","#ffffff","#9db4ff"],["#3a1c71","#d76d77","#ffaf7b","#fff8f0","#ffe9c7"],["#134e5e","#2c7a6b","#71b280","#eafff5","#cdeede"]]; var th=TH[new Date().getDate()%TH.length]; var g = x.createLinearGradient(0,0,0,1080); g.addColorStop(0,th[0]); g.addColorStop(0.5,th[1]); g.addColorStop(1,th[2]);
+    var TH=[["#1e0a4e","#0d0d2b","#06061a","#fde68a","#a78bfa"],["#0f2027","#203a43","#2c5364","#e0f7fa","#80deea"],["#42275a","#734b6d","#bc4e9c","#ffe9f5","#ffd6a5"],["#05010f","#0b132b","#1c2541","#ffffff","#9db4ff"],["#3a1c71","#d76d77","#ffaf7b","#fff8f0","#ffe9c7"],["#134e5e","#2c7a6b","#71b280","#eafff5","#cdeede"]]; var CTH={noche:TH[0],amanecer:["#7a5212","#4a3008","#1f1404","#ffe8b0","#ffd27a"],mistico:["#4a1f7a","#2e1252","#160a2e","#f0dcff","#cba3ff"],oceano:["#10605c","#0c3f3d","#06201f","#c8fff5","#7fe8dd"],rosa:["#8c2456","#5e1538","#2a0a18","#ffd6e6","#ff9cc2"],bosque:["#1f7a3a","#125024","#06200f","#cfffd9","#8fe6a3"]}; var th=CTH[bg]||TH[0]; var g = x.createLinearGradient(0,0,0,1080); g.addColorStop(0,th[0]); g.addColorStop(0.5,th[1]); g.addColorStop(1,th[2]);
     x.fillStyle=g; x.fillRect(0,0,1080,1080);
     x.fillStyle="#ffffff"; for(var i=0;i<70;i++){ x.globalAlpha=Math.random()*0.6+0.2; x.beginPath(); x.arc(Math.random()*1080,Math.random()*1080,Math.random()*2+0.5,0,7); x.fill(); } x.globalAlpha=1;
-    x.fillStyle=th[3]; x.textAlign="center"; x.textBaseline="middle"; x.font="italic 76px Georgia";
+    x.fillStyle=th[3]; x.textAlign="center"; x.textBaseline="middle"; x.font="italic 84px Georgia";
     var full = "\u201C"+(quote||"")+"\u201D"; var words=full.split(" "); var lines=[]; var ln="";
-    for(var w=0;w<words.length;w++){ var tt=ln?ln+" "+words[w]:words[w]; if(x.measureText(tt).width>900 && ln){ lines.push(ln); ln=words[w]; } else { ln=tt; } } if(ln) lines.push(ln);
-    var lh=104; var sy=460-(lines.length-1)*lh/2; for(var L=0;L<lines.length;L++){ x.fillText(lines[L],540,sy+L*lh); }
-    x.shadowColor="rgba(40,15,5,0.55)"; x.shadowBlur=12; x.shadowOffsetX=0; x.shadowOffsetY=3; x.fillStyle="#ffffff"; x.font="700 54px system-ui"; x.fillText("\u2728 Atrapa Sue\u00F1os \u2728",540,946);
-    x.fillStyle="#ffffff"; x.font="600 27px system-ui"; x.fillText("INSPIRACI\u00D3N \u00B7 MOTIVACI\u00D3N \u00B7 AFIRMACI\u00D3N",540,1000); x.shadowColor="transparent"; x.shadowBlur=0; x.shadowOffsetY=0;
+    for(var w=0;w<words.length;w++){ var tt=ln?ln+" "+words[w]:words[w]; if(x.measureText(tt).width>880 && ln){ lines.push(ln); ln=words[w]; } else { ln=tt; } } if(ln) lines.push(ln);
+    var lh=116; var sy=470-(lines.length-1)*lh/2; for(var L=0;L<lines.length;L++){ x.fillText(lines[L],540,sy+L*lh); }
+    x.strokeStyle=th[4]; x.lineWidth=4; x.beginPath(); x.moveTo(490,874); x.lineTo(590,874); x.stroke(); x.shadowColor="rgba(40,15,5,0.55)"; x.shadowBlur=12; x.shadowOffsetX=0; x.shadowOffsetY=3; x.fillStyle="#ffffff"; x.font="700 62px system-ui"; x.fillText("\u2728 Atrapa Sue\u00F1os \u2728",540,932);
+    x.fillStyle=th[4]; x.font="600 28px system-ui"; x.fillText("INSPIRACI\u00D3N \u00B7 MOTIVACI\u00D3N \u00B7 AFIRMACI\u00D3N",540,994); x.shadowColor="transparent"; x.shadowBlur=0; x.shadowOffsetY=0;
     cv.toBlob(async function(b){ try { var f=new File([b],"atrapa-suenos.png",{type:"image/png"}); if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f],title:"Atrapa Sue\u00F1os"}); } else { var u=URL.createObjectURL(b); var a=document.createElement("a"); a.href=u; a.download="atrapa-suenos.png"; a.click(); URL.revokeObjectURL(u); } } catch(e){} },"image/png");
   } catch(e){}
 }
 
-function MsgCard({icon, label, quote, cont, onClose}) {
+function MsgCard({icon, label, quote, cont, onClose, bg}) {
   const [expanded, setExpanded] = useState(false);
   const [liked, setLiked] = useState(false);
   const renderText = (t) => (t||"").split("\n").filter(l=>l.trim()).map((line,i)=>(
@@ -320,7 +320,7 @@ function MsgCard({icon, label, quote, cont, onClose}) {
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:16}}>
         <div style={{display:"flex",gap:14}}>
           <span onClick={()=>setLiked(!liked)} style={{fontSize:22,cursor:"pointer"}}>{liked?"❤️":"🤍"}</span>
-          <span onClick={()=>shareQuote(quote)} style={{fontSize:22,cursor:"pointer"}}>📤</span>
+          <span onClick={()=>shareQuote(quote, bg)} style={{fontSize:22,cursor:"pointer"}}>📤</span>
         </div>
         <Btn onClick={onClose} style={{
           background:C.cardDark,border:`1px solid ${C.border}`,
@@ -631,7 +631,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           </Card>
         )}
         {loading&&<Card><Spinner/></Card>}
-        {msg&&!loading&&<MsgCard {...msg} onClose={()=>setMsg(null)}/>}
+        {msg&&!loading&&<MsgCard {...msg} bg={bg} onClose={()=>setMsg(null)}/>}
 
         {user.guest && user.plan!=="elite" && <Btn onClick={onLogin} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"13px",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:12,textAlign:"center"}}>🔑 Inicia Sesión Para Guardar Tu Progreso</Btn>}
 
