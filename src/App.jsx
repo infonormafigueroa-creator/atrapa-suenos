@@ -23,6 +23,15 @@ const S = {
   fontUI:     "'Segoe UI', system-ui, sans-serif",
 };
 
+const BACKGROUNDS = [
+  {id:"noche",name:"Noche Estrellada",grad:"radial-gradient(ellipse at 50% 0%, #1e0a4e 0%, #0d0d2b 45%, #06061a 100%)"},
+  {id:"amanecer",name:"Amanecer",grad:"radial-gradient(ellipse at 50% 0%, #e8a92e 0%, #8a5e18 45%, #2e1d07 100%)"},
+  {id:"mistico",name:"Místico",grad:"radial-gradient(ellipse at 50% 0%, #9b59d0 0%, #5a2f8a 45%, #1e0f33 100%)"},
+  {id:"oceano",name:"Océano",grad:"radial-gradient(ellipse at 50% 0%, #2fd4c4 0%, #1a7a78 45%, #07262e 100%)"},
+  {id:"rosa",name:"Atardecer Rosa",grad:"radial-gradient(ellipse at 50% 0%, #ff6fa5 0%, #8c3962 45%, #2a0f1d 100%)"},
+  {id:"bosque",name:"Bosque",grad:"radial-gradient(ellipse at 50% 0%, #3fbf5a 0%, #1f7a3a 45%, #07260f 100%)"},
+];
+
 const ZODIAC = [
   {s:"Aries",e:"♈"},{s:"Tauro",e:"♉"},{s:"Géminis",e:"♊"},
   {s:"Cáncer",e:"♋"},{s:"Leo",e:"♌"},{s:"Virgo",e:"♍"},
@@ -394,13 +403,14 @@ function EliteSettings({user, onDone}) {
   );
 }
 
-function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout}) {
+function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg}) {
   const today = new Date();
   const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
   const dateDisplay = dateStr.charAt(0).toUpperCase()+dateStr.slice(1);
   const streak = user.streak || 1;
 
   const [activeTab, setActiveTab] = useState("Hoy");
+  const [showBgPicker, setShowBgPicker] = useState(false);
   const [mood, setMood] = useState("");
   const [dream, setDream] = useState("");
   const [showDreamInput, setShowDreamInput] = useState(false);
@@ -539,8 +549,8 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
             <p style={{color:C.purpleL,fontSize:14,fontWeight:600,fontFamily:S.fontUI,margin:"4px 0 0",textAlign:"left"}}>{dateDisplay}</p>
           </div>
           <div style={{display:"flex",gap:8}}>
-            <Btn style={{background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:10,padding:"8px 10px",fontSize:16}}>🏆</Btn>
-            <Btn style={{background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:10,padding:"8px 10px",fontSize:16}}>🎨</Btn>
+            <Btn onClick={()=>{var e=document.getElementById("seccion-progreso");if(e)e.scrollIntoView({behavior:"smooth",block:"start"});}} style={{background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:10,padding:"8px 10px",fontSize:16}}>🏆</Btn>
+            <Btn onClick={()=>setShowBgPicker(s=>!s)} style={{background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:10,padding:"8px 10px",fontSize:16}}>🎨</Btn>
             {user.plan==="elite"&&<Btn onClick={onShowEliteSettings} style={{background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:10,padding:"8px 10px",fontSize:16}}>⚙️</Btn>}
           </div>
         </div>
@@ -553,6 +563,23 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           ))}
           <span style={{position:"relative",fontSize:34}}>{(ZODIAC.find(z=>z.s===user.zodiac)||{}).e}</span>
           <span style={{position:"relative",color:C.white,fontSize:22,fontWeight:800,fontFamily:S.fontUI,letterSpacing:0.3}}>Tu Signo {user.zodiac}</span>
+        </div>
+      )}
+      {showBgPicker && (
+        <div onClick={()=>setShowBgPicker(false)} style={{position:"fixed",left:0,top:0,right:0,bottom:0,background:"rgba(0,0,0,0.65)",zIndex:50,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:C.card,borderTopLeftRadius:20,borderTopRightRadius:20,border:"1px solid "+C.border,padding:"20px 18px 28px",width:"100%",maxWidth:480,maxHeight:"72vh",overflowY:"auto"}}>
+            <p style={{color:C.gold,fontSize:16,fontWeight:800,fontFamily:S.fontUI,margin:"0 0 4px",textAlign:"center"}}>🎨 Elige tu fondo</p>
+            <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,margin:"0 0 16px",textAlign:"center"}}>Personaliza el ambiente de tu app</p>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(2, 1fr)",gap:12}}>
+              {BACKGROUNDS.map(b=>(
+                <div key={b.id} onClick={()=>{onChangeBg(b.id);setShowBgPicker(false);}} style={{cursor:"pointer",borderRadius:14,overflow:"hidden",border:bg===b.id?"2px solid "+C.gold:"2px solid "+C.border}}>
+                  <div style={{height:74,background:b.grad}}/>
+                  <p style={{color:bg===b.id?C.gold:C.text,fontSize:12,fontWeight:700,fontFamily:S.fontUI,textAlign:"center",margin:"8px 4px"}}>{bg===b.id?"✓ ":""}{b.name}</p>
+                </div>
+              ))}
+            </div>
+            <Btn onClick={()=>setShowBgPicker(false)} style={{width:"100%",marginTop:16,padding:"12px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.border,color:C.muted,fontSize:13,fontFamily:S.fontUI}}>Cerrar</Btn>
+          </div>
         </div>
       )}
       {isBday&&(
@@ -631,6 +658,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         </Card>
 
 
+        <div id="seccion-progreso" />
         <Card style={{marginBottom:12}}>
           <div style={{background:"linear-gradient(135deg, "+C.gold+"22, "+C.goldL+"11)",border:"1px solid "+C.gold+"66",borderRadius:14,padding:"16px",marginBottom:14,display:"flex",alignItems:"center",justifyContent:"center",gap:16,boxShadow:"0 0 22px "+C.gold+"22"}}>
             <span style={{fontSize:32}}>🏆</span>
@@ -724,6 +752,7 @@ export default function App() {
   const [screen, setScreen] = useState("welcome");
   const [authMode, setAuthMode] = useState("signup");
   const [user, setUser] = useState({plan:"free"});
+  const [bg, setBg] = useState("noche");
 
   async function handleSetup(data) {
     setUser(u=>({...u,...data}));
@@ -798,7 +827,7 @@ export default function App() {
   return (
     <div style={{
       minHeight:"100vh",
-      background:`radial-gradient(ellipse at 50% 0%, #1e0a4e 0%, #0d0d2b 45%, #06061a 100%)`,
+      background:(BACKGROUNDS.find(b=>b.id===bg)||BACKGROUNDS[0]).grad,
       color:C.text,fontFamily:S.fontUI,position:"relative",overflowX:"hidden"
     }}>
       {/* ESTRELLAS */}
@@ -811,7 +840,7 @@ export default function App() {
       {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{setUser(u=>({...u,guest:true}));setScreen("setup");}}/>}
       {screen==="auth"&&<Auth mode={authMode} onSuccess={handleAuthSuccess} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
-      {screen==="dashboard"&&<Dashboard user={user} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}}/>}
+      {screen==="dashboard"&&<Dashboard user={user} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}} bg={bg} onChangeBg={(id)=>setBg(id)}/>}
       {screen==="plans"&&<Plans onBack={()=>setScreen("dashboard")} onActivate={()=>{setUser(u=>({...u,plan:"elite"}));setScreen("eliteSettings");}}/>}
       {screen==="eliteSettings"&&<EliteSettings user={user} onDone={handleEliteSettings}/>}
     </div>
