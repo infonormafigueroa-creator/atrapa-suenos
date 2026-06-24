@@ -541,8 +541,8 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
   useEffect(()=>{ if(isTodayBirthday(user.birthday)){ generateBirthday(); } else { generateMsg("Hoy"); } /* eslint-disable-next-line react-hooks/exhaustive-deps */ },[]);
 
   return (
-    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",paddingBottom:32}}>
-      <div style={{padding:"16px 16px 12px",position:"sticky",top:0,zIndex:10,background:`linear-gradient(180deg,${C.bg}ff 80%,${C.bg}00)`}}>
+    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",paddingBottom:"calc(env(safe-area-inset-bottom) + 32px)"}}>
+      <div style={{padding:"calc(env(safe-area-inset-top) + 14px) 16px 12px",position:"sticky",top:0,zIndex:10,background:`linear-gradient(180deg,${C.bg}ff 80%,${C.bg}00)`}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
           <div>
             <div style={{display:"flex",alignItems:"center",gap:10,marginTop:0}}>
