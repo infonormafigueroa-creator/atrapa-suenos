@@ -797,12 +797,14 @@ export default function App() {
             nuevaRacha = 1;
           }
           try { await supabase.from("profiles").update({ streak: nuevaRacha, last_active: hoyStr }).eq("id", authUser.id); } catch (e) {}
+          setBg(profile.background || "noche");
           setUser({
             name: profile.name,
             gender: profile.gender,
             birthday: profile.birthday,
             plan: profile.plan || "free",
-            streak: nuevaRacha
+            streak: nuevaRacha,
+            id: authUser.id
           });
           setScreen("dashboard");
           return;
@@ -840,7 +842,7 @@ export default function App() {
       {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{setUser(u=>({...u,guest:true}));setScreen("setup");}}/>}
       {screen==="auth"&&<Auth mode={authMode} onSuccess={handleAuthSuccess} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
-      {screen==="dashboard"&&<Dashboard user={user} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}} bg={bg} onChangeBg={(id)=>setBg(id)}/>}
+      {screen==="dashboard"&&<Dashboard user={user} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}} bg={bg} onChangeBg={(id)=>{setBg(id); if(user.id){try{supabase.from("profiles").update({background:id}).eq("id",user.id);}catch(e){}}}}/>}
       {screen==="plans"&&<Plans onBack={()=>setScreen("dashboard")} onActivate={()=>{setUser(u=>({...u,plan:"elite"}));setScreen("eliteSettings");}}/>}
       {screen==="eliteSettings"&&<EliteSettings user={user} onDone={handleEliteSettings}/>}
     </div>
