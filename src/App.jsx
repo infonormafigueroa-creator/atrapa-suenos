@@ -114,6 +114,10 @@ function Spinner() {
   );
 }
 
+function hoyES(){
+  return new Date().toLocaleDateString("en-CA",{timeZone:"America/New_York"});
+}
+
 async function askClaude(prompt) {
   const res = await fetch("/api/claude",{
     method:"POST",
@@ -405,7 +409,7 @@ function EliteSettings({user, onDone}) {
 
 function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg}) {
   const today = new Date();
-  const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
+  const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",timeZone:"America/New_York"});
   const dateDisplay = dateStr.charAt(0).toUpperCase()+dateStr.slice(1);
   const streak = user.streak || 1;
 
@@ -453,7 +457,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
 
   async function generateMsg(tab) {
     setLoading(true); setMsg(null);
-    var _day = new Date().toDateString();
+    var _day = hoyES();
     var _key = "as_msg_" + tab;
     try { var _s = localStorage.getItem(_key); if (_s) { var _o = JSON.parse(_s); if (_o.date === _day) { setMsg({quote:_o.quote, cont:_o.cont, ...TAB_CONFIG[tab]}); setLoading(false); return; } } } catch(e){}
     const todayFull = today.toLocaleDateString("es-ES",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
@@ -508,12 +512,12 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
     if(!bd) return false;
     var p = bd.split("-");
     if(p.length<3) return false;
-    var t = new Date();
-    return (parseInt(p[1],10)===t.getMonth()+1)&&(parseInt(p[2],10)===t.getDate());
+    var e = hoyES().split("-");
+    return (parseInt(p[1],10)===parseInt(e[1],10))&&(parseInt(p[2],10)===parseInt(e[2],10));
   }
   async function generateBirthday(){
     setLoading(true); setMsg(null); setIsBday(true);
-    var _day = new Date().toDateString();
+    var _day = hoyES();
     var _key = "as_bday";
     try { var _s = localStorage.getItem(_key); if (_s) { var _o = JSON.parse(_s); if (_o.date === _day) { setMsg({quote:_o.quote, cont:_o.cont, icon:"🎂", label:"¡FELIZ CUMPLEAÑOS!", color:C.gold}); setLoading(false); return; } } } catch(e){}
     var _prompt = `Eres un coach espiritual cálido y cercano. Hoy es el cumpleaños de la persona. Genera una felicitación de cumpleaños emotiva y celebrativa.
@@ -784,8 +788,7 @@ export default function App() {
       if (authUser) {
         const { data: profile } = await supabase.from("profiles").select("*").eq("id", authUser.id).maybeSingle();
         if (profile && profile.name) {
-          const hoy = new Date();
-          const hoyStr = hoy.getFullYear()+"-"+String(hoy.getMonth()+1).padStart(2,"0")+"-"+String(hoy.getDate()).padStart(2,"0");
+          const hoyStr = hoyES();
           let nuevaRacha = profile.streak || 1;
           if (profile.last_active) {
             const ultima = new Date(profile.last_active+"T00:00:00");
