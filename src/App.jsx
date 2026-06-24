@@ -780,6 +780,8 @@ export default function App() {
   const [authMode, setAuthMode] = useState("signup");
   const [user, setUser] = useState({plan:"free"});
   const [bg, setBg] = useState("noche");
+  const [splash, setSplash] = useState(true);
+  useEffect(()=>{ const _t=setTimeout(()=>setSplash(false), 2600); return ()=>clearTimeout(_t); }, []);
 
   async function handleSetup(data) {
     setUser(u=>({...u,...data}));
@@ -865,6 +867,15 @@ export default function App() {
         ))}
       </div>
       <Stars/>
+      {splash && (
+        <div style={{position:"fixed",inset:0,zIndex:200,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px",background:"radial-gradient(ellipse at 50% 0%, #1e0a4e 0%, #0d0d2b 45%, #06061a 100%)"}}>
+          <div style={{animation:"pulse 2s ease-in-out infinite"}}>
+            <DreamCatcher size={170}/>
+          </div>
+          <h1 style={{fontSize:46,fontWeight:900,fontFamily:S.fontFamily,background:"linear-gradient(135deg, "+C.goldL+" 0%, #f9a8d4 50%, "+C.purpleL+" 100%)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",textAlign:"center",margin:"24px 0 10px",lineHeight:1.1}}>Atrapa<br/>Sueños</h1>
+          <p style={{color:C.gold,fontSize:12,fontWeight:700,fontFamily:S.fontUI,letterSpacing:1.5,margin:0,textTransform:"uppercase",textAlign:"center"}}>Inspiración · Motivación · Afirmación</p>
+        </div>
+      )}
       {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{setUser(u=>({...u,guest:true}));setScreen("setup");}}/>}
       {screen==="auth"&&<Auth mode={authMode} onSuccess={handleAuthSuccess} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
