@@ -781,7 +781,7 @@ export default function App() {
   const [user, setUser] = useState({plan:"free"});
   const [bg, setBg] = useState("noche");
   const [splash, setSplash] = useState(true);
-  useEffect(()=>{ const _t=setTimeout(()=>setSplash(false), 2600); return ()=>clearTimeout(_t); }, []);
+  useEffect(()=>{ const _t=setTimeout(()=>setSplash(false), 1200); return ()=>clearTimeout(_t); }, []);
 
   async function handleSetup(data) {
     setUser(u=>({...u,...data}));
