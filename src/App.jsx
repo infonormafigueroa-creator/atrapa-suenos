@@ -360,7 +360,9 @@ function EliteSettings({user, onDone}) {
 
   return (
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 20px",position:"relative",zIndex:1}}>
-      <DreamCatcher size={140}/>
+      <div style={{animation:"pulse 3s ease-in-out infinite"}}>
+        <DreamCatcher size={140}/>
+      </div>
       <h2 style={{color:C.gold,fontSize:22,fontWeight:800,fontFamily:S.fontFamily,margin:"12px 0 4px",textAlign:"center"}}>Atrapa Sueños Elite</h2>
       <p style={{color:C.muted,fontSize:14,fontFamily:S.fontUI,margin:"0 0 28px",textAlign:"center"}}>Personaliza Tu Experiencia Completa</p>
 
@@ -414,7 +416,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout}) 
   const planEmoji = user.plan==="elite"?"👑":"⭐";
 
   const TABS_FREE = [{id:"Hoy",e:"🌅"},{id:"Amor Propio",e:"💖"},{id:"Inspiración",e:"💡"},{id:"Afirmar",e:"✨"},{id:"Gratitud",e:"🙏"},{id:"Noche",e:"🌙"}];
-  const TABS_ELITE = [{id:"Astros",e:"♈"},{id:"Amor",e:"❤️"},{id:"Dinero",e:"💰"},{id:"Propósito",e:"🎯"},{id:"Ritual ☀️",e:"🌅"},{id:"Ritual 🌙",e:"🌙"},{id:"Mi Guía",e:"🧠"},{id:"Sueño Premium",e:"⭐"},{id:"Guía Emocional",e:"😊"},{id:"Bienestar Salud",e:"🏥"},{id:"Reflexiones",e:"💎"}];
+  const TABS_ELITE = [{id:"Astros",e:"♈"},{id:"Amor",e:"❤️"},{id:"Dinero",e:"💰"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Ritual ☀️",e:"🌅"},{id:"Ritual 🌙",e:"🌙"},{id:"Mi Guía",e:"🧠"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Guía Emocional",e:"😊"},{id:"Bienestar Salud",e:"🌿"},{id:"Reflexiones",e:"💎"}];
   const tabs = user.plan==="elite"?TABS_ELITE:TABS_FREE;
 
   const TAB_CONFIG = {
@@ -428,13 +430,14 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout}) 
     "Astros":{icon:"♈",label:"HORÓSCOPO PROFUNDO",color:C.purpleL},
     "Amor":{icon:"❤️",label:"AMOR PERSONALIZADO",color:C.pink},
     "Dinero":{icon:"💰",label:"ABUNDANCIA Y DINERO",color:C.gold},
+    "Manifestación":{icon:"✨",label:"MANIFESTACIÓN",color:C.goldL},
     "Propósito":{icon:"🎯",label:"PROPÓSITO Y METAS",color:C.purpleL},
     "Ritual ☀️":{icon:"🌅",label:"RITUAL DE MAÑANA",color:C.goldL},
     "Ritual 🌙":{icon:"🌙",label:"RITUAL DE NOCHE",color:C.blue},
     "Mi Guía":{icon:"🧠",label:"MI GUÍA PERSONAL",color:C.purpleL},
-    "Sueño Premium":{icon:"⭐",label:"MI SUEÑO PREMIUM",color:C.purpleL},
+    "Mi Gran Sueño":{icon:"🌟",label:"MI GRAN SUEÑO",color:C.purpleL},
     "Guía Emocional":{icon:"😊",label:"GUÍA EMOCIONAL",color:C.pink},
-    "Bienestar Salud":{icon:"🏥",label:"BIENESTAR Y SALUD",color:C.green},
+    "Bienestar Salud":{icon:"🌿",label:"BIENESTAR Y SALUD",color:C.green},
     "Reflexiones":{icon:"💎",label:"REFLEXIONES ELITE",color:C.goldL},
   };
 
@@ -447,6 +450,9 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout}) 
     const zodiacInfo = user.zodiac?`Signo zodiacal: ${user.zodiac}.`:"";
     const loveInfo = user.love?`Situación amorosa: ${user.love}.`:"";
     const moodInfo = mood?`Estado de ánimo: ${mood}.`:"";
+    const nameInfo = user.name?("Se llama "+user.name+"."):"";
+    const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+    const birthInfo = (user.birthday && user.birthday.length===10 && user.birthday.slice(5)!=="00-00")?("Cumpleaños: "+parseInt(user.birthday.slice(8,10),10)+" de "+(MESES[parseInt(user.birthday.slice(5,7),10)-1]||"")+"."):"";
 
     const prompts = {
       "Hoy":`Eres un coach espiritual. El usuario es ${user.gender}. ${moodInfo}\nGenera EXACTAMENTE en este formato:\nFRASE: [Una frase poderosa corta en cursiva]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
@@ -456,16 +462,17 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout}) 
       "Afirmar":`Coach de afirmaciones. Usuario ${user.gender}.\nFormato:\nFRASE: [Afirmación poderosa]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Gratitud":`Guía de gratitud. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre gratitud]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Bienestar":`Coach de bienestar. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre bienestar]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
-      "Astros":`Astrólogo. ${zodiacInfo} Usuario ${user.gender}.\nFormato:\nFRASE: [Mensaje cósmico]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Astros":`Astrólogo personal cálido. ${nameInfo} ${zodiacInfo} ${birthInfo} Usuario ${user.gender}.\nFormato:\nFRASE: [Mensaje cósmico]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Amor":`Guía de amor. ${loveInfo} Usuario ${user.gender}.\nFormato:\nFRASE: [Frase romántica]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Dinero":`Coach de abundancia. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre abundancia]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Manifestación":`Coach de manifestación y ley de atracción. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre manifestación]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Propósito":`Coach de propósito. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre propósito]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Ritual ☀️":`Guía de rituales matutinos. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de bienvenida al día]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Ritual 🌙":`Guía de rituales nocturnos. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase de cierre nocturno]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
-      "Mi Guía":`Terapeuta personal. Usuario ${user.gender}. ${moodInfo} ${zodiacInfo}\nFormato:\nFRASE: [Reflexión personal]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
-      "Sueño Premium":`Intérprete de sueños espiritual y simbólico. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre el significado profundo de los sueños]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
-      "Guía Emocional":`Guía emocional empático. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase de contención emocional según cómo se siente]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
-      "Bienestar Salud":`Coach de bienestar integral, cuerpo y mente. Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre salud, energía y hábitos saludables]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Mi Guía":`Coach de vida personal: guía decisiones, crecimiento y propósito (no solo emociones). ${nameInfo} Usuario ${user.gender}. ${moodInfo} ${zodiacInfo}\nFormato:\nFRASE: [Consejo de vida o reflexión para crecer]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Mi Gran Sueño":`Intérprete de sueños espiritual y simbólico. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre el significado profundo de los sueños]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Guía Emocional":`Guía emocional: ayuda a procesar y soltar la emoción de hoy con un pequeño paso de alivio. ${nameInfo} Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase de contención para la emoción de hoy]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Bienestar Salud":`Coach de bienestar integral, cuerpo y mente. ${nameInfo} Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre salud, energía y hábitos saludables]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Reflexiones":`Filósofo del alma, profundo y transformador. Usuario ${user.gender}.\nFormato:\nFRASE: [Reflexión profunda y transformadora]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
     };
 
@@ -556,7 +563,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
       <div style={{padding:"0 16px"}}>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:8,marginBottom:12}}>
           {tabs.map(t=>(
-            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);generateMsg(t.id);}} style={{padding:"10px 6px",borderRadius:12,fontSize:13,fontFamily:S.fontUI,textAlign:"center",background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:600,textTransform:"uppercase",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,minHeight:70}}><span style={{fontSize:20}}>{t.e}</span><span style={{lineHeight:1.15}}>{(TAB_CONFIG[t.id]||{}).tab||(TAB_CONFIG[t.id]||{}).label||t.id}</span></Btn>
+            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);generateMsg(t.id);}} style={{padding:user.plan==="elite"?"7px 4px":"10px 6px",borderRadius:12,fontSize:user.plan==="elite"?11:13,fontFamily:S.fontUI,textAlign:"center",background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:600,textTransform:"uppercase",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:user.plan==="elite"?2:4,minHeight:user.plan==="elite"?56:70}}><span style={{fontSize:user.plan==="elite"?16:20}}>{t.e}</span><span style={{lineHeight:1.15}}>{(TAB_CONFIG[t.id]||{}).tab||(TAB_CONFIG[t.id]||{}).label||t.id}</span></Btn>
           ))}
         </div>
 
@@ -572,7 +579,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         {loading&&<Card><Spinner/></Card>}
         {msg&&!loading&&<MsgCard {...msg} onClose={()=>setMsg(null)}/>}
 
-        {user.guest && <Btn onClick={onLogin} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"13px",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:12,textAlign:"center"}}>🔑 Inicia Sesión Para Guardar Tu Progreso</Btn>}
+        {user.guest && user.plan!=="elite" && <Btn onClick={onLogin} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"13px",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:12,textAlign:"center"}}>🔑 Inicia Sesión Para Guardar Tu Progreso</Btn>}
 
         <Card style={{marginBottom:12}}>
           <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 6px",textAlign:"center"}}>⭐ Mi Intención Del Día</p>
