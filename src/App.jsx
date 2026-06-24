@@ -621,8 +621,9 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
             {[7,14,30,60,100,180,365].map(d=>{
               const done = streak>=d;
               return (
-                <div key={d} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-                  <div style={{width:36,height:36,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",background:done?C.gold:C.cardDark,border:"2px solid "+(done?C.gold:C.border),color:done?"#1a0a00":C.muted,fontSize:11,fontWeight:800,fontFamily:S.fontUI}}>{d}</div>
+                <div key={d} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:5,flex:1}}>
+                  <div style={{width:44,height:44,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",background:done?C.gold:C.cardDark,border:"2px solid "+(done?C.goldL:C.border),fontSize:23,opacity:done?1:0.4,boxShadow:done?"0 0 12px "+C.gold+"88":"none"}}>🏅</div>
+                  <span style={{color:done?C.goldL:C.muted,fontSize:13,fontWeight:800,fontFamily:S.fontUI,marginTop:1}}>{d}</span>
                   <span style={{color:done?C.goldL:C.muted,fontSize:9,fontFamily:S.fontUI}}>días</span>
                 </div>
               );
