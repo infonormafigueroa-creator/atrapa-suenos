@@ -393,7 +393,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin}) {
   const today = new Date();
   const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
   const dateDisplay = dateStr.charAt(0).toUpperCase()+dateStr.slice(1);
-  const streak = 1;
+  const streak = user.streak || 1;
 
   const [activeTab, setActiveTab] = useState("Hoy");
   const [mood, setMood] = useState("");
@@ -730,12 +730,25 @@ export default function App() {
       if (authUser) {
         const { data: profile } = await supabase.from("profiles").select("*").eq("id", authUser.id).maybeSingle();
         if (profile && profile.name) {
+          const hoy = new Date();
+          const hoyStr = hoy.getFullYear()+"-"+String(hoy.getMonth()+1).padStart(2,"0")+"-"+String(hoy.getDate()).padStart(2,"0");
+          let nuevaRacha = profile.streak || 1;
+          if (profile.last_active) {
+            const ultima = new Date(profile.last_active+"T00:00:00");
+            const hoyD = new Date(hoyStr+"T00:00:00");
+            const dias = Math.round((hoyD - ultima) / 86400000);
+            if (dias === 1) { nuevaRacha = (profile.streak || 1) + 1; }
+            else if (dias > 1) { nuevaRacha = 1; }
+          } else {
+            nuevaRacha = 1;
+          }
+          try { await supabase.from("profiles").update({ streak: nuevaRacha, last_active: hoyStr }).eq("id", authUser.id); } catch (e) {}
           setUser({
             name: profile.name,
             gender: profile.gender,
             birthday: profile.birthday,
             plan: profile.plan || "free",
-            streak: profile.streak || 1
+            streak: nuevaRacha
           });
           setScreen("dashboard");
           return;
