@@ -389,7 +389,7 @@ function EliteSettings({user, onDone}) {
   );
 }
 
-function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin}) {
+function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout}) {
   const today = new Date();
   const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
   const dateDisplay = dateStr.charAt(0).toUpperCase()+dateStr.slice(1);
@@ -636,6 +636,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
 
 
         {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginTop:16,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>👑 Ver Plan Elite</Btn>}
+        {!user.guest && <Btn onClick={onLogout} style={{width:"100%",marginTop:10,padding:"13px",borderRadius:12,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:13,fontFamily:S.fontUI}}>🚪 Cerrar Sesión</Btn>}
       </div>
     </div>
   );
@@ -786,7 +787,7 @@ export default function App() {
       {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{setUser(u=>({...u,guest:true}));setScreen("setup");}}/>}
       {screen==="auth"&&<Auth mode={authMode} onSuccess={handleAuthSuccess} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
-      {screen==="dashboard"&&<Dashboard user={user} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}}/>}
+      {screen==="dashboard"&&<Dashboard user={user} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}}/>}
       {screen==="plans"&&<Plans onBack={()=>setScreen("dashboard")} onActivate={()=>{setUser(u=>({...u,plan:"elite"}));setScreen("eliteSettings");}}/>}
       {screen==="eliteSettings"&&<EliteSettings user={user} onDone={handleEliteSettings}/>}
     </div>
