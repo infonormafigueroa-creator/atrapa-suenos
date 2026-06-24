@@ -360,7 +360,7 @@ function EliteSettings({user, onDone}) {
 
   return (
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 20px",position:"relative",zIndex:1}}>
-      <DreamCatcher size={80}/>
+      <DreamCatcher size={140}/>
       <h2 style={{color:C.gold,fontSize:22,fontWeight:800,fontFamily:S.fontFamily,margin:"12px 0 4px",textAlign:"center"}}>AtrapaSueños Elite</h2>
       <p style={{color:C.muted,fontSize:14,fontFamily:S.fontUI,margin:"0 0 28px",textAlign:"center"}}>Personaliza Tu Experiencia Completa</p>
 
@@ -674,6 +674,9 @@ function Auth({ mode, onSuccess, onBack }) {
   }
   return (
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px",position:"relative",zIndex:1}}>
+      <div style={{margin:"0 0 16px",animation:"pulse 3s ease-in-out infinite"}}>
+        <DreamCatcher size={140}/>
+      </div>
       <h2 style={{color:C.goldL,fontSize:26,fontFamily:S.fontTitle,margin:"0 0 8px",textAlign:"center"}}>{isSignup ? "Crear Mi Cuenta" : "Iniciar Sesión"}</h2>
       <p style={{color:C.muted,fontSize:14,fontFamily:S.fontUI,margin:"0 0 24px",textAlign:"center"}}>{isSignup ? "Empieza tu camino de bienestar ✨" : "Bienvenida de vuelta 💛"}</p>
       <input
