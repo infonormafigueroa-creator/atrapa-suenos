@@ -130,6 +130,10 @@ function hoyES(){
   return new Date().toLocaleDateString("en-CA",{timeZone:"America/New_York"});
 }
 
+function diasDesde(fechaStr){
+  try{ var a=new Date(fechaStr+"T00:00:00"); var b=new Date(hoyES()+"T00:00:00"); return Math.floor((b-a)/86400000); }catch(e){ return 0; }
+}
+
 async function askClaude(prompt) {
   const res = await fetch("/api/claude",{
     method:"POST",
@@ -419,7 +423,7 @@ function EliteSettings({user, onDone}) {
   );
 }
 
-function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg}) {
+function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg, guestDiasRestantes}) {
   const today = new Date();
   const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",timeZone:"America/New_York"});
   const dateDisplay = dateStr.charAt(0).toUpperCase()+dateStr.slice(1);
@@ -649,7 +653,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         {loading&&<Card><Spinner/></Card>}
         {msg&&!loading&&<MsgCard {...msg} bg={bg} onClose={()=>setMsg(null)}/>}
 
-        {user.guest && user.plan!=="elite" && <Btn onClick={onLogin} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"13px",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:12,textAlign:"center"}}>🔑 Inicia Sesión Para Guardar Tu Progreso</Btn>}
+        {user.guest && user.plan!=="elite" && <Btn onClick={onLogin} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"13px",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:12,textAlign:"center"}}>🔑 Te quedan {guestDiasRestantes} {guestDiasRestantes===1?"día":"días"} · Crea tu cuenta gratis</Btn>}
 
         <Card style={{marginBottom:12}}>
           <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 6px",textAlign:"center"}}>⭐ Mi Intención Del Día</p>
@@ -791,6 +795,19 @@ function Auth({ mode, onSuccess, onBack }) {
   );
 }
 
+function GuestWall({onSignup, onLogin}){
+  return (
+    <div style={{minHeight:"100vh",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 24px",textAlign:"center"}}>
+      <DreamCatcher size={120}/>
+      <h2 style={{color:C.goldL,fontSize:24,fontWeight:900,fontFamily:S.fontFamily,margin:"20px 0 10px"}}>Tu prueba terminó 🌙</h2>
+      <p style={{color:C.text,fontSize:15,fontFamily:S.fontUI,lineHeight:1.5,margin:"0 0 6px",maxWidth:320}}>Esperamos que hayas disfrutado estos 5 días en Atrapa Sueños.</p>
+      <p style={{color:C.muted,fontSize:14,fontFamily:S.fontUI,lineHeight:1.5,margin:"0 0 24px",maxWidth:320}}>Crea tu cuenta gratis para seguir disfrutando tus frases, rachas y diario de sueños. ✨</p>
+      <Btn onClick={onSignup} style={{width:"100%",maxWidth:320,padding:"15px",borderRadius:14,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",border:"none",color:"#1a1205",fontSize:16,fontWeight:800,fontFamily:S.fontUI,marginBottom:14}}>✨ Crear mi cuenta gratis</Btn>
+      <button onClick={onLogin} style={{background:"none",border:"none",color:C.muted,fontSize:14,cursor:"pointer",fontFamily:S.fontUI}}>Ya tengo cuenta · Iniciar sesión</button>
+    </div>
+  );
+}
+
 export default function App() {
   const [screen, setScreen] = useState("welcome");
   const [authMode, setAuthMode] = useState("signup");
@@ -869,6 +886,11 @@ export default function App() {
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, []);
 
+  var _gStart=null; try{ _gStart=localStorage.getItem("as_guest_start"); }catch(e){}
+  var guestDiasUsados = _gStart ? diasDesde(_gStart) : 0;
+  var guestBloqueado = user.guest && _gStart && guestDiasUsados >= 5;
+  var guestDiasRestantes = Math.max(0, 5 - guestDiasUsados);
+
   return (
     <div style={{
       minHeight:"100vh",
@@ -882,10 +904,11 @@ export default function App() {
         ))}
       </div>
       <Stars/>
-      {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{setUser(u=>({...u,guest:true}));setScreen("setup");}}/>}
+      {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{ try{ if(!localStorage.getItem("as_guest_start")) localStorage.setItem("as_guest_start", hoyES()); }catch(e){} var _st=null; try{_st=localStorage.getItem("as_guest_start");}catch(e){} if(_st && diasDesde(_st)>=5){setAuthMode("signup");setScreen("auth");return;} setUser(u=>({...u,guest:true}));setScreen("setup");}}/>}
       {screen==="auth"&&<Auth mode={authMode} onSuccess={handleAuthSuccess} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
-      {screen==="dashboard"&&<Dashboard user={user} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}} bg={bg} onChangeBg={(id)=>{setBg(id); if(user.id){try{supabase.from("profiles").update({background:id}).eq("id",user.id);}catch(e){}}}}/>}
+      {screen==="dashboard"&&guestBloqueado&&<GuestWall onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}}/>}
+      {screen==="dashboard"&&!guestBloqueado&&<Dashboard user={user} guestDiasRestantes={guestDiasRestantes} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}} bg={bg} onChangeBg={(id)=>{setBg(id); if(user.id){try{supabase.from("profiles").update({background:id}).eq("id",user.id);}catch(e){}}}}/>}
       {screen==="plans"&&<Plans onBack={()=>setScreen("dashboard")} onActivate={()=>{setUser(u=>({...u,plan:"elite"}));setScreen("eliteSettings");}}/>}
       {screen==="eliteSettings"&&<EliteSettings user={user} onDone={handleEliteSettings}/>}
     </div>
