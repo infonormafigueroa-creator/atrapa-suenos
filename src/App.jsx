@@ -622,6 +622,12 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
               <span style={{color:C.goldL,fontSize:18,fontWeight:700,fontFamily:S.fontUI}}>Hoy te sientes {(MOODS.find(m=>m.l===mood)||{}).e} {mood}</span>
             </div>
           )}
+          {mood && user.plan!=="elite" && (
+            <div style={{marginTop:10,textAlign:"center",padding:"0 6px"}}>
+              <span style={{color:C.purpleL,fontSize:13,fontWeight:600,fontFamily:S.fontUI,fontStyle:"italic"}}>✨ Con el Plan Elite, tu mensaje se adapta a cómo te sientes</span>
+              <Btn onClick={onShowPlans} style={{display:"block",margin:"12px auto 0",padding:"11px 22px",borderRadius:12,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",color:"#1a0a00",fontSize:13,fontWeight:800,fontFamily:S.fontUI}}>👑 Cambia al Plan Elite Aquí</Btn>
+            </div>
+          )}
         </Card>
 
 
