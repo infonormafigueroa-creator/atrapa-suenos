@@ -415,6 +415,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
 
   const [activeTab, setActiveTab] = useState("Hoy");
   const [showBgPicker, setShowBgPicker] = useState(false);
+  const [showInsignias, setShowInsignias] = useState(false);
   const [mood, setMood] = useState("");
   const [dream, setDream] = useState("");
   const [showDreamInput, setShowDreamInput] = useState(false);
@@ -569,6 +570,28 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           <span style={{position:"relative",color:C.white,fontSize:22,fontWeight:800,fontFamily:S.fontUI,letterSpacing:0.3}}>Tu Signo {user.zodiac}</span>
         </div>
       )}
+      {showInsignias && (
+        <div onClick={()=>setShowInsignias(false)} style={{position:"fixed",left:0,top:0,right:0,bottom:0,background:"rgba(0,0,0,0.65)",zIndex:50,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:C.card,borderTopLeftRadius:20,borderTopRightRadius:20,border:"1px solid "+C.border,padding:"20px 18px 28px",width:"100%",maxWidth:480,maxHeight:"78vh",overflowY:"auto"}}>
+            <p style={{color:C.gold,fontSize:17,fontWeight:800,fontFamily:S.fontUI,margin:"0 0 4px",textAlign:"center"}}>🏅 Tus Insignias</p>
+            <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,margin:"0 0 16px",textAlign:"center"}}>Tu racha actual: {streak} {streak===1?"día":"días"}</p>
+            {[[7,"Primera Semana","🌱"],[14,"Dos Semanas","🔥"],[30,"Un Mes Completo","⭐"],[60,"Dos Meses","💪"],[100,"Cien Días","🏆"],[180,"Medio Año","👑"],[365,"Un Año Entero","💎"]].map(function(b){
+              var d=b[0]; var done=streak>=d; var faltan=d-streak;
+              return (
+                <div key={d} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 12px",marginBottom:8,borderRadius:12,background:done?"rgba(245,158,11,0.12)":C.cardDark,border:"1px solid "+(done?C.gold:C.border)}}>
+                  <span style={{fontSize:26,opacity:done?1:0.4}}>{b[2]}</span>
+                  <div style={{flex:1,textAlign:"left"}}>
+                    <p style={{margin:0,color:done?C.goldL:C.text,fontSize:14,fontWeight:700,fontFamily:S.fontUI}}>{b[1]}</p>
+                    <p style={{margin:"2px 0 0",color:C.muted,fontSize:12,fontFamily:S.fontUI}}>{d} días</p>
+                  </div>
+                  <span style={{color:done?C.gold:C.muted,fontSize:12,fontWeight:700,fontFamily:S.fontUI,textAlign:"right"}}>{done?"✓ Conseguida":("Faltan "+faltan)}</span>
+                </div>
+              );
+            })}
+            <Btn onClick={()=>setShowInsignias(false)} style={{width:"100%",marginTop:12,padding:"12px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.border,color:C.muted,fontSize:13,fontFamily:S.fontUI}}>Cerrar</Btn>
+          </div>
+        </div>
+      )}
       {showBgPicker && (
         <div onClick={()=>setShowBgPicker(false)} style={{position:"fixed",left:0,top:0,right:0,bottom:0,background:"rgba(0,0,0,0.65)",zIndex:50,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
           <div onClick={e=>e.stopPropagation()} style={{background:C.card,borderTopLeftRadius:20,borderTopRightRadius:20,border:"1px solid "+C.border,padding:"20px 18px 28px",width:"100%",maxWidth:480,maxHeight:"72vh",overflowY:"auto"}}>
@@ -682,7 +705,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
               );
             })}
           </div>
-          <Btn style={{width:"100%",padding:"10px",borderRadius:10,background:C.cardDark,border:"1px solid "+C.border,color:C.purpleL,fontSize:13,fontFamily:S.fontUI}}>🏅 Ver todas las insignias</Btn>
+          <Btn onClick={()=>setShowInsignias(true)} style={{width:"100%",padding:"10px",borderRadius:10,background:C.cardDark,border:"1px solid "+C.border,color:C.purpleL,fontSize:13,fontFamily:S.fontUI}}>🏅 Ver todas las insignias</Btn>
         </Card>
 
 
