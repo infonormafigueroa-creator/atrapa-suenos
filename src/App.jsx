@@ -30,6 +30,18 @@ const BACKGROUNDS = [
   {id:"oceano",name:"Océano",grad:"radial-gradient(ellipse at 50% 0%, #2fd4c4 0%, #1a7a78 45%, #07262e 100%)"},
   {id:"rosa",name:"Atardecer Rosa",grad:"radial-gradient(ellipse at 50% 0%, #ff6fa5 0%, #8c3962 45%, #2a0f1d 100%)"},
   {id:"bosque",name:"Bosque",grad:"radial-gradient(ellipse at 50% 0%, #3fbf5a 0%, #1f7a3a 45%, #07260f 100%)"},
+  {id:"terracota",name:"Terracota",grad:"radial-gradient(ellipse at 50% 0%, #c25a3a 0%, #7a3320 45%, #2a1108 100%)",elite:true},
+  {id:"coral",name:"Coral",grad:"radial-gradient(ellipse at 50% 0%, #e0795a 0%, #a8472e 45%, #2e1208 100%)",elite:true},
+  {id:"durazno",name:"Durazno",grad:"radial-gradient(ellipse at 50% 0%, #d98a5a 0%, #94542f 45%, #2e1810 100%)",elite:true},
+  {id:"caoba",name:"Caoba",grad:"radial-gradient(ellipse at 50% 0%, #a8482e 0%, #6a2818 45%, #220c07 100%)",elite:true},
+  {id:"carmesi",name:"Carmesí",grad:"radial-gradient(ellipse at 50% 0%, #c0392b 0%, #7a2018 45%, #2a0a06 100%)",elite:true},
+  {id:"vino",name:"Vino",grad:"radial-gradient(ellipse at 50% 0%, #8c2d3e 0%, #5a1626 45%, #1f0810 100%)",elite:true},
+  {id:"oliva",name:"Oliva",grad:"radial-gradient(ellipse at 50% 0%, #8a8a2e 0%, #545420 45%, #1a1a08 100%)",elite:true},
+  {id:"chocolate",name:"Chocolate",grad:"radial-gradient(ellipse at 50% 0%, #7a4a2e 0%, #4a2c18 45%, #170c06 100%)",elite:true},
+  {id:"bronce",name:"Bronce",grad:"radial-gradient(ellipse at 50% 0%, #b07a3a 0%, #6e481f 45%, #221607 100%)",elite:true},
+  {id:"acero",name:"Azul Acero",grad:"radial-gradient(ellipse at 50% 0%, #4a6fa5 0%, #2a4068 45%, #0c1626 100%)",elite:true},
+  {id:"denim",name:"Denim",grad:"radial-gradient(ellipse at 50% 0%, #3a6a8c 0%, #1f3e54 45%, #0a1620 100%)",elite:true},
+  {id:"cobalto",name:"Cobalto",grad:"radial-gradient(ellipse at 50% 0%, #2e5aa8 0%, #1a3568 45%, #08142e 100%)",elite:true},
 ];
 
 const ZODIAC = [
@@ -274,7 +286,7 @@ async function shareQuote(quote, bg) {
   try {
     var cv = document.createElement("canvas"); cv.width=1080; cv.height=1080;
     var x = cv.getContext("2d");
-    var TH=[["#1e0a4e","#0d0d2b","#06061a","#fde68a","#a78bfa"],["#0f2027","#203a43","#2c5364","#e0f7fa","#80deea"],["#42275a","#734b6d","#bc4e9c","#ffe9f5","#ffd6a5"],["#05010f","#0b132b","#1c2541","#ffffff","#9db4ff"],["#3a1c71","#d76d77","#ffaf7b","#fff8f0","#ffe9c7"],["#134e5e","#2c7a6b","#71b280","#eafff5","#cdeede"]]; var CTH={noche:TH[0],amanecer:["#7a5212","#4a3008","#1f1404","#ffe8b0","#ffd27a"],mistico:["#4a1f7a","#2e1252","#160a2e","#f0dcff","#cba3ff"],oceano:["#10605c","#0c3f3d","#06201f","#c8fff5","#7fe8dd"],rosa:["#8c2456","#5e1538","#2a0a18","#ffd6e6","#ff9cc2"],bosque:["#1f7a3a","#125024","#06200f","#cfffd9","#8fe6a3"]}; var th=CTH[bg]||TH[0]; var g = x.createLinearGradient(0,0,0,1080); g.addColorStop(0,th[0]); g.addColorStop(0.5,th[1]); g.addColorStop(1,th[2]);
+    var TH=[["#1e0a4e","#0d0d2b","#06061a","#fde68a","#a78bfa"],["#0f2027","#203a43","#2c5364","#e0f7fa","#80deea"],["#42275a","#734b6d","#bc4e9c","#ffe9f5","#ffd6a5"],["#05010f","#0b132b","#1c2541","#ffffff","#9db4ff"],["#3a1c71","#d76d77","#ffaf7b","#fff8f0","#ffe9c7"],["#134e5e","#2c7a6b","#71b280","#eafff5","#cdeede"]]; var CTH={noche:TH[0],amanecer:["#7a5212","#4a3008","#1f1404","#ffe8b0","#ffd27a"],mistico:["#4a1f7a","#2e1252","#160a2e","#f0dcff","#cba3ff"],oceano:["#10605c","#0c3f3d","#06201f","#c8fff5","#7fe8dd"],rosa:["#8c2456","#5e1538","#2a0a18","#ffd6e6","#ff9cc2"],bosque:["#1f7a3a","#125024","#06200f","#cfffd9","#8fe6a3"],terracota:["#7a3320","#4a1d10","#1f0c06","#ffd9c0","#f0a070"],coral:["#a8472e","#6a2818","#240c06","#ffd6c4","#ff9c78"],durazno:["#94542f","#5e341c","#1f1008","#ffe2cc","#f5b58a"],caoba:["#6a2818","#451608","#1a0805","#ffcdba","#e89070"],carmesi:["#7a2018","#4e120c","#1f0806","#ffc9c2","#f0857c"],vino:["#5a1626","#3a0e18","#16060c","#ffc6d4","#e88ca0"],oliva:["#545420","#343414","#141408","#eef0c0","#cdd07a"],chocolate:["#4a2c18","#2e1c0f","#120a06","#f0d8c0","#d0a880"],bronce:["#6e481f","#452c12","#180f06","#f5e0c0","#e0b878"],acero:["#2a4068","#182840","#0a1220","#cdd9f0","#9db4e8"],denim:["#1f3e54","#122838","#08141c","#c8e0f0","#88bce0"],cobalto:["#1a3568","#0e2042","#06101f","#c6d4f5","#8ca8e8"]}; var th=CTH[bg]||TH[0]; var g = x.createLinearGradient(0,0,0,1080); g.addColorStop(0,th[0]); g.addColorStop(0.5,th[1]); g.addColorStop(1,th[2]);
     x.fillStyle=g; x.fillRect(0,0,1080,1080);
     x.fillStyle="#ffffff"; for(var i=0;i<70;i++){ x.globalAlpha=Math.random()*0.6+0.2; x.beginPath(); x.arc(Math.random()*1080,Math.random()*1080,Math.random()*2+0.5,0,7); x.fill(); } x.globalAlpha=1;
     x.fillStyle=th[3]; x.textAlign="center"; x.textBaseline="middle"; x.font="italic 84px Georgia";
@@ -598,12 +610,16 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
             <p style={{color:C.gold,fontSize:16,fontWeight:800,fontFamily:S.fontUI,margin:"0 0 4px",textAlign:"center"}}>🎨 Elige tu fondo</p>
             <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,margin:"0 0 16px",textAlign:"center"}}>Personaliza el ambiente de tu app</p>
             <div style={{display:"grid",gridTemplateColumns:"repeat(2, 1fr)",gap:12}}>
-              {BACKGROUNDS.map(b=>(
-                <div key={b.id} onClick={()=>{onChangeBg(b.id);setShowBgPicker(false);}} style={{cursor:"pointer",borderRadius:14,overflow:"hidden",border:bg===b.id?"2px solid "+C.gold:"2px solid "+C.border}}>
-                  <div style={{height:74,background:b.grad}}/>
-                  <p style={{color:bg===b.id?C.gold:C.text,fontSize:12,fontWeight:700,fontFamily:S.fontUI,textAlign:"center",margin:"8px 4px"}}>{bg===b.id?"✓ ":""}{b.name}</p>
+              {BACKGROUNDS.map(b=>{
+                const locked = b.elite && user.plan!=="elite";
+                return (
+                <div key={b.id} onClick={()=>{ if(locked){ setShowBgPicker(false); onShowPlans(); } else { onChangeBg(b.id); setShowBgPicker(false); } }} style={{cursor:"pointer",borderRadius:14,overflow:"hidden",border:bg===b.id?"2px solid "+C.gold:"2px solid "+C.border,position:"relative"}}>
+                  <div style={{height:74,background:b.grad,opacity:locked?0.5:1}}/>
+                  {locked&&<div style={{position:"absolute",top:0,left:0,right:0,height:74,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24}}>🔒</div>}
+                  <p style={{color:bg===b.id?C.gold:C.text,fontSize:12,fontWeight:700,fontFamily:S.fontUI,textAlign:"center",margin:"8px 4px"}}>{bg===b.id?"✓ ":""}{b.name}{b.elite?" 👑":""}</p>
                 </div>
-              ))}
+                );
+              })}
             </div>
             <Btn onClick={()=>setShowBgPicker(false)} style={{width:"100%",marginTop:16,padding:"12px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.border,color:C.muted,fontSize:13,fontFamily:S.fontUI}}>Cerrar</Btn>
           </div>
