@@ -361,11 +361,11 @@ function EliteSettings({user, onDone}) {
   return (
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 20px",position:"relative",zIndex:1}}>
       <DreamCatcher size={140}/>
-      <h2 style={{color:C.gold,fontSize:22,fontWeight:800,fontFamily:S.fontFamily,margin:"12px 0 4px",textAlign:"center"}}>AtrapaSueños Elite</h2>
+      <h2 style={{color:C.gold,fontSize:22,fontWeight:800,fontFamily:S.fontFamily,margin:"12px 0 4px",textAlign:"center"}}>Atrapa Sueños Elite</h2>
       <p style={{color:C.muted,fontSize:14,fontFamily:S.fontUI,margin:"0 0 28px",textAlign:"center"}}>Personaliza Tu Experiencia Completa</p>
 
       <div style={{width:"100%",maxWidth:340,marginBottom:22}}>
-        <p style={{color:C.gold,fontWeight:700,fontFamily:S.fontUI,fontSize:15,margin:"0 0 10px"}}>♈ Tu Signo Zodiacal</p>
+        <p style={{color:C.gold,fontWeight:800,fontFamily:S.fontUI,fontSize:18,margin:"0 0 12px"}}>♈ Tu Signo Zodiacal</p>
         <select value={zodiac} onChange={e=>setZodiac(e.target.value)} style={{width:"100%",background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:12,padding:"14px 16px",color:zodiac?C.goldL:C.muted,fontSize:16,fontFamily:S.fontUI,outline:"none"}}>
           <option value="">Selecciona tu signo</option>
           {ZODIAC.map(z=><option key={z.s} value={z.s}>{z.e} {z.s}</option>)}
@@ -373,10 +373,13 @@ function EliteSettings({user, onDone}) {
       </div>
 
       <div style={{width:"100%",maxWidth:340,marginBottom:32}}>
-        <p style={{color:C.pink,fontWeight:700,fontFamily:S.fontUI,fontSize:15,margin:"0 0 10px"}}>❤️ Tu Situación Amorosa</p>
-        <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-          {[["🌸","Soltero/A"],["👫","Con Pareja"],["💔","Es Complicado"]].map(([e,l])=>(
-            <Btn key={l} onClick={()=>setLove(l)} style={{padding:"10px 16px",borderRadius:20,fontSize:13,fontFamily:S.fontUI,background:love===l?`${C.pink}33`:C.cardDark,border:`1.5px solid ${love===l?C.pink:C.border}`,color:C.text}}>{e} {l}</Btn>
+        <p style={{color:C.pink,fontWeight:800,fontFamily:S.fontUI,fontSize:18,margin:"0 0 12px"}}>❤️ Tu Situación Amorosa</p>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:10}}>
+          {[["🌸","Soltero/A"],["💕","Con Pareja"],["💍","Casado/A"],["💔","Es Complicado"],["🕊️","Divorciado/A"],["🤫","Prefiero No Decir"]].map(([e,l])=>(
+            <Btn key={l} onClick={()=>setLove(l)} style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5,padding:"12px 6px",borderRadius:12,fontSize:12,fontFamily:S.fontUI,background:love===l?C.pink+"33":C.cardDark,border:"1.5px solid "+(love===l?C.pink:C.border),color:C.text,textAlign:"center",lineHeight:1.2}}>
+              <span style={{fontSize:24}}>{e}</span>
+              <span>{l}</span>
+            </Btn>
           ))}
         </div>
       </div>
@@ -527,7 +530,6 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
               <span style={{background:`${planColor}33`,border:`1px solid ${planColor}`,color:planColor,borderRadius:20,padding:"3px 12px",fontSize:11,fontWeight:800,fontFamily:S.fontUI}}>{planEmoji} {planLabel}</span>
             </div>
             <p style={{color:C.purpleL,fontSize:14,fontWeight:600,fontFamily:S.fontUI,margin:"4px 0 0",textAlign:"left"}}>{dateDisplay}</p>
-            {user.zodiac&&<p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,margin:"2px 0 0"}}>♋ {user.zodiac}</p>}
           </div>
           <div style={{display:"flex",gap:8}}>
             <Btn style={{background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:10,padding:"8px 10px",fontSize:16}}>🏆</Btn>
@@ -537,6 +539,15 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         </div>
       </div>
 
+      {user.zodiac && (
+        <div style={{position:"relative",overflow:"hidden",margin:"0 16px 12px",padding:"18px 16px",borderRadius:14,background:C.purple+"22",border:"1px solid "+C.purpleL,display:"flex",alignItems:"center",justifyContent:"center",gap:12}}>
+          {[{x:6,y:28,s:11,d:0},{x:18,y:68,s:8,d:0.7},{x:30,y:18,s:9,d:1.3},{x:72,y:22,s:10,d:0.4},{x:84,y:62,s:8,d:1.1},{x:94,y:35,s:11,d:0.9},{x:60,y:78,s:9,d:1.6}].map((st,i)=>(
+            <span key={i} style={{position:"absolute",left:st.x+"%",top:st.y+"%",fontSize:st.s,animation:"tw 4s ease-in-out infinite",animationDelay:st.d+"s",pointerEvents:"none"}}>⭐</span>
+          ))}
+          <span style={{position:"relative",fontSize:34}}>{(ZODIAC.find(z=>z.s===user.zodiac)||{}).e}</span>
+          <span style={{position:"relative",color:C.white,fontSize:22,fontWeight:800,fontFamily:S.fontUI,letterSpacing:0.3}}>Tu Signo {user.zodiac}</span>
+        </div>
+      )}
       {isBday&&(
         <div style={{margin:"0 16px 12px",padding:"14px 16px",borderRadius:14,background:C.gold+"22",border:"1px solid "+C.gold,textAlign:"center"}}>
           <span style={{fontSize:15,fontWeight:800,fontFamily:S.fontUI,color:C.gold}}>🎂 ¡Hoy es tu día especial! 🎉</span>
