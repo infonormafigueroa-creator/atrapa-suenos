@@ -712,7 +712,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         {loading&&<Card><Spinner/></Card>}
         {msg&&!loading&&<MsgCard {...msg} bg={bg} onClose={()=>setMsg(null)}/>}
 
-        {user.guest && user.plan!=="elite" && <Btn onClick={onLogin} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"13px",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:12,textAlign:"center"}}>🔑 Te quedan {guestDiasRestantes} {guestDiasRestantes===1?"día":"días"} · Crea tu cuenta gratis</Btn>}
+        
 
         <Card style={{marginBottom:12}}>
           <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 6px",textAlign:"center"}}>⭐ Mi Intención Del Día</p>
