@@ -446,7 +446,7 @@ function EliteSettings({user, onDone}) {
   );
 }
 
-function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg, guestDiasRestantes, onShowDiario, onShowGratitud, onShowBienestar}) {
+function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg, guestDiasRestantes, onShowDiario, onShowGratitud, onShowBienestar, onShowAnimo}) {
   const today = new Date();
   const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",timeZone:"America/New_York"});
   const dateDisplay = dateStr.charAt(0).toUpperCase()+dateStr.slice(1);
@@ -761,9 +761,14 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         </Card>
 
 
-        {!user.guest && <Btn onClick={onShowDiario} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📔 Mi Diario de Sueños</Btn>}
-        {!user.guest && <Btn onClick={onShowGratitud} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>🙏 Diario de Gratitud</Btn>}
-        {!user.guest && <Btn onClick={onShowBienestar} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>🌿 Registro de Bienestar</Btn>}
+        {user.plan==="elite" && <Btn onClick={onShowDiario} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📔 Mi Diario de Sueños</Btn>}
+        {!user.guest && user.plan!=="elite" && <Btn onClick={onShowPlans} style={{width:"100%",marginBottom:12,padding:"13px 15px",borderRadius:14,background:C.cardDark,border:"1px dashed "+C.gold,color:C.muted,fontFamily:S.fontUI,textAlign:"center",display:"flex",flexDirection:"column",gap:3}}><span style={{color:C.text,fontSize:15,fontWeight:700}}>📔 Mi Diario de Sueños 🔒</span><span style={{color:C.gold,fontSize:12,fontWeight:600}}>Hazte Elite para guardar tu historial</span></Btn>}
+        {user.plan==="elite" && <Btn onClick={onShowGratitud} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>🙏 Diario de Gratitud</Btn>}
+        {!user.guest && user.plan!=="elite" && <Btn onClick={onShowPlans} style={{width:"100%",marginBottom:12,padding:"13px 15px",borderRadius:14,background:C.cardDark,border:"1px dashed "+C.gold,color:C.muted,fontFamily:S.fontUI,textAlign:"center",display:"flex",flexDirection:"column",gap:3}}><span style={{color:C.text,fontSize:15,fontWeight:700}}>🙏 Diario de Gratitud 🔒</span><span style={{color:C.gold,fontSize:12,fontWeight:600}}>Hazte Elite para guardar tu historial</span></Btn>}
+        {user.plan==="elite" && <Btn onClick={onShowBienestar} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>🌿 Registro de Bienestar</Btn>}
+        {!user.guest && user.plan!=="elite" && <Btn onClick={onShowPlans} style={{width:"100%",marginBottom:12,padding:"13px 15px",borderRadius:14,background:C.cardDark,border:"1px dashed "+C.gold,color:C.muted,fontFamily:S.fontUI,textAlign:"center",display:"flex",flexDirection:"column",gap:3}}><span style={{color:C.text,fontSize:15,fontWeight:700}}>🌿 Registro de Bienestar 🔒</span><span style={{color:C.gold,fontSize:12,fontWeight:600}}>Hazte Elite para guardar tu historial</span></Btn>}
+        {user.plan==="elite" && <Btn onClick={onShowAnimo} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📊 Historial de Ánimo</Btn>}
+        {!user.guest && user.plan!=="elite" && <Btn onClick={onShowPlans} style={{width:"100%",marginBottom:12,padding:"13px 15px",borderRadius:14,background:C.cardDark,border:"1px dashed "+C.gold,color:C.muted,fontFamily:S.fontUI,textAlign:"center",display:"flex",flexDirection:"column",gap:3}}><span style={{color:C.text,fontSize:15,fontWeight:700}}>📊 Historial de Ánimo 🔒</span><span style={{color:C.gold,fontSize:12,fontWeight:600}}>Hazte Elite para guardar tu historial</span></Btn>}
         <div id="seccion-progreso" />
         <Card style={{marginBottom:12}}>
           <div style={{background:"linear-gradient(135deg, "+C.gold+"22, "+C.goldL+"11)",border:"1px solid "+C.gold+"66",borderRadius:14,padding:"16px",marginBottom:14,display:"flex",alignItems:"center",justifyContent:"center",gap:16,boxShadow:"0 0 22px "+C.gold+"22"}}>
@@ -949,6 +954,51 @@ function Journal({user, onBack, type, emoji, titulo, descripcion, placeholder, e
   );
 }
 
+function MoodTracker({user, onBack}){
+  const [entries, setEntries] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [guardando, setGuardando] = useState(false);
+  useEffect(()=>{
+    (async()=>{
+      try{ const { data } = await supabase.from("entries").select("*").eq("type","animo").order("created_at",{ascending:false}); setEntries(data||[]); }catch(e){}
+      setCargando(false);
+    })();
+  },[]);
+  async function guardar(m){
+    setGuardando(true);
+    try{ const { data } = await supabase.from("entries").insert({ user_id:user.id, type:"animo", content:m }).select(); if(data&&data[0]) setEntries(e=>[data[0]].concat(e)); }catch(e){}
+    setGuardando(false);
+  }
+  return (
+    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 32px)"}}>
+      <Btn onClick={onBack} style={{background:"none",border:"none",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:8,padding:0}}>← Volver</Btn>
+      <h2 style={{color:C.goldL,fontSize:22,fontWeight:900,fontFamily:S.fontFamily,margin:"4px 0 4px"}}>📊 Historial de Ánimo</h2>
+      <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 16px"}}>¿Cómo te sientes hoy? Toca tu ánimo para guardarlo.</p>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:10,marginBottom:24}}>
+        {MOODS.map(m=>(
+          <Btn key={m.l} disabled={guardando} onClick={()=>guardar(m.e+" "+m.l)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:5,padding:"14px 6px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:13,fontFamily:S.fontUI}}>
+            <span style={{fontSize:26}}>{m.e}</span>
+            <span>{m.l}</span>
+          </Btn>
+        ))}
+      </div>
+      <p style={{color:C.purpleL,fontSize:14,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 12px"}}>Tu Ánimo</p>
+      {cargando ? (
+        <p style={{color:C.muted,fontSize:14,fontFamily:S.fontUI,textAlign:"center"}}>Cargando...</p>
+      ) : entries.length===0 ? (
+        <p style={{color:C.muted,fontSize:14,fontFamily:S.fontUI,textAlign:"center",padding:"20px 0"}}>Aún no has registrado tu ánimo. ¡Empieza hoy! 📊</p>
+      ) : (
+        entries.map(en=>(
+          <div key={en.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:C.card,border:"1px solid "+C.border,borderRadius:12,padding:"12px 14px",marginBottom:8}}>
+            <span style={{color:C.text,fontSize:15,fontFamily:S.fontUI}}>{en.content}</span>
+            <span style={{color:C.gold,fontSize:12,fontWeight:700,fontFamily:S.fontUI}}>{new Date(en.created_at).toLocaleDateString("es-ES",{day:"numeric",month:"long",year:"numeric"})}</span>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
 export default function App() {
   const [screen, setScreen] = useState("welcome");
   const [authMode, setAuthMode] = useState("signup");
@@ -1062,12 +1112,13 @@ export default function App() {
       {screen==="auth"&&<Auth mode={authMode} onSuccess={handleAuthSuccess} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
       {screen==="dashboard"&&guestBloqueado&&<GuestWall onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}}/>}
-      {screen==="dashboard"&&!guestBloqueado&&<Dashboard user={user} onShowDiario={()=>setScreen("diario")} onShowGratitud={()=>setScreen("gratitud")} onShowBienestar={()=>setScreen("bienestar")} guestDiasRestantes={guestDiasRestantes} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}} bg={bg} onChangeBg={(id)=>{setBg(id); if(user.id){try{supabase.from("profiles").update({background:id}).eq("id",user.id);}catch(e){}}}}/>}
+      {screen==="dashboard"&&!guestBloqueado&&<Dashboard user={user} onShowDiario={()=>setScreen("diario")} onShowGratitud={()=>setScreen("gratitud")} onShowBienestar={()=>setScreen("bienestar")} onShowAnimo={()=>setScreen("animo")} guestDiasRestantes={guestDiasRestantes} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}} bg={bg} onChangeBg={(id)=>{setBg(id); if(user.id){try{supabase.from("profiles").update({background:id}).eq("id",user.id);}catch(e){}}}}/>}
       {screen==="plans"&&<Plans onBack={()=>setScreen("dashboard")} onActivate={()=>{setUser(u=>({...u,plan:"elite"}));setScreen("eliteSettings");}}/>}
       {screen==="eliteSettings"&&<EliteSettings user={user} onDone={handleEliteSettings}/>}
       {screen==="diario"&&<DreamJournal user={user} onBack={()=>setScreen("dashboard")}/>}
       {screen==="gratitud"&&<Journal type="gratitud" emoji="🙏" titulo="Diario de Gratitud" descripcion="Escribe por qué estás agradecida hoy." placeholder="Hoy agradezco..." etiqueta="Tus Gratitudes" vacio="Aún no has guardado gratitudes. ¡Empieza hoy! 🙏" cta="💾 Guardar Gratitud" user={user} onBack={()=>setScreen("dashboard")}/>}
       {screen==="bienestar"&&<Journal type="bienestar" emoji="🌿" titulo="Registro de Bienestar" descripcion="Anota cómo te sientes hoy: cuerpo, mente y hábitos." placeholder="Hoy me sentí... / hice..." etiqueta="Tu Bienestar" vacio="Aún no has registrado tu bienestar. ¡Empieza hoy! 🌿" cta="💾 Guardar Registro" user={user} onBack={()=>setScreen("dashboard")}/>}
+      {screen==="animo"&&<MoodTracker user={user} onBack={()=>setScreen("dashboard")}/>}
     </div>
   );
 }
