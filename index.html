@@ -31,7 +31,8 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function () {
-          navigator.serviceWorker.register('/sw.js').catch(function(){});
+          navigator.serviceWorker.register('/sw.js').then(function(reg){ setInterval(function(){ try{ reg.update(); }catch(e){} }, 60000); }).catch(function(){});
+          navigator.serviceWorker.addEventListener('controllerchange', function(){ if(window.__asRefreshing) return; window.__asRefreshing = true; window.location.reload(); });
         });
       }
     </script>
