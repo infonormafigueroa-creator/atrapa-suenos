@@ -377,7 +377,7 @@ function Plans({onBack, onActivate, user}) {
         ))}
         <Btn onClick={()=>{window.location.href="https://buy.stripe.com/28E28s4RYe6U4nqca91wY00"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:20,padding:"18px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:17,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Mensual — $9.99/mes</Btn>
         <Btn onClick={()=>{window.location.href="https://buy.stripe.com/4gM5kEfwC3sg4nq5LL1wY01"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:12,padding:"18px",borderRadius:14,background:C.cardDark,border:"2px solid "+C.gold,color:C.goldL,fontSize:17,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Anual — $79.99/año · Ahorra 33%</Btn>
-        <p onClick={onActivate} style={{textAlign:"center",marginTop:18,marginBottom:0,color:C.muted,fontSize:12,fontFamily:S.fontUI,cursor:"pointer",textDecoration:"underline"}}>🔧 Activar modo prueba</p>
+        <p style={{display:"none"}}>🔧 Activar modo prueba</p>
       </div>
     </div>
   );
@@ -628,7 +628,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         </div>
       </div>
 
-      {user.zodiac && (
+      {user.plan==="elite" && user.zodiac && (
         <div style={{position:"relative",overflow:"hidden",margin:"0 16px 12px",padding:"18px 16px",borderRadius:14,background:C.purple+"22",border:"1px solid "+C.purpleL,display:"flex",alignItems:"center",justifyContent:"center",gap:12}}>
           {[{x:6,y:28,s:11,d:0},{x:18,y:68,s:8,d:0.7},{x:30,y:18,s:9,d:1.3},{x:72,y:22,s:10,d:0.4},{x:84,y:62,s:8,d:1.1},{x:94,y:35,s:11,d:0.9},{x:60,y:78,s:9,d:1.6}].map((st,i)=>(
             <span key={i} style={{position:"absolute",left:st.x+"%",top:st.y+"%",fontSize:st.s,animation:"tw 4s ease-in-out infinite",animationDelay:st.d+"s",pointerEvents:"none"}}>⭐</span>
@@ -999,6 +999,18 @@ function MoodTracker({user, onBack}){
   );
 }
 
+function EliteWelcome({ onContinue, name }){
+  return (
+    <div style={{minHeight:"100vh",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 24px)"}}>
+      <div style={{fontSize:72,marginBottom:8}}>👑</div>
+      <h1 style={{color:C.goldL,fontSize:30,fontWeight:900,fontFamily:S.fontFamily,margin:"0 0 10px"}}>¡Bienvenida a Elite!</h1>
+      <p style={{color:C.text,fontSize:17,fontFamily:S.fontUI,lineHeight:1.6,margin:"0 0 8px"}}>{name?("¡Felicidades, "+name+"! "):"¡Felicidades! "}Tu pago se completó con éxito. 🎉</p>
+      <p style={{color:C.muted,fontSize:15,fontFamily:S.fontUI,lineHeight:1.6,margin:"0 0 32px",maxWidth:340}}>Ya tienes acceso a TODO lo Elite: fondos exclusivos, tu seguimiento personal (sueños, gratitud, bienestar y ánimo), frases ilimitadas y mucho más. 💛</p>
+      <Btn onClick={onContinue} style={{width:"100%",maxWidth:320,padding:"18px",borderRadius:14,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",border:"none",color:"#1a1205",fontSize:17,fontWeight:800,fontFamily:S.fontUI}}>✨ Explorar mis funciones Elite</Btn>
+    </div>
+  );
+}
+
 export default function App() {
   const [screen, setScreen] = useState("welcome");
   const [authMode, setAuthMode] = useState("signup");
@@ -1070,7 +1082,9 @@ export default function App() {
             partner_name: profile.partner_name || "",
             id: authUser.id
           });
-          setScreen("dashboard");
+          var _eliteOk=false; try{ _eliteOk = new URLSearchParams(window.location.search).get("elite")==="success"; }catch(e){}
+          if(_eliteOk){ try{ window.history.replaceState({}, "", window.location.pathname); }catch(e){} setScreen("welcomeElite"); }
+          else { setScreen("dashboard"); }
           return;
         }
       }
@@ -1116,6 +1130,7 @@ export default function App() {
       {screen==="plans"&&<Plans user={user} onBack={()=>setScreen("dashboard")} onActivate={()=>{setUser(u=>({...u,plan:"elite"}));setScreen("eliteSettings");}}/>}
       {screen==="eliteSettings"&&<EliteSettings user={user} onDone={handleEliteSettings}/>}
       {screen==="diario"&&<DreamJournal user={user} onBack={()=>setScreen("dashboard")}/>}
+      {screen==="welcomeElite"&&<EliteWelcome name={user.name} onContinue={()=>setScreen("dashboard")}/>}
       {screen==="gratitud"&&<Journal type="gratitud" emoji="🙏" titulo="Diario de Gratitud" descripcion="Escribe por qué estás agradecida hoy." placeholder="Hoy agradezco..." etiqueta="Tus Gratitudes" vacio="Aún no has guardado gratitudes. ¡Empieza hoy! 🙏" cta="💾 Guardar Gratitud" user={user} onBack={()=>setScreen("dashboard")}/>}
       {screen==="bienestar"&&<Journal type="bienestar" emoji="🌿" titulo="Registro de Bienestar" descripcion="Anota cómo te sientes hoy: cuerpo, mente y hábitos." placeholder="Hoy me sentí... / hice..." etiqueta="Tu Bienestar" vacio="Aún no has registrado tu bienestar. ¡Empieza hoy! 🌿" cta="💾 Guardar Registro" user={user} onBack={()=>setScreen("dashboard")}/>}
       {screen==="animo"&&<MoodTracker user={user} onBack={()=>setScreen("dashboard")}/>}
