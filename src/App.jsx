@@ -135,6 +135,8 @@ function diasDesde(fechaStr){
 }
 
 async function askClaude(prompt) {
+  var _filtroTotal = "\n\nREGLAS ESTRICTAS Y OBLIGATORIAS, NUNCA las cruces: (1) NO menciones a Dios, ninguna religión ni términos religiosos (Dios, Señor, divino, rezar, oración, fe, iglesia, Biblia, Jesús, Alá, espíritu santo, etc.). (2) NO menciones política, partidos, gobiernos ni temas polémicos. (3) NO incluyas contenido sexual ni insinuaciones sexuales. (4) NO uses groserías, vulgaridades ni lenguaje obsceno. Mantén SIEMPRE un tono de bienestar y espiritualidad universal y secular (el universo, la energía, tu interior, tu fuerza, la calma, la naturaleza, la vida), apropiado y respetuoso para todo público.";
+  prompt = prompt + _filtroTotal;
   const res = await fetch("/api/claude",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
