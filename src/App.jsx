@@ -160,7 +160,7 @@ function Welcome({onSignup, onLogin, onGuest, onLegal}) {
     }}>
       <h1 style={{
         fontSize:52,fontWeight:900,fontFamily:S.fontFamily,
-        background:`linear-gradient(135deg, #e08a00 0%, #d6336c 50%, #6d28d9 100%)`,
+        background:`linear-gradient(135deg, #d99a08 0%, #ec6fb0 50%, #8a3ee0 100%)`,
         WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",
         margin:"0 0 4px",lineHeight:1.1,letterSpacing:1
       }}>Atrapa<br/>Sueños</h1>
@@ -1217,7 +1217,7 @@ export default function App() {
       </div>
       <Stars/>
       <div style={{maxWidth:480,margin:"0 auto",position:"relative",zIndex:1}}>
-      {screen==="loading"&&<div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 24px",textAlign:"center",position:"relative",zIndex:1}}><h1 style={{fontSize:52,fontWeight:900,fontFamily:S.fontFamily,background:"linear-gradient(135deg, #e08a00 0%, #d6336c 50%, #6d28d9 100%)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",margin:"0 0 4px",lineHeight:1.1,letterSpacing:1}}>Atrapa<br/>Sueños</h1><div style={{margin:"20px 0",animation:"pulse 3s ease-in-out infinite"}}><DreamCatcher size={140}/></div><p style={{color:C.gold,fontSize:16,fontWeight:800,fontFamily:S.fontUI,textTransform:"uppercase",letterSpacing:2,margin:"0 0 6px",textAlign:"center",lineHeight:1.3}}>✨ TU GUÍA DE MOTIVACIÓN<br/>PARA CADA DÍA ✨</p><p style={{color:C.goldL,fontSize:12,fontFamily:S.fontUI,fontWeight:700,letterSpacing:1.5,margin:0,opacity:0.95,textAlign:"center"}}>INSPIRACIÓN · MOTIVACIÓN · AFIRMACIÓN</p></div>}
+      {screen==="loading"&&<div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 24px",textAlign:"center",position:"relative",zIndex:1}}><h1 style={{fontSize:52,fontWeight:900,fontFamily:S.fontFamily,background:"linear-gradient(135deg, #d99a08 0%, #ec6fb0 50%, #8a3ee0 100%)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",margin:"0 0 4px",lineHeight:1.1,letterSpacing:1}}>Atrapa<br/>Sueños</h1><div style={{margin:"20px 0",animation:"pulse 3s ease-in-out infinite"}}><DreamCatcher size={140}/></div><p style={{color:C.gold,fontSize:16,fontWeight:800,fontFamily:S.fontUI,textTransform:"uppercase",letterSpacing:2,margin:"0 0 6px",textAlign:"center",lineHeight:1.3}}>✨ TU GUÍA DE MOTIVACIÓN<br/>PARA CADA DÍA ✨</p><p style={{color:C.goldL,fontSize:12,fontFamily:S.fontUI,fontWeight:700,letterSpacing:1.5,margin:0,opacity:0.95,textAlign:"center"}}>INSPIRACIÓN · MOTIVACIÓN · AFIRMACIÓN</p></div>}
       {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{ try{ if(!localStorage.getItem("as_guest_start")) localStorage.setItem("as_guest_start", hoyES()); }catch(e){} var _st=null; try{_st=localStorage.getItem("as_guest_start");}catch(e){} if(_st && diasDesde(_st)>=5){setAuthMode("signup");setScreen("auth");return;} setUser(u=>({...u,guest:true}));setScreen("setup");}} onLegal={()=>setScreen("legal")}/>}
       {screen==="legal"&&<Legal onBack={()=>setScreen("welcome")}/>}
       {screen==="resetPassword"&&<ResetPassword onDone={handleAuthSuccess}/>}
