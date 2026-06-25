@@ -52,8 +52,8 @@ const ZODIAC = [
 ];
 
 const MOODS = [
-  {e:"😊",l:"Feliz"},{e:"😌",l:"Tranquilo"},{e:"😰",l:"Ansioso"},
-  {e:"😢",l:"Triste"},{e:"😴",l:"Cansado"},{e:"🔥",l:"Motivado"},
+  {e:"😊",l:"Feliz"},{e:"😌",l:"Tranquilo"},{e:"🥰",l:"Agradecido"},{e:"🔥",l:"Motivado"},
+  {e:"😰",l:"Ansioso"},{e:"😢",l:"Triste"},{e:"😴",l:"Cansado"},{e:"🥺",l:"Sensible"},
 ];
 
 const WEEKDAYS = ["VI","SÁ","DO","LU","MA","MI","JU"];
@@ -738,9 +738,9 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
 
         <Card style={{marginBottom:12}}>
           <p style={{color:C.gold,fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 10px"}}>😊 ¿CÓMO TE SIENTES HOY?</p>
-          <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(4, 1fr)",gap:6}}>
             {MOODS.map(m=>(
-              <Btn key={m.l} onClick={()=>setMood(m.l)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"10px 10px",borderRadius:12,background:mood===m.l?`${C.gold}33`:C.cardDark,border:`1.5px solid ${mood===m.l?C.gold:C.border}`,color:C.text,fontSize:11,fontFamily:S.fontUI,minWidth:52}}>
+              <Btn key={m.l} onClick={()=>setMood(m.l)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"8px 3px",borderRadius:12,background:mood===m.l?`${C.gold}33`:C.cardDark,border:`1.5px solid ${mood===m.l?C.gold:C.border}`,color:C.text,fontSize:11,fontFamily:S.fontUI,minWidth:52}}>
                 <span style={{fontSize:22}}>{m.e}</span>{m.l}
               </Btn>
             ))}
@@ -986,10 +986,10 @@ function MoodTracker({user, onBack}){
     <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 32px)"}}>
       <h2 style={{color:C.goldL,fontSize:22,fontWeight:900,fontFamily:S.fontFamily,margin:"4px 0 4px"}}>📊 Historial de Ánimo</h2>
       <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 16px"}}>¿Cómo te sientes hoy? Toca tu ánimo para guardarlo.</p>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:10,marginBottom:24}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4, 1fr)",gap:10,marginBottom:24}}>
         {MOODS.map(m=>(
-          <Btn key={m.l} disabled={guardando} onClick={()=>guardar(m.e+" "+m.l)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:5,padding:"14px 6px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:13,fontFamily:S.fontUI}}>
-            <span style={{fontSize:26}}>{m.e}</span>
+          <Btn key={m.l} disabled={guardando} onClick={()=>guardar(m.e+" "+m.l)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:5,padding:"12px 3px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:13,fontFamily:S.fontUI}}>
+            <span style={{fontSize:24}}>{m.e}</span>
             <span>{m.l}</span>
           </Btn>
         ))}
