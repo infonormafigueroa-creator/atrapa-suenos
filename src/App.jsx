@@ -352,7 +352,7 @@ function MsgCard({icon, label, quote, cont, onClose, bg}) {
 
 function Plans({onBack, onActivate, user}) {
   return (
-    <div style={{padding:"20px 16px",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto"}}>
+    <div style={{padding:"calc(env(safe-area-inset-top, 0px) + 26px) 16px calc(env(safe-area-inset-bottom, 0px) + 36px)",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto"}}>
       <Btn onClick={onBack} style={{
         background:C.cardDark,border:`1px solid ${C.border}`,
         borderRadius:10,padding:"8px 16px",color:C.muted,
@@ -361,7 +361,7 @@ function Plans({onBack, onActivate, user}) {
 
       <div>
         <h3 style={{color:C.gold,fontSize:17,fontWeight:800,fontFamily:S.fontUI,margin:"0 0 16px"}}>
-          👑 AtrapaSueños Elite
+          Atrapa Sueños Elite
         </h3>
         {[
           {e:"♈",l:"Horóscopo Profundo"},{e:"❤️",l:"Amor Personalizado"},
@@ -470,7 +470,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
 
   const planLabel = user.plan==="elite"?"Elite":"Gratis";
   const planColor = user.plan==="elite"?C.gold:C.gold;
-  const planEmoji = user.plan==="elite"?"👑":"⭐";
+  const planEmoji = user.plan==="elite"?"✨":"⭐";
 
   const TABS_FREE = [{id:"Hoy",e:"🌅"},{id:"Amor Propio",e:"💖"},{id:"Inspiración",e:"💡"},{id:"Afirmar",e:"✨"},{id:"Gratitud",e:"🙏"},{id:"Noche",e:"🌙"}];
   const TABS_ELITE = [{id:"Astros",e:"♈"},{id:"Amor",e:"❤️"},{id:"Dinero",e:"💰"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Ritual ☀️",e:"🌅"},{id:"Ritual 🌙",e:"🌙"},{id:"Mi Guía",e:"🧠"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Guía Emocional",e:"😊"},{id:"Bienestar Salud",e:"🌿"},{id:"Reflexiones",e:"💎"}];
@@ -647,7 +647,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           <div onClick={e=>e.stopPropagation()} style={{background:C.card,borderTopLeftRadius:20,borderTopRightRadius:20,border:"1px solid "+C.border,padding:"20px 18px 28px",width:"100%",maxWidth:480,maxHeight:"78vh",overflowY:"auto"}}>
             <p style={{color:C.gold,fontSize:17,fontWeight:800,fontFamily:S.fontUI,margin:"0 0 4px",textAlign:"center"}}>🏅 Tus Insignias</p>
             <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,margin:"0 0 16px",textAlign:"center"}}>Tu racha actual: {streak} {streak===1?"día":"días"}</p>
-            {[[7,"Primera Semana","🌱"],[14,"Dos Semanas","🔥"],[30,"Un Mes Completo","⭐"],[60,"Dos Meses","💪"],[100,"Cien Días","🏆"],[180,"Medio Año","👑"],[365,"Un Año Entero","💎"]].map(function(b){
+            {[[7,"Primera Semana","🌱"],[14,"Dos Semanas","🔥"],[30,"Un Mes Completo","⭐"],[60,"Dos Meses","💪"],[100,"Cien Días","🏆"],[180,"Medio Año","🌟"],[365,"Un Año Entero","💎"]].map(function(b){
               var d=b[0]; var done=streak>=d; var faltan=d-streak;
               return (
                 <div key={d} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 12px",marginBottom:8,borderRadius:12,background:done?"rgba(245,158,11,0.12)":C.cardDark,border:"1px solid "+(done?C.gold:C.border)}}>
@@ -676,7 +676,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
                 <div key={b.id} onClick={()=>{ if(locked){ setShowBgPicker(false); onShowPlans(); } else { onChangeBg(b.id); setShowBgPicker(false); } }} style={{cursor:"pointer",borderRadius:14,overflow:"hidden",border:bg===b.id?"2px solid "+C.gold:"2px solid "+C.border,position:"relative"}}>
                   <div style={{height:74,background:b.grad,opacity:locked?0.5:1}}/>
                   {locked&&<div style={{position:"absolute",top:0,left:0,right:0,height:74,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24}}>🔒</div>}
-                  <p style={{color:bg===b.id?C.gold:C.text,fontSize:12,fontWeight:700,fontFamily:S.fontUI,textAlign:"center",margin:"8px 4px"}}>{bg===b.id?"✓ ":""}{b.name}{b.elite?" 👑":""}</p>
+                  <p style={{color:bg===b.id?C.gold:C.text,fontSize:12,fontWeight:700,fontFamily:S.fontUI,textAlign:"center",margin:"8px 4px"}}>{bg===b.id?"✓ ":""}{b.name}{b.elite?" ✨":""}</p>
                 </div>
                 );
               })}
@@ -760,20 +760,21 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           {mood && user.plan!=="elite" && (
             <div style={{marginTop:10,textAlign:"center",padding:"0 6px"}}>
               <span style={{color:C.purpleL,fontSize:13,fontWeight:600,fontFamily:S.fontUI,fontStyle:"italic"}}>✨ Con el Plan Elite, tu mensaje se adapta a cómo te sientes</span>
-              <Btn onClick={onShowPlans} style={{display:"block",margin:"12px auto 0",padding:"11px 22px",borderRadius:12,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",color:"#1a0a00",fontSize:13,fontWeight:800,fontFamily:S.fontUI}}>👑 Cambia al Plan Elite Aquí</Btn>
+              <Btn onClick={onShowPlans} style={{display:"block",margin:"12px auto 0",padding:"11px 22px",borderRadius:12,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",color:"#1a0a00",fontSize:13,fontWeight:800,fontFamily:S.fontUI}}>Cambia al Plan Elite Aquí</Btn>
             </div>
           )}
         </Card>
 
 
         {user.plan==="elite" && <Btn onClick={onShowDiario} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📔 Mi Diario de Sueños</Btn>}
-        {!user.guest && user.plan!=="elite" && <Btn onClick={onShowPlans} style={{width:"100%",marginBottom:12,padding:"13px 15px",borderRadius:14,background:C.cardDark,border:"1px dashed "+C.gold,color:C.muted,fontFamily:S.fontUI,textAlign:"center",display:"flex",flexDirection:"column",gap:3}}><span style={{color:C.text,fontSize:15,fontWeight:700}}>📔 Mi Diario de Sueños 🔒</span><span style={{color:C.gold,fontSize:12,fontWeight:600}}>Hazte Elite para guardar tu historial</span></Btn>}
+        
         {user.plan==="elite" && <Btn onClick={onShowGratitud} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>🙏 Diario de Gratitud</Btn>}
-        {!user.guest && user.plan!=="elite" && <Btn onClick={onShowPlans} style={{width:"100%",marginBottom:12,padding:"13px 15px",borderRadius:14,background:C.cardDark,border:"1px dashed "+C.gold,color:C.muted,fontFamily:S.fontUI,textAlign:"center",display:"flex",flexDirection:"column",gap:3}}><span style={{color:C.text,fontSize:15,fontWeight:700}}>🙏 Diario de Gratitud 🔒</span><span style={{color:C.gold,fontSize:12,fontWeight:600}}>Hazte Elite para guardar tu historial</span></Btn>}
+        
         {user.plan==="elite" && <Btn onClick={onShowBienestar} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>🌿 Registro de Bienestar</Btn>}
-        {!user.guest && user.plan!=="elite" && <Btn onClick={onShowPlans} style={{width:"100%",marginBottom:12,padding:"13px 15px",borderRadius:14,background:C.cardDark,border:"1px dashed "+C.gold,color:C.muted,fontFamily:S.fontUI,textAlign:"center",display:"flex",flexDirection:"column",gap:3}}><span style={{color:C.text,fontSize:15,fontWeight:700}}>🌿 Registro de Bienestar 🔒</span><span style={{color:C.gold,fontSize:12,fontWeight:600}}>Hazte Elite para guardar tu historial</span></Btn>}
+        
         {user.plan==="elite" && <Btn onClick={onShowAnimo} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📊 Historial de Ánimo</Btn>}
-        {!user.guest && user.plan!=="elite" && <Btn onClick={onShowPlans} style={{width:"100%",marginBottom:12,padding:"13px 15px",borderRadius:14,background:C.cardDark,border:"1px dashed "+C.gold,color:C.muted,fontFamily:S.fontUI,textAlign:"center",display:"flex",flexDirection:"column",gap:3}}><span style={{color:C.text,fontSize:15,fontWeight:700}}>📊 Historial de Ánimo 🔒</span><span style={{color:C.gold,fontSize:12,fontWeight:600}}>Hazte Elite para guardar tu historial</span></Btn>}
+        
+        {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginBottom:18,padding:"20px",borderRadius:16,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:19,fontWeight:900,fontFamily:S.fontUI,boxShadow:"0 6px 22px "+C.gold+"55"}}>Ver Plan Elite</Btn>}
         <div id="seccion-progreso" />
         <Card style={{marginBottom:12}}>
           <div style={{background:"linear-gradient(135deg, "+C.gold+"22, "+C.goldL+"11)",border:"1px solid "+C.gold+"66",borderRadius:14,padding:"16px",marginBottom:14,display:"flex",alignItems:"center",justifyContent:"center",gap:16,boxShadow:"0 0 22px "+C.gold+"22"}}>
@@ -800,7 +801,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
 
 
 
-        {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginTop:16,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>👑 Ver Plan Elite</Btn>}
+        
         {!user.guest && <Btn onClick={onLogout} style={{width:"100%",marginTop:10,padding:"13px",borderRadius:12,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:13,fontFamily:S.fontUI}}>🚪 Cerrar Sesión</Btn>}
       </div>
     </div>
@@ -1007,7 +1008,7 @@ function MoodTracker({user, onBack}){
 function EliteWelcome({ onContinue, name }){
   return (
     <div style={{minHeight:"100vh",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 24px)"}}>
-      <div style={{fontSize:72,marginBottom:8}}>👑</div>
+      <div style={{fontSize:72,marginBottom:8}}>✨</div>
       <h1 style={{color:C.goldL,fontSize:30,fontWeight:900,fontFamily:S.fontFamily,margin:"0 0 10px"}}>¡Bienvenida a Elite!</h1>
       <p style={{color:C.text,fontSize:17,fontFamily:S.fontUI,lineHeight:1.6,margin:"0 0 8px"}}>{name?("¡Felicidades, "+name+"! "):"¡Felicidades! "}Tu pago se completó con éxito. 🎉</p>
       <p style={{color:C.muted,fontSize:15,fontFamily:S.fontUI,lineHeight:1.6,margin:"0 0 32px",maxWidth:340}}>Ya tienes acceso a TODO lo Elite: fondos exclusivos, tu seguimiento personal (sueños, gratitud, bienestar y ánimo), frases ilimitadas y mucho más. 💛</p>
