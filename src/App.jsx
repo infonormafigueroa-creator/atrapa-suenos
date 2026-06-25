@@ -492,7 +492,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
     "Mi Guía":{icon:"🧠",label:"MI GUÍA PERSONAL",color:C.purpleL},
     "Mi Gran Sueño":{icon:"🌟",label:"MI GRAN SUEÑO",color:C.purpleL},
     "Guía Emocional":{icon:"😊",label:"GUÍA EMOCIONAL",color:C.pink},
-    "Bienestar Salud":{icon:"🌿",label:"BIENESTAR Y SALUD",color:C.green},
+    "Bienestar Salud":{icon:"🌿",label:"BIENESTAR INTEGRAL",color:C.green},
     "Reflexiones":{icon:"💎",label:"REFLEXIONES ELITE",color:C.goldL},
   };
 
@@ -527,7 +527,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
       "Mi Guía":`Coach de vida personal: guía decisiones, crecimiento y propósito (no solo emociones). ${nameInfo} Usuario ${user.gender}. ${moodInfo} ${zodiacInfo}\nFormato:\nFRASE: [Consejo de vida o reflexión para crecer]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Mi Gran Sueño":`Intérprete de sueños espiritual y simbólico. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre el significado profundo de los sueños]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Guía Emocional":`Guía emocional: ayuda a procesar y soltar la emoción de hoy con un pequeño paso de alivio. ${nameInfo} Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase de contención para la emoción de hoy]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
-      "Bienestar Salud":`Coach de bienestar integral, cuerpo y mente. ${nameInfo} Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre salud, energía y hábitos saludables]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Bienestar Salud":`Coach de bienestar integral, cuerpo y mente. ${nameInfo} Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre bienestar, energía y hábitos positivos]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Reflexiones":`Filósofo del alma, profundo y transformador. Usuario ${user.gender}.\nFormato:\nFRASE: [Reflexión profunda y transformadora]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
     };
 
