@@ -72,7 +72,7 @@ function DreamCatcher({ size = 120 }) {
 }
 
 function Stars() {
-  const pts = Array.from({length:72},(_,i)=>({
+  const pts = Array.from({length:0},(_,i)=>({
     x:Math.random()*100, y:Math.random()*100,
     s:Math.random()*2.4+0.6, o:Math.random()*0.6+0.2,
     d:Math.random()*4, c:["#fcd34d","#a7f3e8","#f9c5e8","#c9b8f7","#ffffff"][Math.floor(Math.random()*5)]
