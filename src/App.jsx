@@ -24,7 +24,7 @@ const S = {
 };
 
 const BACKGROUNDS = [
-  {id:"noche",name:"Noche Estrellada",grad:"linear-gradient(160deg, #5cc4d4 0%, #5570ec 50%, #7b3ae8 100%)"},
+  {id:"noche",name:"Noche Estrellada",grad:"linear-gradient(160deg, #2e626a 0%, #2b3876 50%, #3e1d74 100%)"},
   {id:"amanecer",name:"Amanecer",grad:"radial-gradient(ellipse at 50% 0%, #e8a92e 0%, #8a5e18 45%, #2e1d07 100%)"},
   {id:"mistico",name:"Místico",grad:"radial-gradient(ellipse at 50% 0%, #9b59d0 0%, #5a2f8a 45%, #1e0f33 100%)"},
   {id:"oceano",name:"Océano",grad:"radial-gradient(ellipse at 50% 0%, #2fd4c4 0%, #1a7a78 45%, #07262e 100%)"},
