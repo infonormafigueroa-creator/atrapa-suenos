@@ -348,7 +348,7 @@ function MsgCard({icon, label, quote, cont, onClose, bg}) {
   );
 }
 
-function Plans({onBack, onActivate}) {
+function Plans({onBack, onActivate, user}) {
   return (
     <div style={{padding:"20px 16px",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto"}}>
       <Btn onClick={onBack} style={{
@@ -375,8 +375,8 @@ function Plans({onBack, onActivate}) {
             <span style={{background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",borderRadius:20,padding:"6px 16px",fontSize:12,fontWeight:800,fontFamily:S.fontUI}}>ELITE</span>
           </div>
         ))}
-        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/28E28s4RYe6U4nqca91wY00";}} style={{width:"100%",marginTop:20,padding:"18px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:17,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Mensual — $9.99/mes</Btn>
-        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/4gM5kEfwC3sg4nq5LL1wY01";}} style={{width:"100%",marginTop:12,padding:"18px",borderRadius:14,background:C.cardDark,border:"2px solid "+C.gold,color:C.goldL,fontSize:17,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Anual — $79.99/año · Ahorra 33%</Btn>
+        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/28E28s4RYe6U4nqca91wY00"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:20,padding:"18px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:17,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Mensual — $9.99/mes</Btn>
+        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/4gM5kEfwC3sg4nq5LL1wY01"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:12,padding:"18px",borderRadius:14,background:C.cardDark,border:"2px solid "+C.gold,color:C.goldL,fontSize:17,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Anual — $79.99/año · Ahorra 33%</Btn>
         <p onClick={onActivate} style={{textAlign:"center",marginTop:18,marginBottom:0,color:C.muted,fontSize:12,fontFamily:S.fontUI,cursor:"pointer",textDecoration:"underline"}}>🔧 Activar modo prueba</p>
       </div>
     </div>
@@ -1113,7 +1113,7 @@ export default function App() {
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
       {screen==="dashboard"&&guestBloqueado&&<GuestWall onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}}/>}
       {screen==="dashboard"&&!guestBloqueado&&<Dashboard user={user} onShowDiario={()=>setScreen("diario")} onShowGratitud={()=>setScreen("gratitud")} onShowBienestar={()=>setScreen("bienestar")} onShowAnimo={()=>setScreen("animo")} guestDiasRestantes={guestDiasRestantes} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}} bg={bg} onChangeBg={(id)=>{setBg(id); if(user.id){try{supabase.from("profiles").update({background:id}).eq("id",user.id);}catch(e){}}}}/>}
-      {screen==="plans"&&<Plans onBack={()=>setScreen("dashboard")} onActivate={()=>{setUser(u=>({...u,plan:"elite"}));setScreen("eliteSettings");}}/>}
+      {screen==="plans"&&<Plans user={user} onBack={()=>setScreen("dashboard")} onActivate={()=>{setUser(u=>({...u,plan:"elite"}));setScreen("eliteSettings");}}/>}
       {screen==="eliteSettings"&&<EliteSettings user={user} onDone={handleEliteSettings}/>}
       {screen==="diario"&&<DreamJournal user={user} onBack={()=>setScreen("dashboard")}/>}
       {screen==="gratitud"&&<Journal type="gratitud" emoji="🙏" titulo="Diario de Gratitud" descripcion="Escribe por qué estás agradecida hoy." placeholder="Hoy agradezco..." etiqueta="Tus Gratitudes" vacio="Aún no has guardado gratitudes. ¡Empieza hoy! 🙏" cta="💾 Guardar Gratitud" user={user} onBack={()=>setScreen("dashboard")}/>}
