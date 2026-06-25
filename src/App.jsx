@@ -72,10 +72,10 @@ function DreamCatcher({ size = 120 }) {
 }
 
 function Stars() {
-  const pts = Array.from({length:55},(_,i)=>({
+  const pts = Array.from({length:72},(_,i)=>({
     x:Math.random()*100, y:Math.random()*100,
-    s:Math.random()*1.8+0.4, o:Math.random()*0.6+0.2,
-    d:Math.random()*4
+    s:Math.random()*2.4+0.6, o:Math.random()*0.6+0.2,
+    d:Math.random()*4, c:["#fcd34d","#a7f3e8","#f9c5e8","#c9b8f7","#ffffff"][Math.floor(Math.random()*5)]
   }));
   return (
     <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0}}>
@@ -89,7 +89,7 @@ function Stars() {
       {pts.map((p,i)=>(
         <div key={i} style={{
           position:"absolute",left:`${p.x}%`,top:`${p.y}%`,
-          width:p.s,height:p.s,borderRadius:"50%",background:"#fcd34d",
+          width:p.s,height:p.s,borderRadius:"50%",background:p.c,
           opacity:p.o,animation:`tw ${2+p.d}s ease-in-out infinite`,
           animationDelay:`${p.d}s`
         }}/>
@@ -1209,6 +1209,8 @@ export default function App() {
       background:(BACKGROUNDS.find(b=>b.id===bg)||BACKGROUNDS[0]).grad,
       color:C.text,fontFamily:S.fontUI,position:"relative",overflowX:"hidden"
     }}>
+      {/* AURORA IRIDISCENTE */}
+      <div style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none",background:"radial-gradient(circle at 20% 12%, rgba(45,212,191,0.16), transparent 40%), radial-gradient(circle at 82% 20%, rgba(236,72,153,0.14), transparent 42%), radial-gradient(circle at 55% 90%, rgba(168,85,247,0.16), transparent 48%)"}}/>
       {/* ESTRELLAS */}
       <div style={{position:"fixed",top:0,left:0,width:"100%",height:"100%",zIndex:0,pointerEvents:"none"}}>
         {[{x:7,y:4,s:11},{x:85,y:3,s:14},{x:18,y:20,s:9},{x:72,y:15,s:12},{x:42,y:8,s:8},{x:93,y:38,s:9},{x:12,y:48,s:11},{x:6,y:60,s:10},{x:90,y:56,s:12},{x:22,y:71,s:9},{x:80,y:77,s:11},{x:14,y:87,s:10},{x:88,y:90,s:13},{x:50,y:83,s:8},{x:38,y:94,s:9},{x:67,y:65,s:10},{x:4,y:33,s:8},{x:96,y:72,s:9},{x:30,y:55,s:8}].map((star,i)=>(
