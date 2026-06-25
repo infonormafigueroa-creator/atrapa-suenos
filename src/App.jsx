@@ -127,7 +127,7 @@ function Spinner() {
 }
 
 function hoyES(){
-  return new Date().toLocaleDateString("en-CA",{timeZone:"America/New_York"});
+  return new Date().toLocaleDateString("en-CA");
 }
 
 function diasDesde(fechaStr){
