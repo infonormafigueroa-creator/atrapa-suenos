@@ -1015,7 +1015,7 @@ function EliteWelcome({ onContinue, name }){
 }
 
 export default function App() {
-  const [screen, setScreen] = useState("welcome");
+  const [screen, setScreen] = useState("loading");
   const [authMode, setAuthMode] = useState("signup");
   const [user, setUser] = useState({plan:"free"});
   const [bg, setBg] = useState("noche");
@@ -1101,8 +1101,10 @@ export default function App() {
         const { data: sessionData } = await supabase.auth.getSession();
         if (sessionData && sessionData.session) {
           await handleAuthSuccess();
+          return;
         }
       } catch (e) {}
+      setScreen("welcome");
     })();
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, []);
@@ -1126,6 +1128,7 @@ export default function App() {
       </div>
       <Stars/>
       <div style={{maxWidth:480,margin:"0 auto",position:"relative",zIndex:1}}>
+      {screen==="loading"&&<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:C.gold,fontSize:22,fontWeight:800,fontFamily:S.fontFamily,opacity:0.9}}>Atrapa Sueños</div></div>}
       {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{ try{ if(!localStorage.getItem("as_guest_start")) localStorage.setItem("as_guest_start", hoyES()); }catch(e){} var _st=null; try{_st=localStorage.getItem("as_guest_start");}catch(e){} if(_st && diasDesde(_st)>=5){setAuthMode("signup");setScreen("auth");return;} setUser(u=>({...u,guest:true}));setScreen("setup");}}/>}
       {screen==="auth"&&<Auth mode={authMode} onSuccess={handleAuthSuccess} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
