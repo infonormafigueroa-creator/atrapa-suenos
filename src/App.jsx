@@ -151,7 +151,7 @@ async function askClaude(prompt) {
   throw new Error("Sin respuesta");
 }
 
-function Welcome({onSignup, onLogin, onGuest}) {
+function Welcome({onSignup, onLogin, onGuest, onLegal}) {
   return (
     <div style={{
       minHeight:"100vh",display:"flex",flexDirection:"column",
@@ -198,6 +198,7 @@ function Welcome({onSignup, onLogin, onGuest}) {
         background:"none",border:"none",color:C.muted,
         fontSize:14,cursor:"pointer",fontFamily:S.fontUI
       }}>Continuar sin cuenta →</button>
+      <button onClick={onLegal} style={{background:"none",border:"none",color:C.muted,fontSize:12,cursor:"pointer",fontFamily:S.fontUI,marginTop:26,opacity:0.85,textDecoration:"underline"}}>Privacidad · Términos</button>
     </div>
   );
 }
@@ -1014,6 +1015,41 @@ function EliteWelcome({ onContinue, name }){
   );
 }
 
+function Legal({onBack}) {
+  var sec={color:C.gold,fontSize:18,fontWeight:800,fontFamily:S.fontFamily,margin:"22px 0 8px"};
+  var pp={color:C.text,fontSize:14,fontFamily:S.fontUI,lineHeight:1.6,margin:"0 0 10px"};
+  var li={color:C.muted,fontSize:14,fontFamily:S.fontUI,lineHeight:1.6,margin:"0 0 7px"};
+  return (
+    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top, 0px) + 26px) 20px calc(env(safe-area-inset-bottom, 0px) + 36px)"}}>
+      <h2 style={{color:C.goldL,fontSize:24,fontWeight:900,fontFamily:S.fontFamily,margin:"0 0 2px",textAlign:"center"}}>Información Legal</h2>
+      <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,textAlign:"center",margin:"0 0 6px"}}>Atrapa Sueños · Estados Unidos</p>
+      <h3 style={sec}>🔒 Política de Privacidad</h3>
+      <p style={pp}>En Atrapa Sueños tu privacidad es muy importante. Aquí te explicamos qué información guardamos y cómo la cuidamos.</p>
+      <p style={li}>• Qué guardamos: tu nombre, correo electrónico, fecha de nacimiento, género, signo zodiacal y las entradas que decidas crear (sueños, gratitud, bienestar y estados de ánimo).</p>
+      <p style={li}>• Cómo la guardamos: de forma segura en servidores de Supabase. Cada cuenta solo puede ver su propia información.</p>
+      <p style={li}>• Pagos: los procesa Stripe de forma segura. Atrapa Sueños nunca almacena los datos de tu tarjeta.</p>
+      <p style={li}>• Inteligencia artificial: los mensajes se generan con IA a partir de tu perfil para personalizar tu experiencia.</p>
+      <p style={li}>• No vendemos tus datos: nunca vendemos ni alquilamos tu información a terceros. Solo usamos proveedores (Supabase, Stripe) para que la app funcione.</p>
+      <p style={li}>• Tus derechos: puedes pedir acceso o eliminación de tus datos escribiendo a info.normafigueroa@gmail.com.</p>
+      <h3 style={sec}>📜 Términos y Condiciones</h3>
+      <p style={li}>• Al usar Atrapa Sueños aceptas estos términos.</p>
+      <p style={li}>• La app ofrece contenido de bienestar, motivación e inspiración para uso personal.</p>
+      <p style={li}>• Suscripciones: hay un plan Gratis y un plan Elite de pago, con cobro recurrente (mensual o anual) gestionado por Stripe. Puedes cancelar cuando quieras; tu acceso continúa hasta el final del período pagado.</p>
+      <p style={li}>• Reembolsos: si tienes algún problema con tu pago, escríbenos a info.normafigueroa@gmail.com.</p>
+      <p style={li}>• Uso responsable: te comprometes a usar la app de forma personal y respetuosa, con información veraz.</p>
+      <p style={li}>• La app se ofrece "tal cual"; trabajamos para mantenerla disponible y mejorarla.</p>
+      <p style={li}>• Podemos actualizar estos términos y te avisaremos de cambios importantes.</p>
+      <h3 style={sec}>⚕️ Aviso Importante</h3>
+      <p style={pp}>El contenido de Atrapa Sueños (mensajes de IA, horóscopos y reflexiones) tiene fines de motivación, bienestar y entretenimiento.</p>
+      <p style={li}>• No es consejo médico, psicológico ni profesional, y no sustituye la atención de un médico, terapeuta o profesional de la salud.</p>
+      <p style={li}>• Si estás pasando por un momento difícil o una crisis emocional, busca el apoyo de un profesional de la salud o de una persona de confianza.</p>
+      <p style={li}>• El contenido astrológico es para reflexión y entretenimiento.</p>
+      <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,textAlign:"center",margin:"22px 0 0",lineHeight:1.5}}>Contacto: info.normafigueroa@gmail.com</p>
+      <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:24,padding:"12px",borderRadius:10,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
+    </div>
+  );
+}
+
 export default function App() {
   const [screen, setScreen] = useState("loading");
   const [authMode, setAuthMode] = useState("signup");
@@ -1129,7 +1165,8 @@ export default function App() {
       <Stars/>
       <div style={{maxWidth:480,margin:"0 auto",position:"relative",zIndex:1}}>
       {screen==="loading"&&<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:C.gold,fontSize:22,fontWeight:800,fontFamily:S.fontFamily,opacity:0.9}}>Atrapa Sueños</div></div>}
-      {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{ try{ if(!localStorage.getItem("as_guest_start")) localStorage.setItem("as_guest_start", hoyES()); }catch(e){} var _st=null; try{_st=localStorage.getItem("as_guest_start");}catch(e){} if(_st && diasDesde(_st)>=5){setAuthMode("signup");setScreen("auth");return;} setUser(u=>({...u,guest:true}));setScreen("setup");}}/>}
+      {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{ try{ if(!localStorage.getItem("as_guest_start")) localStorage.setItem("as_guest_start", hoyES()); }catch(e){} var _st=null; try{_st=localStorage.getItem("as_guest_start");}catch(e){} if(_st && diasDesde(_st)>=5){setAuthMode("signup");setScreen("auth");return;} setUser(u=>({...u,guest:true}));setScreen("setup");}} onLegal={()=>setScreen("legal")}/>}
+      {screen==="legal"&&<Legal onBack={()=>setScreen("welcome")}/>}
       {screen==="auth"&&<Auth mode={authMode} onSuccess={handleAuthSuccess} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
       {screen==="dashboard"&&guestBloqueado&&<GuestWall onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}}/>}
