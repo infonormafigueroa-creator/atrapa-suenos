@@ -386,6 +386,9 @@ function Plans({onBack, onActivate}) {
 function EliteSettings({user, onDone}) {
   const [zodiac, setZodiac] = useState(user.zodiac||"");
   const [love, setLove] = useState(user.love||"");
+  const [annMonth, setAnnMonth] = useState((user.anniversary&&user.anniversary.length===10)?user.anniversary.slice(5,7):"");
+  const [annDay, setAnnDay] = useState((user.anniversary&&user.anniversary.length===10)?user.anniversary.slice(8,10):"");
+  const [partnerName, setPartnerName] = useState(user.partner_name||"");
 
   return (
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 20px",position:"relative",zIndex:1}}>
@@ -415,7 +418,27 @@ function EliteSettings({user, onDone}) {
         </div>
       </div>
 
-      <Btn onClick={()=>onDone({zodiac,love})} style={{width:"100%",maxWidth:340,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:17,fontWeight:800,fontFamily:S.fontUI}}>
+      {love==="Casado/A" && (
+        <div style={{width:"100%",maxWidth:340,marginBottom:32}}>
+          <p style={{color:C.pink,fontWeight:800,fontFamily:S.fontUI,fontSize:18,margin:"0 0 12px"}}>💍 Tu Aniversario</p>
+          <div style={{display:"flex",gap:10,width:"100%",marginBottom:12}}>
+            <select value={annMonth} onChange={e=>setAnnMonth(e.target.value)} style={{flex:2,background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"16px 14px",color:annMonth?C.goldL:C.muted,fontSize:15,fontFamily:S.fontUI}}>
+              <option value="">Mes</option>
+              {[["01","Enero"],["02","Febrero"],["03","Marzo"],["04","Abril"],["05","Mayo"],["06","Junio"],["07","Julio"],["08","Agosto"],["09","Septiembre"],["10","Octubre"],["11","Noviembre"],["12","Diciembre"]].map(([v,l])=>(
+                <option key={v} value={v}>{l}</option>
+              ))}
+            </select>
+            <select value={annDay} onChange={e=>setAnnDay(e.target.value)} style={{flex:1,background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"16px 14px",color:annDay?C.goldL:C.muted,fontSize:15,fontFamily:S.fontUI}}>
+              <option value="">Día</option>
+              {Array.from({length:31},(_,i)=>String(i+1).padStart(2,"0")).map(d=>(
+                <option key={d} value={d}>{parseInt(d,10)}</option>
+              ))}
+            </select>
+          </div>
+          <input value={partnerName} onChange={e=>setPartnerName(e.target.value)} placeholder="¿Cómo se llama tu pareja? (opcional)" style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"16px 14px",color:C.text,fontSize:15,fontFamily:S.fontUI,boxSizing:"border-box"}}/>
+        </div>
+      )}
+      <Btn onClick={()=>onDone({zodiac,love,anniversary:(annMonth&&annDay)?("0000-"+annMonth+"-"+annDay):"",partner_name:partnerName.trim()})} style={{width:"100%",maxWidth:340,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:17,fontWeight:800,fontFamily:S.fontUI}}>
         {`👑 Ver Mi Guía${zodiac?` — ${zodiac}`:""}`}
       </Btn>
       <Btn onClick={()=>onDone({})} style={{width:"100%",maxWidth:340,marginTop:10,padding:"14px",borderRadius:14,background:C.cardDark,border:`1px solid ${C.border}`,color:C.muted,fontSize:15,fontFamily:S.fontUI}}>← Volver</Btn>
@@ -440,6 +463,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
   const [intentionText, setIntentionText] = useState("");
   const [msg, setMsg] = useState(null);
   const [isBday, setIsBday] = useState(false);
+  const [isAnniv, setIsAnniv] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const planLabel = user.plan==="elite"?"Elite":"Gratis";
@@ -554,7 +578,34 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
     }
     setLoading(false);
   }
-  useEffect(()=>{ if(isTodayBirthday(user.birthday)){ generateBirthday(); } else { generateMsg("Hoy"); } /* eslint-disable-next-line react-hooks/exhaustive-deps */ },[]);
+  function isTodayAnniversary(an){
+    if(!an) return false;
+    var p = an.split("-");
+    if(p.length<3) return false;
+    var e = hoyES().split("-");
+    return (parseInt(p[1],10)===parseInt(e[1],10))&&(parseInt(p[2],10)===parseInt(e[2],10));
+  }
+  async function generateAnniversary(){
+    setLoading(true); setMsg(null); setIsAnniv(true);
+    var _day = hoyES();
+    var _key = "as_anniv";
+    try { var _s = localStorage.getItem(_key); if (_s) { var _o = JSON.parse(_s); if (_o.date === _day) { setMsg({quote:_o.quote, cont:_o.cont, icon:"💍", label:"¡FELIZ ANIVERSARIO!", color:C.gold}); setLoading(false); return; } } } catch(e){}
+    var _pareja = user.partner_name ? (" La pareja de la persona se llama "+user.partner_name+".") : "";
+    var _prompt = "Eres un coach espiritual cálido y cercano. Hoy es el aniversario de pareja de la persona, cuyo nombre es "+(user.name||"")+"."+_pareja+" Genera una felicitación de aniversario emotiva y romántica dirigida a la pareja, celebrando su amor y su unión.\nFormato EXACTO:\nFRASE: [Una frase corta y poderosa de felicitación de aniversario]\nCONT: [Exactamente 3 oraciones cortas, cálidas y románticas sobre su amor y su camino juntos. Habla con cariño. No menciones la fecha.]";
+    try {
+      const raw = await askClaude(_prompt);
+      const fraseMatch = raw.match(/FRASE:\s*(.+)/);
+      const introMatch = raw.match(/CONT:\s*([\s\S]+)/);
+      var _q = fraseMatch?fraseMatch[1].replace(/"/g,"").trim():"¡Feliz aniversario! 💍";
+      var _cc = introMatch?introMatch[1].trim():raw;
+      setMsg({quote:_q, cont:_cc, icon:"💍", label:"¡FELIZ ANIVERSARIO!", color:C.gold});
+      try { localStorage.setItem(_key, JSON.stringify({date:_day, quote:_q, cont:_cc})); } catch(e){}
+    } catch {
+      setMsg({quote:"¡Feliz aniversario! 💍", cont:"Hoy se celebra el amor que construyen juntos cada día. Que su unión siga floreciendo con ternura, respeto y sueños compartidos. Brindo por ustedes y su hermoso camino juntos.", icon:"💍", label:"¡FELIZ ANIVERSARIO!", color:C.gold});
+    }
+    setLoading(false);
+  }
+  useEffect(()=>{ if(isTodayBirthday(user.birthday)){ generateBirthday(); } else if(isTodayAnniversary(user.anniversary)){ generateAnniversary(); } else { generateMsg("Hoy"); } /* eslint-disable-next-line react-hooks/exhaustive-deps */ },[]);
 
   return (
     <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",paddingBottom:"calc(env(safe-area-inset-bottom) + 32px)"}}>
@@ -632,6 +683,11 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
       {isBday&&(
         <div style={{margin:"0 16px 12px",padding:"14px 16px",borderRadius:14,background:C.gold+"22",border:"1px solid "+C.gold,textAlign:"center"}}>
           <span style={{fontSize:15,fontWeight:800,fontFamily:S.fontUI,color:C.gold}}>🎂 ¡Hoy es tu día especial! 🎉</span>
+        </div>
+      )}
+      {isAnniv&&(
+        <div style={{margin:"0 16px 12px",padding:"14px 16px",borderRadius:14,background:C.pink+"22",border:"1px solid "+C.pink,textAlign:"center"}}>
+          <span style={{fontSize:15,fontWeight:800,fontFamily:S.fontUI,color:C.pink}}>💍 ¡Feliz Aniversario! 💕</span>
         </div>
       )}
       <div style={{padding:"0 16px"}}>
@@ -833,9 +889,18 @@ export default function App() {
     } catch (e) {}
   }
 
-  function handleEliteSettings(data) {
+  async function handleEliteSettings(data) {
     setUser(u=>({...u,...data}));
     setScreen("dashboard");
+    try {
+      if (Object.keys(data).length) {
+        const { data: authData } = await supabase.auth.getUser();
+        const authUser = authData ? authData.user : null;
+        if (authUser) {
+          await supabase.from("profiles").update({ zodiac:data.zodiac||null, love:data.love||null, anniversary:data.anniversary||null, partner_name:data.partner_name||null }).eq("id", authUser.id);
+        }
+      }
+    } catch(e) {}
   }
 
   async function handleAuthSuccess() {
@@ -864,6 +929,10 @@ export default function App() {
             birthday: profile.birthday,
             plan: profile.plan || "free",
             streak: nuevaRacha,
+            zodiac: profile.zodiac || "",
+            love: profile.love || "",
+            anniversary: profile.anniversary || "",
+            partner_name: profile.partner_name || "",
             id: authUser.id
           });
           setScreen("dashboard");
