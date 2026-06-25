@@ -812,6 +812,7 @@ function Auth({ mode, onSuccess, onBack }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
+  const [info, setInfo] = useState("");
   const isSignup = mode === "signup";
   async function submit() {
     setError("");
@@ -836,6 +837,17 @@ function Auth({ mode, onSuccess, onBack }) {
       setLoading(false);
     }
   }
+  async function recuperar() {
+    setError(""); setInfo("");
+    if (!email.trim()) { setError("Escribe tu correo para recuperar tu contraseña."); return; }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: window.location.origin });
+      if (error) { setError(error.message); setLoading(false); return; }
+      setInfo("Te enviamos un correo para recuperar tu contraseña. Revisa tu bandeja de entrada (y la carpeta de spam).");
+      setLoading(false);
+    } catch (e) { setError("Algo salió mal. Intenta de nuevo."); setLoading(false); }
+  }
   return (
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px",position:"relative",zIndex:1}}>
       <div style={{margin:"0 0 16px",animation:"pulse 3s ease-in-out infinite"}}>
@@ -858,6 +870,8 @@ function Auth({ mode, onSuccess, onBack }) {
       </div>
       {error && <p style={{color:C.pink,fontSize:13,fontFamily:S.fontUI,margin:"0 0 14px",textAlign:"center",maxWidth:340}}>{error}</p>}
       <Btn onClick={submit} disabled={loading} style={{width:"100%",maxWidth:340,padding:"18px",borderRadius:14,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",color:"#1a0a00",fontSize:16,fontWeight:800,fontFamily:S.fontUI,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>{loading ? "Un momento..." : (isSignup ? "⭐ Crear Cuenta" : "🔑 Entrar")}</Btn>
+      {!isSignup && <button onClick={recuperar} style={{background:"none",border:"none",color:C.muted,fontSize:13,cursor:"pointer",fontFamily:S.fontUI,marginBottom:16,textDecoration:"underline"}}>¿Olvidaste tu contraseña?</button>}
+      {info && <p style={{color:C.goldL,fontSize:13,fontFamily:S.fontUI,margin:"0 0 16px",textAlign:"center",maxWidth:340,lineHeight:1.5}}>{info}</p>}
       <button onClick={onBack} style={{background:"none",border:"none",color:C.muted,fontSize:14,cursor:"pointer",fontFamily:S.fontUI}}>← Volver</button>
     </div>
   );
@@ -1015,6 +1029,36 @@ function EliteWelcome({ onContinue, name }){
   );
 }
 
+function ResetPassword({onDone}) {
+  const [pass, setPass] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
+  async function guardar() {
+    setError("");
+    if (pass.length < 6) { setError("La contraseña debe tener al menos 6 caracteres."); return; }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: pass });
+      if (error) { setError(error.message); setLoading(false); return; }
+      onDone();
+    } catch (e) { setError("Algo salió mal. Intenta de nuevo."); setLoading(false); }
+  }
+  return (
+    <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px",position:"relative",zIndex:1}}>
+      <div style={{margin:"0 0 16px",animation:"pulse 3s ease-in-out infinite"}}><DreamCatcher size={120}/></div>
+      <h2 style={{color:C.goldL,fontSize:24,fontWeight:900,fontFamily:S.fontFamily,margin:"0 0 8px",textAlign:"center"}}>Nueva contraseña</h2>
+      <p style={{color:C.muted,fontSize:14,fontFamily:S.fontUI,margin:"0 0 24px",textAlign:"center",maxWidth:340}}>Escribe tu nueva contraseña para tu cuenta.</p>
+      <div style={{position:"relative",width:"100%",maxWidth:340,marginBottom:14}}>
+        <input type={showPass ? "text" : "password"} value={pass} onChange={e=>setPass(e.target.value)} placeholder="Tu nueva contraseña (mínimo 6)" style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"16px 48px 16px 18px",color:C.goldL,fontSize:16,fontFamily:S.fontUI,boxSizing:"border-box"}} />
+        <span onClick={()=>setShowPass(!showPass)} style={{position:"absolute",right:16,top:"50%",transform:"translateY(-50%)",cursor:"pointer",fontSize:18}}>{showPass ? "🙈" : "👁️"}</span>
+      </div>
+      {error && <p style={{color:C.pink,fontSize:13,fontFamily:S.fontUI,margin:"0 0 14px",textAlign:"center",maxWidth:340}}>{error}</p>}
+      <Btn onClick={guardar} disabled={loading} style={{width:"100%",maxWidth:340,padding:"18px",borderRadius:14,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",color:"#1a0a00",fontSize:16,fontWeight:800,fontFamily:S.fontUI,letterSpacing:1,textTransform:"uppercase"}}>{loading ? "Guardando..." : "Guardar contraseña"}</Btn>
+    </div>
+  );
+}
+
 function Legal({onBack}) {
   var sec={color:C.gold,fontSize:18,fontWeight:800,fontFamily:S.fontFamily,margin:"22px 0 8px"};
   var pp={color:C.text,fontSize:14,fontFamily:S.fontUI,lineHeight:1.6,margin:"0 0 10px"};
@@ -1145,6 +1189,15 @@ export default function App() {
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, []);
 
+  useEffect(() => {
+    let sub;
+    try {
+      const r = supabase.auth.onAuthStateChange(function(event){ if(event === "PASSWORD_RECOVERY"){ setScreen("resetPassword"); } });
+      sub = (r && r.data) ? r.data.subscription : null;
+    } catch (e) {}
+    return () => { try { if(sub) sub.unsubscribe(); } catch(e){} };
+  }, []);
+
   var _gStart=null; try{ _gStart=localStorage.getItem("as_guest_start"); }catch(e){}
   var guestDiasUsados = _gStart ? diasDesde(_gStart) : 0;
   var guestBloqueado = user.guest && _gStart && guestDiasUsados >= 5;
@@ -1167,6 +1220,7 @@ export default function App() {
       {screen==="loading"&&<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:C.gold,fontSize:22,fontWeight:800,fontFamily:S.fontFamily,opacity:0.9}}>Atrapa Sueños</div></div>}
       {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{ try{ if(!localStorage.getItem("as_guest_start")) localStorage.setItem("as_guest_start", hoyES()); }catch(e){} var _st=null; try{_st=localStorage.getItem("as_guest_start");}catch(e){} if(_st && diasDesde(_st)>=5){setAuthMode("signup");setScreen("auth");return;} setUser(u=>({...u,guest:true}));setScreen("setup");}} onLegal={()=>setScreen("legal")}/>}
       {screen==="legal"&&<Legal onBack={()=>setScreen("welcome")}/>}
+      {screen==="resetPassword"&&<ResetPassword onDone={handleAuthSuccess}/>}
       {screen==="auth"&&<Auth mode={authMode} onSuccess={handleAuthSuccess} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
       {screen==="dashboard"&&guestBloqueado&&<GuestWall onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}}/>}
