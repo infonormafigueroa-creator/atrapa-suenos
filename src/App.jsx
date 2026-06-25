@@ -1211,7 +1211,7 @@ export default function App() {
     }}>
       {/* ESTRELLAS */}
       <div style={{position:"fixed",top:0,left:0,width:"100%",height:"100%",zIndex:0,pointerEvents:"none"}}>
-        {[{x:7,y:4,s:11},{x:85,y:3,s:14},{x:18,y:20,s:9},{x:72,y:15,s:12},{x:42,y:8,s:8},{x:93,y:38,s:9},{x:12,y:48,s:11}].map((star,i)=>(
+        {[{x:7,y:4,s:11},{x:85,y:3,s:14},{x:18,y:20,s:9},{x:72,y:15,s:12},{x:42,y:8,s:8},{x:93,y:38,s:9},{x:12,y:48,s:11},{x:6,y:60,s:10},{x:90,y:56,s:12},{x:22,y:71,s:9},{x:80,y:77,s:11},{x:14,y:87,s:10},{x:88,y:90,s:13},{x:50,y:83,s:8},{x:38,y:94,s:9},{x:67,y:65,s:10},{x:4,y:33,s:8},{x:96,y:72,s:9},{x:30,y:55,s:8}].map((star,i)=>(
           <div key={i} style={{position:"absolute",left:`${star.x}%`,top:`${star.y}%`,fontSize:star.s,animation:"tw 4s ease-in-out infinite",animationDelay:`${i*0.8}s`,opacity:0.9}}>⭐</div>
         ))}
       </div>
