@@ -3,9 +3,9 @@ import { supabase } from "./supabaseClient";
 
 const C = {
   bg:       "#0d0d2b",
-  card:     "#13133a",
-  cardDark: "#0f0f26",
-  border:   "#2a2a5a",
+  card:     "#573a92",
+  cardDark: "#45307a",
+  border:   "#7858b0",
   purple:   "#7c3aed",
   purpleL:  "#a855f7",
   gold:     "#f59e0b",
