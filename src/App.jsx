@@ -1125,6 +1125,7 @@ export default function App() {
         ))}
       </div>
       <Stars/>
+      <div style={{maxWidth:480,margin:"0 auto",position:"relative",zIndex:1}}>
       {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{ try{ if(!localStorage.getItem("as_guest_start")) localStorage.setItem("as_guest_start", hoyES()); }catch(e){} var _st=null; try{_st=localStorage.getItem("as_guest_start");}catch(e){} if(_st && diasDesde(_st)>=5){setAuthMode("signup");setScreen("auth");return;} setUser(u=>({...u,guest:true}));setScreen("setup");}}/>}
       {screen==="auth"&&<Auth mode={authMode} onSuccess={handleAuthSuccess} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
@@ -1137,6 +1138,7 @@ export default function App() {
       {screen==="gratitud"&&<Journal type="gratitud" emoji="🙏" titulo="Diario de Gratitud" descripcion="Escribe por qué estás agradecida hoy." placeholder="Hoy agradezco..." etiqueta="Tus Gratitudes" vacio="Aún no has guardado gratitudes. ¡Empieza hoy! 🙏" cta="💾 Guardar Gratitud" user={user} onBack={()=>setScreen("dashboard")}/>}
       {screen==="bienestar"&&<Journal type="bienestar" emoji="🌿" titulo="Registro de Bienestar" descripcion="Anota cómo te sientes hoy: cuerpo, mente y hábitos." placeholder="Hoy me sentí... / hice..." etiqueta="Tu Bienestar" vacio="Aún no has registrado tu bienestar. ¡Empieza hoy! 🌿" cta="💾 Guardar Registro" user={user} onBack={()=>setScreen("dashboard")}/>}
       {screen==="animo"&&<MoodTracker user={user} onBack={()=>setScreen("dashboard")}/>}
+      </div>
     </div>
   );
 }
