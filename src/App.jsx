@@ -894,7 +894,6 @@ function DreamJournal({user, onBack}){
   }
   return (
     <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 32px)"}}>
-      <Btn onClick={onBack} style={{background:"none",border:"none",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:8,padding:0}}>← Volver</Btn>
       <h2 style={{color:C.goldL,fontSize:22,fontWeight:900,fontFamily:S.fontFamily,margin:"4px 0 4px"}}>📔 Mi Diario de Sueños</h2>
       <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 16px"}}>Escribe tu sueño de hoy y guárdalo para releerlo después.</p>
       <textarea value={text} onChange={e=>setText(e.target.value)} placeholder="Anoche soñé que..." rows={4} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"14px",color:C.text,fontSize:15,fontFamily:S.fontUI,boxSizing:"border-box",resize:"vertical"}}/>
@@ -912,6 +911,7 @@ function DreamJournal({user, onBack}){
           </div>
         ))
       )}
+      <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:24,padding:"12px",borderRadius:10,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
     </div>
   );
 }
@@ -935,7 +935,6 @@ function Journal({user, onBack, type, emoji, titulo, descripcion, placeholder, e
   }
   return (
     <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 32px)"}}>
-      <Btn onClick={onBack} style={{background:"none",border:"none",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:8,padding:0}}>← Volver</Btn>
       <h2 style={{color:C.goldL,fontSize:22,fontWeight:900,fontFamily:S.fontFamily,margin:"4px 0 4px"}}>{emoji} {titulo}</h2>
       <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 16px"}}>{descripcion}</p>
       <textarea value={text} onChange={e=>setText(e.target.value)} placeholder={placeholder} rows={4} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"14px",color:C.text,fontSize:15,fontFamily:S.fontUI,boxSizing:"border-box",resize:"vertical"}}/>
@@ -953,6 +952,7 @@ function Journal({user, onBack, type, emoji, titulo, descripcion, placeholder, e
           </div>
         ))
       )}
+      <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:24,padding:"12px",borderRadius:10,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
     </div>
   );
 }
@@ -974,7 +974,6 @@ function MoodTracker({user, onBack}){
   }
   return (
     <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 32px)"}}>
-      <Btn onClick={onBack} style={{background:"none",border:"none",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:8,padding:0}}>← Volver</Btn>
       <h2 style={{color:C.goldL,fontSize:22,fontWeight:900,fontFamily:S.fontFamily,margin:"4px 0 4px"}}>📊 Historial de Ánimo</h2>
       <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 16px"}}>¿Cómo te sientes hoy? Toca tu ánimo para guardarlo.</p>
       <div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:10,marginBottom:24}}>
@@ -998,6 +997,7 @@ function MoodTracker({user, onBack}){
           </div>
         ))
       )}
+      <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:24,padding:"12px",borderRadius:10,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
     </div>
   );
 }
