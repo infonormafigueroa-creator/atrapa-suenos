@@ -356,9 +356,8 @@ function Plans({onBack, onActivate, user}) {
 
 
       <div>
-        <div style={{background:"linear-gradient(135deg,"+C.gold+"22,"+C.goldL+"0d)",border:"1px solid "+C.gold+"55",borderRadius:16,padding:"16px 14px",textAlign:"center",margin:"4px 0 20px"}}>
-          <div style={{fontSize:14,letterSpacing:8,marginBottom:6}}>⭐ ✨ ⭐</div>
-          <h3 style={{color:C.gold,fontSize:24,fontWeight:800,fontFamily:S.fontFamily,margin:0}}>Atrapa Sueños Elite</h3>
+        <div style={{background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",borderRadius:14,padding:"16px",textAlign:"center",margin:"4px 0 20px"}}>
+          <h3 style={{color:"#1a0a00",fontSize:22,fontWeight:900,fontFamily:S.fontFamily,margin:0}}>Atrapa Sueños Elite</h3>
         </div>
         {[
           {e:"♈",l:"Horóscopo Profundo"},{e:"❤️",l:"Amor Personalizado"},
@@ -375,7 +374,7 @@ function Plans({onBack, onActivate, user}) {
           </div>
         ))}
         <Btn onClick={()=>{window.location.href="https://buy.stripe.com/28E28s4RYe6U4nqca91wY00"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:20,padding:"15px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Mensual — $9.99/mes</Btn>
-        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/4gM5kEfwC3sg4nq5LL1wY01"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"2px solid "+C.gold,color:C.goldL,fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Anual — $79.99/año · Ahorra 33%</Btn>
+        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/4gM5kEfwC3sg4nq5LL1wY01"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:12,padding:"15px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Anual — $79.99/año · -33%</Btn>
         <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:18,padding:"12px",borderRadius:10,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
         <p style={{display:"none"}}>🔧 Activar modo prueba</p>
       </div>
