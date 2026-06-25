@@ -193,11 +193,6 @@ function Welcome({onSignup, onLogin, onGuest, onLegal}) {
         color:C.text,fontSize:16,fontWeight:700,fontFamily:S.fontUI,
         letterSpacing:1,textTransform:"uppercase",marginBottom:20
       }}>🔑 Iniciar Sesión</Btn>
-
-      <button onClick={onGuest} style={{
-        background:"none",border:"none",color:C.muted,
-        fontSize:14,cursor:"pointer",fontFamily:S.fontUI
-      }}>Continuar sin cuenta →</button>
       <button onClick={onLegal} style={{background:"none",border:"none",color:C.muted,fontSize:12,cursor:"pointer",fontFamily:S.fontUI,marginTop:26,opacity:0.85,textDecoration:"underline"}}>Privacidad · Términos</button>
     </div>
   );
