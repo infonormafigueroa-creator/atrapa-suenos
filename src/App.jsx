@@ -532,7 +532,10 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
     };
 
     try {
-      const raw = await askClaude(prompts[tab]||prompts["Hoy"]);
+      var _enfoques = ["la naturaleza","un recuerdo querido","el futuro que sueñas","la fuerza interior","la calma profunda","un nuevo comienzo","la conexión con otros","la valentía","la esperanza","la sabiduría del corazón","la libertad","la transformación","la paz interior","la abundancia","el agradecimiento","tu luz propia","el momento presente","los pequeños milagros","la resiliencia","la ternura"];
+      var _enfoque = _enfoques[parseInt(_day.replace(/-/g,""),10) % _enfoques.length];
+      var _variedad = "\n\nIMPORTANTE: Crea un mensaje COMPLETAMENTE ORIGINAL y distinto a cualquier otro día, inspirándote sutilmente en " + _enfoque + ". Usa palabras e imágenes frescas, evita frases cliché y estructuras repetidas. Que se sienta nuevo y único. (ref " + _day + ")";
+      const raw = await askClaude((prompts[tab]||prompts["Hoy"]) + _variedad);
       const fraseMatch = raw.match(/FRASE:\s*(.+)/);
       const introMatch = raw.match(/CONT:\s*([\s\S]+)/);
       setMsg({
