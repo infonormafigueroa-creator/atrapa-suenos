@@ -438,15 +438,15 @@ function EliteSettings({user, onDone}) {
           <input value={partnerName} onChange={e=>setPartnerName(e.target.value)} placeholder="¿Cómo se llama tu pareja? (opcional)" style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"16px 14px",color:C.text,fontSize:15,fontFamily:S.fontUI,boxSizing:"border-box"}}/>
         </div>
       )}
-      <Btn onClick={()=>onDone({zodiac,love,anniversary:(annMonth&&annDay)?("0000-"+annMonth+"-"+annDay):"",partner_name:partnerName.trim()})} style={{width:"100%",maxWidth:340,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:17,fontWeight:800,fontFamily:S.fontUI}}>
-        {`👑 Ver Mi Guía${zodiac?` — ${zodiac}`:""}`}
+      <Btn onClick={()=>onDone({zodiac,love,anniversary:(love==="Casado/A"&&annMonth&&annDay)?("0000-"+annMonth+"-"+annDay):"",partner_name:(love==="Casado/A")?partnerName.trim():""})} style={{width:"100%",maxWidth:340,padding:"18px",borderRadius:14,background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",fontSize:17,fontWeight:800,fontFamily:S.fontUI}}>
+        {`💾 Guardar Mis Datos${zodiac?` — ${zodiac}`:""}`}
       </Btn>
       <Btn onClick={()=>onDone({})} style={{width:"100%",maxWidth:340,marginTop:10,padding:"14px",borderRadius:14,background:C.cardDark,border:`1px solid ${C.border}`,color:C.muted,fontSize:15,fontFamily:S.fontUI}}>← Volver</Btn>
     </div>
   );
 }
 
-function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg, guestDiasRestantes}) {
+function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg, guestDiasRestantes, onShowDiario}) {
   const today = new Date();
   const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",timeZone:"America/New_York"});
   const dateDisplay = dateStr.charAt(0).toUpperCase()+dateStr.slice(1);
@@ -761,6 +761,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         </Card>
 
 
+        {!user.guest && <Btn onClick={onShowDiario} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📔 Mi Diario de Sueños</Btn>}
         <div id="seccion-progreso" />
         <Card style={{marginBottom:12}}>
           <div style={{background:"linear-gradient(135deg, "+C.gold+"22, "+C.goldL+"11)",border:"1px solid "+C.gold+"66",borderRadius:14,padding:"16px",marginBottom:14,display:"flex",alignItems:"center",justifyContent:"center",gap:16,boxShadow:"0 0 22px "+C.gold+"22"}}>
@@ -860,6 +861,47 @@ function GuestWall({onSignup, onLogin}){
       <p style={{color:C.muted,fontSize:14,fontFamily:S.fontUI,lineHeight:1.5,margin:"0 0 24px",maxWidth:320}}>Crea tu cuenta gratis para seguir disfrutando tus frases, rachas y diario de sueños. ✨</p>
       <Btn onClick={onSignup} style={{width:"100%",maxWidth:320,padding:"15px",borderRadius:14,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",border:"none",color:"#1a1205",fontSize:16,fontWeight:800,fontFamily:S.fontUI,marginBottom:14}}>✨ Crear mi cuenta gratis</Btn>
       <button onClick={onLogin} style={{background:"none",border:"none",color:C.muted,fontSize:14,cursor:"pointer",fontFamily:S.fontUI}}>Ya tengo cuenta · Iniciar sesión</button>
+    </div>
+  );
+}
+
+function DreamJournal({user, onBack}){
+  const [text, setText] = useState("");
+  const [entries, setEntries] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [guardando, setGuardando] = useState(false);
+  useEffect(()=>{
+    (async()=>{
+      try{ const { data } = await supabase.from("entries").select("*").eq("type","sueno").order("created_at",{ascending:false}); setEntries(data||[]); }catch(e){}
+      setCargando(false);
+    })();
+  },[]);
+  async function guardar(){
+    if(!text.trim()) return;
+    setGuardando(true);
+    try{ const { data } = await supabase.from("entries").insert({ user_id:user.id, type:"sueno", content:text.trim() }).select(); if(data&&data[0]) setEntries(e=>[data[0]].concat(e)); setText(""); }catch(e){}
+    setGuardando(false);
+  }
+  return (
+    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 32px)"}}>
+      <Btn onClick={onBack} style={{background:"none",border:"none",color:C.muted,fontSize:14,fontFamily:S.fontUI,marginBottom:8,padding:0}}>← Volver</Btn>
+      <h2 style={{color:C.goldL,fontSize:22,fontWeight:900,fontFamily:S.fontFamily,margin:"4px 0 4px"}}>📔 Mi Diario de Sueños</h2>
+      <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 16px"}}>Escribe tu sueño de hoy y guárdalo para releerlo después.</p>
+      <textarea value={text} onChange={e=>setText(e.target.value)} placeholder="Anoche soñé que..." rows={4} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"14px",color:C.text,fontSize:15,fontFamily:S.fontUI,boxSizing:"border-box",resize:"vertical"}}/>
+      <Btn onClick={guardar} disabled={guardando||!text.trim()} style={{width:"100%",marginTop:10,marginBottom:24,padding:"14px",borderRadius:12,background:(guardando||!text.trim())?C.cardDark:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",border:"none",color:(guardando||!text.trim())?C.muted:"#1a1205",fontSize:15,fontWeight:800,fontFamily:S.fontUI}}>{guardando?"Guardando...":"💾 Guardar Sueño"}</Btn>
+      <p style={{color:C.purpleL,fontSize:14,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 12px"}}>Tus Sueños</p>
+      {cargando ? (
+        <p style={{color:C.muted,fontSize:14,fontFamily:S.fontUI,textAlign:"center"}}>Cargando...</p>
+      ) : entries.length===0 ? (
+        <p style={{color:C.muted,fontSize:14,fontFamily:S.fontUI,textAlign:"center",padding:"20px 0"}}>Aún no has guardado sueños. ¡Empieza hoy! 🌙</p>
+      ) : (
+        entries.map(en=>(
+          <div key={en.id} style={{background:C.card,border:"1px solid "+C.border,borderRadius:12,padding:"12px 14px",marginBottom:10}}>
+            <p style={{color:C.gold,fontSize:12,fontWeight:700,fontFamily:S.fontUI,margin:"0 0 6px"}}>{new Date(en.created_at).toLocaleDateString("es-ES",{day:"numeric",month:"long",year:"numeric"})}</p>
+            <p style={{color:C.text,fontSize:14,fontFamily:S.fontUI,lineHeight:1.5,margin:0,whiteSpace:"pre-wrap"}}>{en.content}</p>
+          </div>
+        ))
+      )}
     </div>
   );
 }
@@ -977,9 +1019,10 @@ export default function App() {
       {screen==="auth"&&<Auth mode={authMode} onSuccess={handleAuthSuccess} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
       {screen==="dashboard"&&guestBloqueado&&<GuestWall onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}}/>}
-      {screen==="dashboard"&&!guestBloqueado&&<Dashboard user={user} guestDiasRestantes={guestDiasRestantes} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}} bg={bg} onChangeBg={(id)=>{setBg(id); if(user.id){try{supabase.from("profiles").update({background:id}).eq("id",user.id);}catch(e){}}}}/>}
+      {screen==="dashboard"&&!guestBloqueado&&<Dashboard user={user} onShowDiario={()=>setScreen("diario")} guestDiasRestantes={guestDiasRestantes} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}} bg={bg} onChangeBg={(id)=>{setBg(id); if(user.id){try{supabase.from("profiles").update({background:id}).eq("id",user.id);}catch(e){}}}}/>}
       {screen==="plans"&&<Plans onBack={()=>setScreen("dashboard")} onActivate={()=>{setUser(u=>({...u,plan:"elite"}));setScreen("eliteSettings");}}/>}
       {screen==="eliteSettings"&&<EliteSettings user={user} onDone={handleEliteSettings}/>}
+      {screen==="diario"&&<DreamJournal user={user} onBack={()=>setScreen("dashboard")}/>}
     </div>
   );
 }
