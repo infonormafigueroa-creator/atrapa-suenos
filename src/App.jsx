@@ -51,10 +51,18 @@ const ZODIAC = [
   {s:"Capricornio",e:"♑"},{s:"Acuario",e:"♒"},{s:"Piscis",e:"♓"},
 ];
 
-const MOODS = [
+const MOODS_ELITE = [
   {e:"😊",l:"Feliz"},{e:"😌",l:"Tranquilo"},{e:"🥰",l:"Agradecido"},{e:"🔥",l:"Motivado"},
   {e:"😰",l:"Ansioso"},{e:"😢",l:"Triste"},{e:"😴",l:"Cansado"},{e:"🥺",l:"Sensible"},
+  {e:"🤩",l:"Inspirado"},{e:"🌅",l:"Esperanzado"},{e:"😫",l:"Estresado"},{e:"😤",l:"Frustrado"},
 ];
+
+const MOODS_FREE = [
+  {e:"😊",l:"Feliz"},{e:"😌",l:"Tranquilo"},{e:"🥰",l:"Agradecido"},
+  {e:"😰",l:"Ansioso"},{e:"😢",l:"Triste"},{e:"😴",l:"Cansado"},
+];
+
+const MOODS = MOODS_ELITE;
 
 const WEEKDAYS = ["VI","SÁ","DO","LU","MA","MI","JU"];
 
@@ -739,7 +747,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         <Card style={{marginBottom:12}}>
           <p style={{color:C.gold,fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 10px"}}>😊 ¿CÓMO TE SIENTES HOY?</p>
           <div style={{display:"grid",gridTemplateColumns:user.plan==="elite"?"repeat(4, 1fr)":"repeat(3, 1fr)",gap:6}}>
-            {MOODS.map(m=>(
+            {(user.plan==="elite"?MOODS_ELITE:MOODS_FREE).map(m=>(
               <Btn key={m.l} onClick={()=>setMood(m.l)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"8px 3px",borderRadius:12,background:mood===m.l?`${C.gold}33`:C.cardDark,border:`1.5px solid ${mood===m.l?C.gold:C.border}`,color:C.text,fontSize:11,fontFamily:S.fontUI,minWidth:52}}>
                 <span style={{fontSize:22}}>{m.e}</span>{m.l}
               </Btn>
