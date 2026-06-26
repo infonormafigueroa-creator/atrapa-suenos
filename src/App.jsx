@@ -474,6 +474,8 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
   const [dreamText, setDreamText] = useState("");
   const [intention, setIntention] = useState("");
   const [intentionText, setIntentionText] = useState("");
+  const [comboMsg, setComboMsg] = useState(null);
+  const [comboLoading, setComboLoading] = useState(false);
   const [msg, setMsg] = useState(null);
   const [isBday, setIsBday] = useState(false);
   const [isAnniv, setIsAnniv] = useState(false);
@@ -512,7 +514,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
   async function generateMsg(tab) {
     setLoading(true); setMsg(null);
     var _day = hoyES();
-    var _key = "as_msg_" + tab + (user.plan==="elite"?("_"+(mood||"")+"_"+(intentionText||intention||"")):"");
+    var _key = "as_msg_" + tab;
     try { var _s = localStorage.getItem(_key); if (_s) { var _o = JSON.parse(_s); if (_o.date === _day) { setMsg({quote:_o.quote, cont:_o.cont, ...TAB_CONFIG[tab]}); setLoading(false); return; } } } catch(e){}
     const todayFull = today.toLocaleDateString("es-ES",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
     const zodiacInfo = user.zodiac?`Signo zodiacal: ${user.zodiac}.`:"";
@@ -548,13 +550,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
       var _enfoques = ["la naturaleza","un recuerdo querido","el futuro que sueñas","la fuerza interior","la calma profunda","un nuevo comienzo","la conexión con otros","la valentía","la esperanza","la sabiduría del corazón","la libertad","la transformación","la paz interior","la abundancia","el agradecimiento","tu luz propia","el momento presente","los pequeños milagros","la resiliencia","la ternura"];
       var _enfoque = _enfoques[parseInt(_day.replace(/-/g,""),10) % _enfoques.length];
       var _variedad = "\n\nIMPORTANTE: Crea un mensaje COMPLETAMENTE ORIGINAL y distinto a cualquier otro día, inspirándote sutilmente en " + _enfoque + ". Usa palabras e imágenes frescas, evita frases cliché y estructuras repetidas. Que se sienta nuevo y único. (ref " + _day + ")";
-      var _emoHoy = mood || "";
-      var _intenHoy = intentionText || intention || "";
-      var _comboElite = "";
-      if (user.plan === "elite" && (_emoHoy || _intenHoy)) {
-        _comboElite = " PERSONALIZACIÓN ELITE (úsala como base, es lo más importante): Hoy la persona se siente así: " + (_emoHoy||"(sin especificar)") + ". La energía que desea cultivar hoy es: " + (_intenHoy||"(sin especificar)") + ". Combina AMBAS con naturalidad: parte de cómo se siente y guíala con calidez hacia la energía que desea cultivar; la combinación debe cambiar por completo el contenido. Si la emoción es difícil (tristeza, ansiedad, cansancio) y la intención es positiva, valida brevemente pero NO te quedes en el problema: ayúdala a avanzar hacia esa intención con un paso pequeño y posible. Varía el recurso cada día (puede ser una metáfora, una micro-historia, una pregunta de reflexión, un ejercicio breve de respiración o mindfulness, una visualización, una afirmación, un mini reto consciente o una idea de journaling); nunca repitas el mismo enfoque ni uses plantillas. Que se sienta escrito solo para ella hoy, como un acompañamiento personal, inteligente y profundamente humano. Tono cálido, humano, inspirador, cercano, elegante, positivo y respetuoso; nunca robótico ni genérico, y nunca menciones que eres una IA.";
-      }
-      const raw = await askClaude((prompts[tab]||prompts["Hoy"]) + _variedad + _comboElite);
+      const raw = await askClaude((prompts[tab]||prompts["Hoy"]) + _variedad);
       const fraseMatch = raw.match(/FRASE:\s*(.+)/);
       const introMatch = raw.match(/CONT:\s*([\s\S]+)/);
       setMsg({
@@ -567,6 +563,31 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
       setMsg({quote:"No se pudo generar el mensaje. Intenta de nuevo.",cont:"",icon:"⚠️",label:"ERROR",color:C.muted});
     }
     setLoading(false);
+  }
+
+    async function generateCombo(force) {
+    var _emo = mood || "";
+    var _inten = intentionText || intention || "";
+    if (!_emo || !_inten) return;
+    setComboLoading(true); setComboMsg(null);
+    var _cday = hoyES();
+    var _ckey = "as_combo_" + _cday + "_" + _emo + "_" + _inten;
+    if (!force) { try { var _cs = localStorage.getItem(_ckey); if (_cs) { setComboMsg(JSON.parse(_cs)); setComboLoading(false); return; } } catch(e){} }
+    var _cn = user.name ? ("Se llama " + user.name + ".") : "";
+    var _cg = user.gender ? ("Usuario " + user.gender + ".") : "";
+    var _nonce = force ? (" Crea un enfoque completamente distinto a versiones anteriores (variante " + Math.floor(Math.random()*9999) + ").") : "";
+    var _cprompt = "Eres un acompañante personal cálido y profundamente humano. " + _cn + " " + _cg + " Hoy la persona se siente así: " + _emo + ". La energía que desea cultivar hoy es: " + _inten + ". Crea un mensaje ÚNICO que combine AMBAS: parte de cómo se siente y guíala con calidez hacia esa energía; la combinación debe cambiar por completo el contenido. Si la emoción es difícil y la intención es positiva, valida brevemente pero NO te quedes en el problema: ayúdala a avanzar hacia esa intención con un paso pequeño y posible. Varía el recurso cada día (metáfora, micro-historia, pregunta de reflexión, ejercicio breve de respiración o mindfulness, visualización, afirmación, mini reto consciente o idea de journaling); nunca repitas el mismo enfoque ni uses plantillas. Que se sienta escrito solo para ella hoy, como un acompañamiento personal, inteligente y profundamente humano. Tono cálido, humano, inspirador, cercano, elegante, positivo y respetuoso; nunca robótico ni genérico, y nunca menciones que eres una IA." + _nonce + "\nFormato EXACTO:\nFRASE: [Una frase corta y poderosa que conecte su emoción con su intención]\nCONT: [Exactamente 3 oraciones cortas pero profundas que la acompañen y la guíen hacia su intención. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]";
+    try {
+      var _craw = await askClaude(_cprompt);
+      var _cfm = _craw.match(/FRASE:\s*(.+)/);
+      var _cim = _craw.match(/CONT:\s*([\s\S]+)/);
+      var _cobj = { quote: _cfm ? _cfm[1].replace(/["\u201C\u201D]/g,"").trim() : null, cont: _cim ? _cim[1].trim() : _craw };
+      setComboMsg(_cobj);
+      try { localStorage.setItem(_ckey, JSON.stringify(_cobj)); } catch(e){}
+    } catch(e) {
+      setComboMsg({ quote: "No se pudo generar el mensaje. Intenta de nuevo.", cont: "" });
+    }
+    setComboLoading(false);
   }
 
   const cfg = TAB_CONFIG[activeTab]||TAB_CONFIG["Hoy"];
@@ -740,7 +761,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 14px",textAlign:"center"}}>¿Qué energía deseas cultivar hoy?</p>
           <div style={{display:"grid",gridTemplateColumns:user.plan==="elite"?"repeat(4, minmax(0, 1fr))":"repeat(3, minmax(0, 1fr))",gap:8,marginBottom:14}}>
             {(user.plan==="elite"?INTENCIONES_ELITE:INTENCIONES_FREE).map(([e,l])=>(
-              <button key={l} onClick={()=>setIntention(l)} style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,background:intention===l?C.gold+"22":C.cardDark,border:"1.5px solid "+(intention===l?C.gold:C.border),borderRadius:12,padding:"11px 3px",color:intention===l?C.gold:C.text,fontSize:11,fontFamily:S.fontUI,cursor:"pointer",fontWeight:intention===l?700:400,textAlign:"center",lineHeight:1.15}}>
+              <button key={l} onClick={()=>{setIntention(l);setComboMsg(null);}} style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,background:intention===l?C.gold+"22":C.cardDark,border:"1.5px solid "+(intention===l?C.gold:C.border),borderRadius:12,padding:"11px 3px",color:intention===l?C.gold:C.text,fontSize:11,fontFamily:S.fontUI,cursor:"pointer",fontWeight:intention===l?700:400,textAlign:"center",lineHeight:1.15}}>
                 <span style={{fontSize:22}}>{e}</span>{l}
               </button>
             ))}
@@ -765,7 +786,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 10px",textAlign:"center"}}>😊 ¿CÓMO TE SIENTES HOY?</p>
           <div style={{display:"grid",gridTemplateColumns:user.plan==="elite"?"repeat(4, 1fr)":"repeat(3, 1fr)",gap:6}}>
             {(user.plan==="elite"?MOODS_ELITE:MOODS_FREE).map(m=>(
-              <Btn key={m.l} onClick={()=>setMood(m.l)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"8px 3px",borderRadius:12,background:mood===m.l?`${C.gold}33`:C.cardDark,border:`1.5px solid ${mood===m.l?C.gold:C.border}`,color:C.text,fontSize:11,fontFamily:S.fontUI,minWidth:52}}>
+              <Btn key={m.l} onClick={()=>{setMood(m.l);setComboMsg(null);}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"8px 3px",borderRadius:12,background:mood===m.l?`${C.gold}33`:C.cardDark,border:`1.5px solid ${mood===m.l?C.gold:C.border}`,color:C.text,fontSize:11,fontFamily:S.fontUI,minWidth:52}}>
                 <span style={{fontSize:22}}>{m.e}</span>{m.l}
               </Btn>
             ))}
@@ -783,6 +804,22 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           )}
         </Card>
 
+
+        {user.plan==="elite" && mood && (intention||intentionText) && (
+          <Card style={{marginBottom:12}}>
+            <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 4px",textAlign:"center"}}>✨ Tu Mensaje de Hoy</p>
+            <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,margin:"0 0 14px",textAlign:"center"}}>Según cómo te sientes y la energía que deseas cultivar</p>
+            {comboMsg ? (
+              <div>
+                {comboMsg.quote && <p style={{color:C.goldL,fontSize:18,fontWeight:700,fontFamily:S.fontFamily,fontStyle:"italic",textAlign:"center",margin:"0 0 12px",lineHeight:1.4}}>{comboMsg.quote}</p>}
+                <p style={{color:C.text,fontSize:15,fontFamily:S.fontFamily,textAlign:"center",lineHeight:1.6,margin:0}}>{comboMsg.cont}</p>
+                <button onClick={()=>generateCombo(true)} disabled={comboLoading} style={{display:"block",margin:"16px auto 0",background:"none",border:"1px solid "+C.purple,borderRadius:20,padding:"7px 18px",color:C.purpleL,fontSize:12,fontFamily:S.fontUI,cursor:"pointer"}}>{comboLoading?"Creando...":"🔄 Generar otro"}</button>
+              </div>
+            ) : (
+              <button onClick={()=>generateCombo(false)} disabled={comboLoading} style={{width:"100%",padding:"14px",borderRadius:14,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",border:"none",color:"#1a0a00",fontSize:16,fontWeight:800,fontFamily:S.fontUI,cursor:"pointer"}}>{comboLoading?"Creando tu mensaje...":"✨ Recibir mi mensaje de hoy"}</button>
+            )}
+          </Card>
+        )}
 
         {user.plan==="elite" && <p style={{color:C.goldL,fontSize:14,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,textAlign:"center",margin:"6px 0 10px"}}>📔 Tus Diarios y Registros</p>}
         {user.plan==="elite" && <Btn onClick={onShowDiario} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📔 Mi Diario de Sueños</Btn>}
