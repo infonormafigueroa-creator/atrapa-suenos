@@ -159,7 +159,7 @@ function Welcome({onSignup, onLogin, onGuest, onLegal}) {
       padding:"32px 24px",textAlign:"center",position:"relative",zIndex:1
     }}>
       <h1 style={{
-        fontSize:52,fontWeight:900,fontFamily:S.fontFamily,
+        fontSize:"clamp(46px, 13vw, 58px)",fontWeight:900,fontFamily:S.fontFamily,
         background:`linear-gradient(135deg, #d99a08 0%, #ec6fb0 50%, #8a3ee0 100%)`,
         WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",
         margin:"0 0 4px",lineHeight:1.1,letterSpacing:1,filter:"drop-shadow(1px 1px 0 rgba(80,45,0,0.85)) drop-shadow(-1px 1px 0 rgba(80,45,0,0.85)) drop-shadow(0 0 1px rgba(60,30,0,0.9))"
@@ -348,7 +348,7 @@ function MsgCard({icon, label, quote, cont, onClose, bg}) {
 
 function Plans({onBack, onActivate, user}) {
   return (
-    <div style={{padding:"calc(env(safe-area-inset-top, 0px) + 26px) 16px calc(env(safe-area-inset-bottom, 0px) + 36px)",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto"}}>
+    <div style={{padding:"calc(env(safe-area-inset-top, 0px) + 26px) 16px calc(env(safe-area-inset-bottom, 0px) + 36px)",position:"relative",zIndex:1,maxWidth:560,margin:"0 auto"}}>
 
 
       <div>
@@ -443,7 +443,7 @@ function EliteSettings({user, onDone}) {
 
 function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg, guestDiasRestantes, onShowDiario, onShowGratitud, onShowBienestar, onShowAnimo}) {
   const today = new Date();
-  const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",timeZone:"America/New_York"});
+  const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
   const dateDisplay = dateStr.charAt(0).toUpperCase()+dateStr.slice(1);
   const streak = user.streak || 1;
 
@@ -606,7 +606,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
   useEffect(()=>{ if(isTodayBirthday(user.birthday)){ generateBirthday(); } else if(isTodayAnniversary(user.anniversary)){ generateAnniversary(); } else { generateMsg("Hoy"); } /* eslint-disable-next-line react-hooks/exhaustive-deps */ },[]);
 
   return (
-    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",paddingBottom:"calc(env(safe-area-inset-bottom) + 32px)"}}>
+    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:560,margin:"0 auto",paddingBottom:"calc(env(safe-area-inset-bottom) + 32px)"}}>
       <div style={{padding:"calc(env(safe-area-inset-top) + 14px) 16px 12px",position:"sticky",top:0,zIndex:10,background:`linear-gradient(180deg,${C.bg}ff 80%,${C.bg}00)`}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
           <div>
@@ -637,7 +637,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
       )}
       {showInsignias && (
         <div onClick={()=>setShowInsignias(false)} style={{position:"fixed",left:0,top:0,right:0,bottom:0,background:"rgba(0,0,0,0.65)",zIndex:50,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
-          <div onClick={e=>e.stopPropagation()} style={{background:C.card,borderTopLeftRadius:20,borderTopRightRadius:20,border:"1px solid "+C.border,padding:"20px 18px 28px",width:"100%",maxWidth:480,maxHeight:"78vh",overflowY:"auto"}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:C.card,borderTopLeftRadius:20,borderTopRightRadius:20,border:"1px solid "+C.border,padding:"20px 18px 28px",width:"100%",maxWidth:560,maxHeight:"78vh",overflowY:"auto"}}>
             <p style={{color:C.gold,fontSize:17,fontWeight:800,fontFamily:S.fontUI,margin:"0 0 4px",textAlign:"center"}}>🏅 Tus Insignias</p>
             <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,margin:"0 0 16px",textAlign:"center"}}>Tu racha actual: {streak} {streak===1?"día":"días"}</p>
             {[[7,"Primera Semana","🌱"],[14,"Dos Semanas","🔥"],[30,"Un Mes Completo","⭐"],[60,"Dos Meses","💪"],[100,"Cien Días","🏆"],[180,"Medio Año","🌟"],[365,"Un Año Entero","💎"]].map(function(b){
@@ -659,7 +659,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
       )}
       {showBgPicker && (
         <div onClick={()=>setShowBgPicker(false)} style={{position:"fixed",left:0,top:0,right:0,bottom:0,background:"rgba(0,0,0,0.65)",zIndex:50,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
-          <div onClick={e=>e.stopPropagation()} style={{background:C.card,borderTopLeftRadius:20,borderTopRightRadius:20,border:"1px solid "+C.border,padding:"20px 18px 28px",width:"100%",maxWidth:480,maxHeight:"72vh",overflowY:"auto"}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:C.card,borderTopLeftRadius:20,borderTopRightRadius:20,border:"1px solid "+C.border,padding:"20px 18px 28px",width:"100%",maxWidth:560,maxHeight:"72vh",overflowY:"auto"}}>
             <p style={{color:C.gold,fontSize:16,fontWeight:800,fontFamily:S.fontUI,margin:"0 0 4px",textAlign:"center"}}>🎨 Elige tu fondo</p>
             <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,margin:"0 0 16px",textAlign:"center"}}>Personaliza el ambiente de tu app</p>
             <div style={{display:"grid",gridTemplateColumns:"repeat(2, 1fr)",gap:12}}>
@@ -903,7 +903,7 @@ function DreamJournal({user, onBack}){
     setGuardando(false);
   }
   return (
-    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 32px)"}}>
+    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:560,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 32px)"}}>
       <h2 style={{color:C.goldL,fontSize:22,fontWeight:900,fontFamily:S.fontFamily,margin:"4px 0 4px"}}>📔 Mi Diario de Sueños</h2>
       <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 16px"}}>Escribe tu sueño de hoy y guárdalo para releerlo después.</p>
       <textarea value={text} onChange={e=>setText(e.target.value)} placeholder="Anoche soñé que..." rows={4} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"14px",color:C.text,fontSize:15,fontFamily:S.fontUI,boxSizing:"border-box",resize:"vertical"}}/>
@@ -944,7 +944,7 @@ function Journal({user, onBack, type, emoji, titulo, descripcion, placeholder, e
     setGuardando(false);
   }
   return (
-    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 32px)"}}>
+    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:560,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 32px)"}}>
       <h2 style={{color:C.goldL,fontSize:22,fontWeight:900,fontFamily:S.fontFamily,margin:"4px 0 4px"}}>{emoji} {titulo}</h2>
       <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 16px"}}>{descripcion}</p>
       <textarea value={text} onChange={e=>setText(e.target.value)} placeholder={placeholder} rows={4} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"14px",color:C.text,fontSize:15,fontFamily:S.fontUI,boxSizing:"border-box",resize:"vertical"}}/>
@@ -983,7 +983,7 @@ function MoodTracker({user, onBack}){
     setGuardando(false);
   }
   return (
-    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 32px)"}}>
+    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:560,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 32px)"}}>
       <h2 style={{color:C.goldL,fontSize:22,fontWeight:900,fontFamily:S.fontFamily,margin:"4px 0 4px"}}>📊 Historial de Ánimo</h2>
       <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 16px"}}>¿Cómo te sientes hoy? Toca tu ánimo para guardarlo.</p>
       <div style={{display:"grid",gridTemplateColumns:"repeat(4, 1fr)",gap:10,marginBottom:24}}>
@@ -1014,7 +1014,7 @@ function MoodTracker({user, onBack}){
 
 function EliteWelcome({ onContinue, name }){
   return (
-    <div style={{minHeight:"100vh",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 24px)"}}>
+    <div style={{minHeight:"100vh",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",maxWidth:560,margin:"0 auto",padding:"calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 24px)"}}>
       <div style={{fontSize:72,marginBottom:8}}>✨</div>
       <h1 style={{color:C.goldL,fontSize:30,fontWeight:900,fontFamily:S.fontFamily,margin:"0 0 10px"}}>¡Bienvenida a Elite!</h1>
       <p style={{color:C.text,fontSize:17,fontFamily:S.fontUI,lineHeight:1.6,margin:"0 0 8px"}}>{name?("¡Felicidades, "+name+"! "):"¡Felicidades! "}Tu pago se completó con éxito. 🎉</p>
@@ -1059,7 +1059,7 @@ function Legal({onBack}) {
   var pp={color:C.text,fontSize:14,fontFamily:S.fontUI,lineHeight:1.6,margin:"0 0 10px"};
   var li={color:C.muted,fontSize:14,fontFamily:S.fontUI,lineHeight:1.6,margin:"0 0 7px"};
   return (
-    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:480,margin:"0 auto",padding:"calc(env(safe-area-inset-top, 0px) + 26px) 20px calc(env(safe-area-inset-bottom, 0px) + 36px)"}}>
+    <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:560,margin:"0 auto",padding:"calc(env(safe-area-inset-top, 0px) + 26px) 20px calc(env(safe-area-inset-bottom, 0px) + 36px)"}}>
       <h2 style={{color:C.goldL,fontSize:24,fontWeight:900,fontFamily:S.fontFamily,margin:"0 0 2px",textAlign:"center"}}>Información Legal</h2>
       <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,textAlign:"center",margin:"0 0 6px"}}>Atrapa Sueños · Estados Unidos</p>
       <h3 style={sec}>🔒 Política de Privacidad</h3>
@@ -1211,8 +1211,8 @@ export default function App() {
         ))}
       </div>
       <Stars/>
-      <div style={{maxWidth:480,margin:"0 auto",position:"relative",zIndex:1}}>
-      {screen==="loading"&&<div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 24px",textAlign:"center",position:"relative",zIndex:1}}><h1 style={{fontSize:52,fontWeight:900,fontFamily:S.fontFamily,background:"linear-gradient(135deg, #d99a08 0%, #ec6fb0 50%, #8a3ee0 100%)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",margin:"0 0 4px",lineHeight:1.1,letterSpacing:1,filter:"drop-shadow(1px 1px 0 rgba(80,45,0,0.85)) drop-shadow(-1px 1px 0 rgba(80,45,0,0.85)) drop-shadow(0 0 1px rgba(60,30,0,0.9))"}}>Atrapa<br/>Sueños</h1><div style={{margin:"20px 0",animation:"pulse 3s ease-in-out infinite"}}><DreamCatcher size={140}/></div><p style={{color:C.gold,fontSize:16,fontWeight:800,fontFamily:S.fontUI,textTransform:"uppercase",letterSpacing:2,margin:"0 0 6px",textAlign:"center",lineHeight:1.3}}>✨ TU GUÍA DE MOTIVACIÓN<br/>PARA CADA DÍA ✨</p><p style={{color:C.goldL,fontSize:12,fontFamily:S.fontUI,fontWeight:700,letterSpacing:1.5,margin:0,opacity:0.95,textAlign:"center"}}>INSPIRACIÓN · MOTIVACIÓN · AFIRMACIÓN</p></div>}
+      <div style={{maxWidth:560,margin:"0 auto",position:"relative",zIndex:1}}>
+      {screen==="loading"&&<div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 24px",textAlign:"center",position:"relative",zIndex:1}}><h1 style={{fontSize:"clamp(46px, 13vw, 58px)",fontWeight:900,fontFamily:S.fontFamily,background:"linear-gradient(135deg, #d99a08 0%, #ec6fb0 50%, #8a3ee0 100%)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",margin:"0 0 4px",lineHeight:1.1,letterSpacing:1,filter:"drop-shadow(1px 1px 0 rgba(80,45,0,0.85)) drop-shadow(-1px 1px 0 rgba(80,45,0,0.85)) drop-shadow(0 0 1px rgba(60,30,0,0.9))"}}>Atrapa<br/>Sueños</h1><div style={{margin:"20px 0",animation:"pulse 3s ease-in-out infinite"}}><DreamCatcher size={140}/></div><p style={{color:C.gold,fontSize:16,fontWeight:800,fontFamily:S.fontUI,textTransform:"uppercase",letterSpacing:2,margin:"0 0 6px",textAlign:"center",lineHeight:1.3}}>✨ TU GUÍA DE MOTIVACIÓN<br/>PARA CADA DÍA ✨</p><p style={{color:C.goldL,fontSize:12,fontFamily:S.fontUI,fontWeight:700,letterSpacing:1.5,margin:0,opacity:0.95,textAlign:"center"}}>INSPIRACIÓN · MOTIVACIÓN · AFIRMACIÓN</p></div>}
       {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{ try{ if(!localStorage.getItem("as_guest_start")) localStorage.setItem("as_guest_start", hoyES()); }catch(e){} var _st=null; try{_st=localStorage.getItem("as_guest_start");}catch(e){} if(_st && diasDesde(_st)>=5){setAuthMode("signup");setScreen("auth");return;} setUser(u=>({...u,guest:true}));setScreen("setup");}} onLegal={()=>setScreen("legal")}/>}
       {screen==="legal"&&<Legal onBack={()=>setScreen("welcome")}/>}
       {screen==="resetPassword"&&<ResetPassword onDone={handleAuthSuccess}/>}
