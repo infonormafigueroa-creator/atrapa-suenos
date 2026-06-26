@@ -484,7 +484,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
   const planEmoji = user.plan==="elite"?"✨":"⭐";
 
   const TABS_FREE = [{id:"Hoy",e:"🌅"},{id:"Amor Propio",e:"💖"},{id:"Inspiración",e:"💡"},{id:"Afirmar",e:"✨"},{id:"Gratitud",e:"🙏"},{id:"Noche",e:"🌙"}];
-  const TABS_ELITE = [{id:"Astros",e:"♈"},{id:"Amor",e:"❤️"},{id:"Dinero",e:"💰"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Ritual ☀️",e:"🌅"},{id:"Ritual 🌙",e:"🌙"},{id:"Mi Guía",e:"🧠"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Guía Emocional",e:"😊"},{id:"Bienestar Salud",e:"☯️"},{id:"Reflexiones",e:"💎"}];
+  const TABS_ELITE = [{id:"Astros",e:"♈️"},{id:"Amor",e:"💕"},{id:"Dinero",e:"💰"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Ritual ☀️",e:"☀️"},{id:"Ritual 🌙",e:"🌙"},{id:"Mi Guía",e:"📊"},{id:"Guía Emocional",e:"😊"},{id:"Bienestar Salud",e:"⚖️"},{id:"Reflexiones",e:"💎"}];
   const tabs = user.plan==="elite"?TABS_ELITE:TABS_FREE;
 
   const TAB_CONFIG = {
@@ -495,17 +495,17 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
     "Afirmar":{icon:"✨",label:"AFIRMACIÓN",color:C.purpleL},
     "Gratitud":{icon:"🙏",label:"GRATITUD",color:C.green},
     "Bienestar":{icon:"🌿",label:"BIENESTAR",color:C.green},
-    "Astros":{icon:"♈",label:"HORÓSCOPO PROFUNDO",color:C.purpleL},
-    "Amor":{icon:"❤️",label:"AMOR PERSONALIZADO",color:C.pink},
-    "Dinero":{icon:"💰",label:"ABUNDANCIA Y DINERO",color:C.gold},
+    "Astros":{icon:"♈️",label:"HORÓSCOPO",color:C.purpleL},
+    "Amor":{icon:"💕",label:"AMOR",color:C.pink},
+    "Dinero":{icon:"💰",label:"ABUNDANCIA",color:C.gold},
     "Manifestación":{icon:"✨",label:"MANIFESTACIÓN",color:C.goldL},
-    "Propósito":{icon:"🎯",label:"PROPÓSITO Y METAS",color:C.purpleL},
-    "Ritual ☀️":{icon:"🌅",label:"RITUAL DE MAÑANA",color:C.goldL},
-    "Ritual 🌙":{icon:"🌙",label:"RITUAL DE NOCHE",color:C.blue},
-    "Mi Guía":{icon:"🧠",label:"MI GUÍA PERSONAL",color:C.purpleL},
+    "Propósito":{icon:"🎯",label:"METAS",color:C.purpleL},
+    "Ritual ☀️":{icon:"☀️",label:"REFLEXIÓN",color:C.goldL},
+    "Ritual 🌙":{icon:"🌙",label:"REFLEXIÓN",color:C.blue},
+    "Mi Guía":{icon:"📊",label:"GUÍA PERSONAL",color:C.purpleL},
     "Mi Gran Sueño":{icon:"🌟",label:"MI GRAN SUEÑO",color:C.purpleL},
     "Guía Emocional":{icon:"😊",label:"GUÍA EMOCIONAL",color:C.pink},
-    "Bienestar Salud":{icon:"☯️",label:"EQUILIBRIO",color:C.green},
+    "Bienestar Salud":{icon:"⚖️",label:"EQUILIBRIO",color:C.green},
     "Reflexiones":{icon:"💎",label:"REFLEXIONES ELITE",color:C.goldL},
   };
 
