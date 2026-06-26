@@ -630,11 +630,11 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           <div>
             <div style={{display:"flex",alignItems:"center",gap:10,marginTop:0}}>
               <span style={{color:C.white,fontSize:18,fontWeight:800,fontFamily:S.fontUI}}>
-                {`Hola, ${user.name} 👋`}
+                {`Hola, ${user.name}`}
               </span>
-              <span style={{background:`${planColor}33`,border:`1px solid ${planColor}`,color:planColor,borderRadius:20,padding:"3px 12px",fontSize:11,fontWeight:800,fontFamily:S.fontUI}}>{planEmoji} {planLabel}</span>
+              <span style={{background:`${C.goldL}22`,border:`1px solid ${C.goldL}`,color:C.goldL,borderRadius:10,padding:"6px 13px",fontSize:13,fontWeight:800,fontFamily:S.fontUI,whiteSpace:"nowrap",lineHeight:1}}>{planLabel}</span>
             </div>
-            <p style={{color:C.purpleL,fontSize:14,fontWeight:600,fontFamily:S.fontUI,margin:"4px 0 0",textAlign:"left"}}>{dateDisplay}</p>
+            <p style={{color:C.purpleL,fontSize:14,fontWeight:600,fontFamily:S.fontUI,margin:"2px 0 0",textAlign:"left"}}>{dateDisplay}</p>
           </div>
           <div style={{display:"flex",gap:8}}>
             <Btn onClick={()=>{var e=document.getElementById("seccion-progreso");if(e)e.scrollIntoView({behavior:"smooth",block:"start"});}} style={{background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:10,padding:"8px 10px",fontSize:16}}>🏆</Btn>
