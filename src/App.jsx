@@ -512,7 +512,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
   async function generateMsg(tab) {
     setLoading(true); setMsg(null);
     var _day = hoyES();
-    var _key = "as_msg_" + tab;
+    var _key = "as_msg_" + tab + (user.plan==="elite"?("_"+(mood||"")+"_"+(intentionText||intention||"")):"");
     try { var _s = localStorage.getItem(_key); if (_s) { var _o = JSON.parse(_s); if (_o.date === _day) { setMsg({quote:_o.quote, cont:_o.cont, ...TAB_CONFIG[tab]}); setLoading(false); return; } } } catch(e){}
     const todayFull = today.toLocaleDateString("es-ES",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
     const zodiacInfo = user.zodiac?`Signo zodiacal: ${user.zodiac}.`:"";
@@ -548,7 +548,13 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
       var _enfoques = ["la naturaleza","un recuerdo querido","el futuro que sueñas","la fuerza interior","la calma profunda","un nuevo comienzo","la conexión con otros","la valentía","la esperanza","la sabiduría del corazón","la libertad","la transformación","la paz interior","la abundancia","el agradecimiento","tu luz propia","el momento presente","los pequeños milagros","la resiliencia","la ternura"];
       var _enfoque = _enfoques[parseInt(_day.replace(/-/g,""),10) % _enfoques.length];
       var _variedad = "\n\nIMPORTANTE: Crea un mensaje COMPLETAMENTE ORIGINAL y distinto a cualquier otro día, inspirándote sutilmente en " + _enfoque + ". Usa palabras e imágenes frescas, evita frases cliché y estructuras repetidas. Que se sienta nuevo y único. (ref " + _day + ")";
-      const raw = await askClaude((prompts[tab]||prompts["Hoy"]) + _variedad);
+      var _emoHoy = mood || "";
+      var _intenHoy = intentionText || intention || "";
+      var _comboElite = "";
+      if (user.plan === "elite" && (_emoHoy || _intenHoy)) {
+        _comboElite = " PERSONALIZACIÓN ELITE (úsala como base, es lo más importante): Hoy la persona se siente así: " + (_emoHoy||"(sin especificar)") + ". La energía que desea cultivar hoy es: " + (_intenHoy||"(sin especificar)") + ". Combina AMBAS con naturalidad: parte de cómo se siente y guíala con calidez hacia la energía que desea cultivar; la combinación debe cambiar por completo el contenido. Si la emoción es difícil (tristeza, ansiedad, cansancio) y la intención es positiva, valida brevemente pero NO te quedes en el problema: ayúdala a avanzar hacia esa intención con un paso pequeño y posible. Varía el recurso cada día (puede ser una metáfora, una micro-historia, una pregunta de reflexión, un ejercicio breve de respiración o mindfulness, una visualización, una afirmación, un mini reto consciente o una idea de journaling); nunca repitas el mismo enfoque ni uses plantillas. Que se sienta escrito solo para ella hoy, como un acompañamiento personal, inteligente y profundamente humano. Tono cálido, humano, inspirador, cercano, elegante, positivo y respetuoso; nunca robótico ni genérico, y nunca menciones que eres una IA.";
+      }
+      const raw = await askClaude((prompts[tab]||prompts["Hoy"]) + _variedad + _comboElite);
       const fraseMatch = raw.match(/FRASE:\s*(.+)/);
       const introMatch = raw.match(/CONT:\s*([\s\S]+)/);
       setMsg({
