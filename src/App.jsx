@@ -484,7 +484,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
   const planEmoji = user.plan==="elite"?"✨":"⭐";
 
   const TABS_FREE = [{id:"Hoy",e:"🌅"},{id:"Amor Propio",e:"💖"},{id:"Inspiración",e:"💡"},{id:"Afirmar",e:"✨"},{id:"Gratitud",e:"🙏"},{id:"Noche",e:"🌙"}];
-  const TABS_ELITE = [{id:"Astros",e:"♈"},{id:"Amor",e:"❤️"},{id:"Dinero",e:"💰"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Ritual ☀️",e:"🌅"},{id:"Ritual 🌙",e:"🌙"},{id:"Mi Guía",e:"🧠"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Guía Emocional",e:"😊"},{id:"Bienestar Salud",e:"🌿"},{id:"Reflexiones",e:"💎"}];
+  const TABS_ELITE = [{id:"Astros",e:"♈"},{id:"Amor",e:"❤️"},{id:"Dinero",e:"💰"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Ritual ☀️",e:"🌅"},{id:"Ritual 🌙",e:"🌙"},{id:"Mi Guía",e:"🧠"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Guía Emocional",e:"😊"},{id:"Bienestar Salud",e:"☯️"},{id:"Reflexiones",e:"💎"}];
   const tabs = user.plan==="elite"?TABS_ELITE:TABS_FREE;
 
   const TAB_CONFIG = {
@@ -505,7 +505,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
     "Mi Guía":{icon:"🧠",label:"MI GUÍA PERSONAL",color:C.purpleL},
     "Mi Gran Sueño":{icon:"🌟",label:"MI GRAN SUEÑO",color:C.purpleL},
     "Guía Emocional":{icon:"😊",label:"GUÍA EMOCIONAL",color:C.pink},
-    "Bienestar Salud":{icon:"🌿",label:"BIENESTAR INTEGRAL",color:C.green},
+    "Bienestar Salud":{icon:"☯️",label:"EQUILIBRIO",color:C.green},
     "Reflexiones":{icon:"💎",label:"REFLEXIONES ELITE",color:C.goldL},
   };
 
@@ -707,6 +707,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         </div>
       )}
       <div style={{padding:"0 16px"}}>
+        {user.plan==="elite" && <p style={{color:C.goldL,fontSize:14,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,textAlign:"center",margin:"0 0 10px"}}>✨ Tus Guías Elite</p>}
         <div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:8,marginBottom:12}}>
           {tabs.map(t=>(
             <Btn key={t.id} onClick={()=>{setActiveTab(t.id);generateMsg(t.id);}} style={{padding:user.plan==="elite"?"7px 4px":"10px 6px",borderRadius:12,fontSize:user.plan==="elite"?11:13,fontFamily:S.fontUI,textAlign:"center",background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:600,textTransform:"uppercase",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:user.plan==="elite"?2:4,minHeight:user.plan==="elite"?56:70}}><span style={{fontSize:user.plan==="elite"?16:20}}>{t.e}</span><span style={{lineHeight:1.15}}>{(TAB_CONFIG[t.id]||{}).tab||(TAB_CONFIG[t.id]||{}).label||t.id}</span></Btn>
@@ -777,11 +778,10 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         </Card>
 
 
+        {user.plan==="elite" && <p style={{color:C.goldL,fontSize:14,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,textAlign:"center",margin:"6px 0 10px"}}>📔 Tus Diarios y Registros</p>}
         {user.plan==="elite" && <Btn onClick={onShowDiario} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📔 Mi Diario de Sueños</Btn>}
         
         {user.plan==="elite" && <Btn onClick={onShowGratitud} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>🙏 Diario de Gratitud</Btn>}
-        
-        {user.plan==="elite" && <Btn onClick={onShowBienestar} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>🌿 Registro de Bienestar</Btn>}
         
         {user.plan==="elite" && <Btn onClick={onShowAnimo} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📊 Historial de Ánimo</Btn>}
         
