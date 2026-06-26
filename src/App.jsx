@@ -732,10 +732,10 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 6px",textAlign:"center"}}>⭐ Mi Intención Del Día</p>
           {!dream ? (<>
           <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 14px",textAlign:"center"}}>¿Qué energía deseas cultivar hoy?</p>
-          <div style={{display:"grid",gridTemplateColumns:user.plan==="elite"?"repeat(4, 1fr)":"repeat(3, 1fr)",gap:8,marginBottom:14}}>
+          <div style={{display:"grid",gridTemplateColumns:user.plan==="elite"?"repeat(4, minmax(0, 1fr))":"repeat(3, minmax(0, 1fr))",gap:8,marginBottom:14}}>
             {(user.plan==="elite"?INTENCIONES_ELITE:INTENCIONES_FREE).map(([e,l])=>(
-              <button key={l} onClick={()=>setIntention(l)} style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,background:intention===l?C.gold+"22":C.cardDark,border:"1.5px solid "+(intention===l?C.gold:C.border),borderRadius:12,padding:"12px 4px",color:intention===l?C.gold:C.text,fontSize:12,fontFamily:S.fontUI,cursor:"pointer",fontWeight:intention===l?700:400,textAlign:"center",lineHeight:1.15}}>
-                <span style={{fontSize:24}}>{e}</span>{l}
+              <button key={l} onClick={()=>setIntention(l)} style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,background:intention===l?C.gold+"22":C.cardDark,border:"1.5px solid "+(intention===l?C.gold:C.border),borderRadius:12,padding:"11px 3px",color:intention===l?C.gold:C.text,fontSize:11,fontFamily:S.fontUI,cursor:"pointer",fontWeight:intention===l?700:400,textAlign:"center",lineHeight:1.15}}>
+                <span style={{fontSize:22}}>{e}</span>{l}
               </button>
             ))}
           </div>
@@ -788,9 +788,9 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginBottom:18,padding:"20px",borderRadius:16,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:19,fontWeight:900,fontFamily:S.fontUI,boxShadow:"0 6px 22px "+C.gold+"55"}}>Ver Plan Elite</Btn>}
         <div id="seccion-progreso" />
         <Card style={{marginBottom:12}}>
-          <div style={{background:"linear-gradient(135deg, "+C.gold+"22, "+C.goldL+"11)",border:"1px solid "+C.gold+"66",borderRadius:14,padding:"16px",marginBottom:14,display:"flex",alignItems:"center",justifyContent:"center",gap:16,boxShadow:"0 0 22px "+C.gold+"22"}}>
-            <span style={{fontSize:32}}>🏆</span>
-            <p style={{margin:0,fontFamily:S.fontFamily,color:C.goldL,fontSize:21,fontWeight:600,letterSpacing:0.3}}>Tu progreso: <span style={{fontWeight:700}}>{streak}</span> {streak===1?"día":"días"}</p>
+          <div style={{background:"linear-gradient(135deg, "+C.gold+"22, "+C.goldL+"11)",border:"1px solid "+C.gold+"66",borderRadius:14,padding:"16px",marginBottom:14,display:"flex",alignItems:"center",justifyContent:"center",gap:10,boxShadow:"0 0 22px "+C.gold+"22"}}>
+            <span style={{fontSize:22}}>🏆</span>
+            <p style={{margin:0,fontFamily:S.fontFamily,color:C.goldL,fontSize:20,fontWeight:600,letterSpacing:0.3,whiteSpace:"nowrap"}}>Tu progreso: <span style={{fontWeight:700}}>{streak}</span> {streak===1?"día":"días"}</p>
           </div>
           <p style={{color:C.goldL,fontSize:14,fontWeight:600,fontFamily:S.fontUI,textAlign:"center",margin:"0 0 16px"}}>¡Empieza hoy! Cada día cuenta 🌟</p>
           <p style={{color:C.purpleL,fontSize:14,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 12px",textAlign:"center"}}>🏅 Tus Insignias</p>
