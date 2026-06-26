@@ -540,7 +540,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
       "Mi Guía":`Coach de vida personal: guía decisiones, crecimiento y propósito (no solo emociones). ${nameInfo} Usuario ${user.gender}. ${moodInfo} ${zodiacInfo}\nFormato:\nFRASE: [Consejo de vida o reflexión para crecer]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Mi Gran Sueño":`Intérprete de sueños espiritual y simbólico. Usuario ${user.gender}.\nFormato:\nFRASE: [Frase sobre el significado profundo de los sueños]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Guía Emocional":`Guía emocional: ayuda a procesar y soltar la emoción de hoy con un pequeño paso de alivio. ${nameInfo} Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase de contención para la emoción de hoy]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
-      "Bienestar Salud":`Coach de bienestar integral, cuerpo y mente. ${nameInfo} Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre bienestar, energía y hábitos positivos]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
+      "Bienestar Salud":`Guía de equilibrio emocional y paz interior. ${nameInfo} Usuario ${user.gender}. ${moodInfo}\nFormato:\nFRASE: [Frase sobre calma, balance emocional y serenidad]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
       "Reflexiones":`Filósofo del alma, profundo y transformador. Usuario ${user.gender}.\nFormato:\nFRASE: [Reflexión profunda y transformadora]\nCONT: [Exactamente 3 oraciones cortas pero profundas que continúan la frase y tocan la emoción del lector. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]`,
     };
 
@@ -814,6 +814,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
 
         
         {!user.guest && <Btn onClick={onLogout} style={{width:"100%",marginTop:10,padding:"13px",borderRadius:12,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:13,fontFamily:S.fontUI}}>🚪 Cerrar Sesión</Btn>}
+        <p style={{color:C.muted,fontSize:11,fontFamily:S.fontUI,textAlign:"center",lineHeight:1.5,margin:"18px 10px 4px",opacity:0.85}}>Atrapa Sueños es una app de bienestar emocional y motivación. No brinda consejo médico ni sustituye atención profesional.</p>
       </div>
     </div>
   );
