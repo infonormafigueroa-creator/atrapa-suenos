@@ -389,7 +389,7 @@ function Plans({onBack, onActivate, user}) {
         ))}
         <Btn onClick={()=>{window.location.href="https://buy.stripe.com/28E28s4RYe6U4nqca91wY00"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:20,padding:"15px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Mensual — $9.99/mes</Btn>
         <Btn onClick={()=>{window.location.href="https://buy.stripe.com/4gM5kEfwC3sg4nq5LL1wY01"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:12,padding:"15px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Anual — $79.99/año · -33%</Btn>
-        <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:18,padding:"12px",borderRadius:10,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
+        <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:18,padding:"12px",borderRadius:10,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
         <p style={{display:"none"}}>🔧 Activar modo prueba</p>
       </div>
     </div>
@@ -698,7 +698,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
                 </div>
               );
             })}
-            <Btn onClick={()=>setShowInsignias(false)} style={{width:"100%",marginTop:12,padding:"12px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.border,color:C.muted,fontSize:13,fontFamily:S.fontUI}}>Cerrar</Btn>
+            <Btn onClick={()=>setShowInsignias(false)} style={{width:"100%",marginTop:12,padding:"12px",borderRadius:12,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:13,fontFamily:S.fontUI}}>Cerrar</Btn>
           </div>
         </div>
       )}
@@ -719,7 +719,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
                 );
               })}
             </div>
-            <Btn onClick={()=>setShowBgPicker(false)} style={{width:"100%",marginTop:16,padding:"12px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.border,color:C.muted,fontSize:13,fontFamily:S.fontUI}}>Cerrar</Btn>
+            <Btn onClick={()=>setShowBgPicker(false)} style={{width:"100%",marginTop:16,padding:"12px",borderRadius:12,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:13,fontFamily:S.fontUI}}>Cerrar</Btn>
           </div>
         </div>
       )}
@@ -757,7 +757,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
 
         <Card style={{marginBottom:12}}>
           <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 6px",textAlign:"center"}}>⭐ Mi Intención Del Día</p>
-          {!dream ? (<>
+          
           <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 14px",textAlign:"center"}}>¿Qué energía deseas cultivar hoy?</p>
           <div style={{display:"grid",gridTemplateColumns:user.plan==="elite"?"repeat(4, minmax(0, 1fr))":"repeat(3, minmax(0, 1fr))",gap:8,marginBottom:14}}>
             {(user.plan==="elite"?INTENCIONES_ELITE:INTENCIONES_FREE).map(([e,l])=>(
@@ -771,13 +771,13 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           </div>
           <input value={intentionText} onChange={e=>setIntentionText(e.target.value)} placeholder="Escribe tu intención personal aquí..."
             style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:10,padding:"12px",color:C.goldL,fontSize:15,fontFamily:S.fontUI,outline:"none",boxSizing:"border-box",marginBottom:10}}/>
-          <Btn onClick={()=>setDream(intentionText||intention)} style={{width:"100%",padding:"12px",borderRadius:10,background:"linear-gradient(135deg, "+C.purple+", "+C.purpleL+")",color:"#fff",fontSize:14,fontWeight:700,fontFamily:S.fontUI}}>Guardar Intención</Btn>
-          </>) : null}
-          {dream&&(
+          
+          
+          {(intention||intentionText)&&(
             <div style={{background:C.purple+"22",border:"1px solid "+C.purple,borderRadius:12,padding:"16px",textAlign:"center"}}>
               <p style={{color:C.purpleL,fontSize:11,margin:"0 0 6px",textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI}}>Tu intención de hoy</p>
-              <p style={{color:C.goldL,fontSize:19,fontWeight:700,fontFamily:S.fontUI,margin:"0 0 12px"}}>{dream}</p>
-              <button onClick={()=>{setDream("");setIntention("");setIntentionText("");}} style={{background:"none",border:"1px solid "+C.muted,borderRadius:20,padding:"6px 16px",color:C.muted,fontSize:12,fontFamily:S.fontUI,cursor:"pointer"}}>Cambiar</button>
+              <p style={{color:C.goldL,fontSize:19,fontWeight:700,fontFamily:S.fontUI,margin:"0 0 12px"}}>{intentionText||intention}</p>
+              <button onClick={()=>{setDream("");setIntention("");setIntentionText("");}} style={{background:C.gold+"22",border:"1px solid "+C.gold,borderRadius:20,padding:"6px 16px",color:C.goldL,fontSize:12,fontFamily:S.fontUI,cursor:"pointer"}}>Cambiar</button>
             </div>
           )}
         </Card>
@@ -856,7 +856,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
 
 
         
-        {!user.guest && <Btn onClick={onLogout} style={{width:"100%",marginTop:10,padding:"13px",borderRadius:12,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:13,fontFamily:S.fontUI}}>🚪 Cerrar Sesión</Btn>}
+        {!user.guest && <Btn onClick={onLogout} style={{width:"100%",marginTop:10,padding:"13px",borderRadius:12,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:13,fontFamily:S.fontUI}}>🚪 Cerrar Sesión</Btn>}
         <p style={{color:C.muted,fontSize:11,fontFamily:S.fontUI,textAlign:"center",lineHeight:1.5,margin:"18px 10px 4px",opacity:0.85}}>Atrapa Sueños es una app de bienestar emocional y motivación. No brinda consejo médico ni sustituye atención profesional.</p>
       </div>
     </div>
@@ -929,7 +929,7 @@ function Auth({ mode, onSuccess, onBack }) {
       <Btn onClick={submit} disabled={loading} style={{width:"100%",maxWidth:340,padding:"18px",borderRadius:14,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",color:"#1a0a00",fontSize:16,fontWeight:800,fontFamily:S.fontUI,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>{loading ? "Un momento..." : (isSignup ? "⭐ Crear Cuenta" : "🔑 Entrar")}</Btn>
       {!isSignup && <button onClick={recuperar} style={{background:"none",border:"none",color:C.muted,fontSize:13,cursor:"pointer",fontFamily:S.fontUI,marginBottom:16,textDecoration:"underline"}}>¿Olvidaste tu contraseña?</button>}
       {info && <p style={{color:C.goldL,fontSize:13,fontFamily:S.fontUI,margin:"0 0 16px",textAlign:"center",maxWidth:340,lineHeight:1.5}}>{info}</p>}
-      <button onClick={onBack} style={{background:"none",border:"none",color:C.muted,fontSize:14,cursor:"pointer",fontFamily:S.fontUI}}>← Volver</button>
+      <button onClick={onBack} style={{background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,borderRadius:20,padding:"8px 18px",fontSize:14,cursor:"pointer",fontFamily:S.fontUI}}>← Volver</button>
     </div>
   );
 }
@@ -983,7 +983,7 @@ function DreamJournal({user, onBack}){
           </div>
         ))
       )}
-      <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:24,padding:"12px",borderRadius:10,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
+      <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:24,padding:"12px",borderRadius:10,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
     </div>
   );
 }
@@ -1024,7 +1024,7 @@ function Journal({user, onBack, type, emoji, titulo, descripcion, placeholder, e
           </div>
         ))
       )}
-      <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:24,padding:"12px",borderRadius:10,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
+      <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:24,padding:"12px",borderRadius:10,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
     </div>
   );
 }
@@ -1069,7 +1069,7 @@ function MoodTracker({user, onBack}){
           </div>
         ))
       )}
-      <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:24,padding:"12px",borderRadius:10,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
+      <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:24,padding:"12px",borderRadius:10,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
     </div>
   );
 }
@@ -1146,7 +1146,7 @@ function Legal({onBack}) {
       <p style={li}>• Si estás pasando por un momento difícil o una crisis emocional, busca el apoyo de un profesional de la salud o de una persona de confianza.</p>
       <p style={li}>• El contenido astrológico es para reflexión y entretenimiento.</p>
       <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,textAlign:"center",margin:"22px 0 0",lineHeight:1.5}}>Contacto: info.normafigueroa@gmail.com</p>
-      <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:24,padding:"12px",borderRadius:10,background:"transparent",border:"1px solid "+C.border,color:C.muted,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
+      <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:24,padding:"12px",borderRadius:10,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
     </div>
   );
 }
