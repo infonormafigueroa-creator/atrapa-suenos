@@ -501,7 +501,7 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
   const planEmoji = user.plan==="elite"?"✨":"⭐";
 
   const TABS_FREE = [{id:"Hoy",e:"🌅"},{id:"Amor Propio",e:"💖"},{id:"Inspiración",e:"💡"},{id:"Afirmar",e:"✨"},{id:"Gratitud",e:"🙏"},{id:"Noche",e:"🌙"}];
-  const TABS_ELITE = [{id:"Astros",e:"♈️"},{id:"Amor",e:"💕"},{id:"Dinero",e:"🍀"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Ritual ☀️",e:"☀️"},{id:"Ritual 🌙",e:"🌙"},{id:"Mi Guía",e:"📊"},{id:"Guía Emocional",e:"😊"},{id:"Bienestar Salud",e:"⚖️"},{id:"Reflexiones",e:"💎"}];
+  const TABS_ELITE = [{id:"Amor",e:"💕"},{id:"Dinero",e:"🍀"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Ritual ☀️",e:"☀️"},{id:"Ritual 🌙",e:"🌙"},{id:"Mi Guía",e:"📊"},{id:"Guía Emocional",e:"😊"}];
   const tabs = user.plan==="elite"?TABS_ELITE:TABS_FREE;
 
   const TAB_CONFIG = {
@@ -689,12 +689,15 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
       </div>
 
       {user.plan==="elite" && user.zodiac && (
-        <div style={{position:"relative",overflow:"hidden",margin:"0 16px 12px",padding:"18px 16px",borderRadius:14,background:C.purple+"22",border:"1px solid "+C.purpleL,display:"flex",alignItems:"center",justifyContent:"center",gap:12}}>
+        <div onClick={()=>{setActiveTab("Astros");generateMsg("Astros");setTimeout(function(){var e=document.getElementById("seccion-mensaje");if(e)e.scrollIntoView({behavior:"smooth",block:"start"});},120);}} style={{cursor:"pointer",position:"relative",overflow:"hidden",margin:"0 16px 12px",padding:"15px 16px",borderRadius:14,background:C.purple+"22",border:"1.5px solid "+C.goldL,display:"flex",alignItems:"center",gap:12}}>
           {[{x:6,y:28,s:11,d:0},{x:18,y:68,s:8,d:0.7},{x:30,y:18,s:9,d:1.3},{x:72,y:22,s:10,d:0.4},{x:84,y:62,s:8,d:1.1},{x:94,y:35,s:11,d:0.9},{x:60,y:78,s:9,d:1.6}].map((st,i)=>(
             <span key={i} style={{position:"absolute",left:st.x+"%",top:st.y+"%",fontSize:st.s,animation:"tw 4s ease-in-out infinite",animationDelay:st.d+"s",pointerEvents:"none"}}>⭐</span>
           ))}
-          <span style={{position:"relative",fontSize:34}}>{(ZODIAC.find(z=>z.s===user.zodiac)||{}).e}</span>
-          <span style={{position:"relative",color:C.white,fontSize:22,fontWeight:800,fontFamily:S.fontUI,letterSpacing:0.3}}>Tu Signo {user.zodiac}</span>
+          <span style={{position:"relative",width:46,height:46,borderRadius:"50%",background:C.goldL+"22",border:"1px solid "+C.goldL,display:"flex",alignItems:"center",justifyContent:"center",fontSize:25,flexShrink:0}}>{(ZODIAC.find(z=>z.s===user.zodiac)||{}).e}</span>
+          <span style={{position:"relative",flex:1,textAlign:"left"}}>
+            <span style={{display:"block",color:C.white,fontSize:17,fontWeight:800,fontFamily:S.fontUI}}>Tu horóscopo · {user.zodiac}</span>
+            <span style={{display:"block",color:C.goldL,fontSize:13,fontFamily:S.fontUI,marginTop:2}}>Lee tu mensaje de hoy ›</span>
+          </span>
         </div>
       )}
       {showInsignias && (
@@ -750,7 +753,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           <span style={{fontSize:15,fontWeight:800,fontFamily:S.fontUI,color:C.pink}}>💍 ¡Feliz Aniversario! 💕</span>
         </div>
       )}
-      <div style={{padding:"0 16px"}}>
+      <div id="seccion-mensaje" style={{padding:"0 16px"}}>
         {user.plan==="elite" && <p style={{color:C.goldL,fontSize:14,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,textAlign:"center",margin:"0 0 10px"}}>✨ Tus Guías Elite</p>}
         <div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:8,marginBottom:12}}>
           {tabs.map(t=>(
