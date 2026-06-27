@@ -484,6 +484,7 @@ function EliteSettings({user, onDone}) {
   );
 }
 
+var _VOZ_URI = null;
 function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg, guestDiasRestantes, onShowDiario, onShowGratitud, onShowBienestar, onShowAnimo}) {
   const today = new Date();
   const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",timeZone:"America/New_York"});
@@ -513,6 +514,9 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
   const [vozMsg, setVozMsg] = useState(null);
   const [vozLoading, setVozLoading] = useState(false);
   const [vozSpeaking, setVozSpeaking] = useState(false);
+  const [horoMsg, setHoroMsg] = useState(null);
+  const [horoLoading, setHoroLoading] = useState(false);
+  const [vozOpen, setVozOpen] = useState(false);
 
   const planLabel = user.plan==="elite"?"Elite":"Gratis";
   const planColor = user.plan==="elite"?C.gold:C.gold;
@@ -553,10 +557,15 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
       u.lang = "es-ES"; u.rate = 0.95; u.pitch = 1.05;
       var vs = window.speechSynthesis.getVoices()||[];
       function _pick(fn){ for(var i=0;i<vs.length;i++){ if(fn(vs[i])) return vs[i]; } return null; }
-      var pref = _pick(function(v){return /paulina/i.test(v.name);})
-        || _pick(function(v){return /es(-|_)?MX/i.test(v.lang);})
-        || _pick(function(v){return /es(-|_)?(US|419|MX|CO|AR|CL|PE)/i.test(v.lang);})
-        || _pick(function(v){return /^es/i.test(v.lang);});
+      var pref = null;
+      if(_VOZ_URI){ pref = _pick(function(v){return v.voiceURI===_VOZ_URI;}); }
+      if(!pref){
+        pref = _pick(function(v){return /paulina/i.test(v.name);})
+          || _pick(function(v){return /es(-|_)?MX/i.test(v.lang);})
+          || _pick(function(v){return /es(-|_)?(US|419|MX|CO|AR|CL|PE)/i.test(v.lang);})
+          || _pick(function(v){return /^es/i.test(v.lang);});
+        if(pref){ _VOZ_URI = pref.voiceURI; }
+      }
       if(pref){ u.voice = pref; u.lang = pref.lang; }
       u.onstart = function(){ setVozSpeaking(true); };
       u.onend = function(){ setVozSpeaking(false); };
@@ -580,6 +589,30 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
       setVozMsg("Lo siento, no pude responder en este momento. Intenta de nuevo en un ratito.");
     }
     setVozLoading(false);
+  }
+  async function generateHoro(){
+    setHoroLoading(true); setHoroMsg(null);
+    var _day = hoyES();
+    var _key = "as_horo";
+    try { var _s = localStorage.getItem(_key); if (_s) { var _o = JSON.parse(_s); if (_o.date === _day) { setHoroMsg({quote:_o.quote, cont:_o.cont, ...TAB_CONFIG["Astros"]}); setHoroLoading(false); return; } } } catch(e){}
+    var zodiacInfo = user.zodiac?("Signo zodiacal: "+user.zodiac+"."):"";
+    var genderInfo = genderHint(user.gender);
+    var MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+    var birthInfo = (user.birthday && user.birthday.length===10 && user.birthday.slice(5)!=="00-00")?("Cumplea\u00f1os: "+parseInt(user.birthday.slice(8,10),10)+" de "+(MESES[parseInt(user.birthday.slice(5,7),10)-1]||"")+"."):"";
+    var prompt = "Astr\u00f3logo personal c\u00e1lido. "+zodiacInfo+" "+birthInfo+" "+genderInfo+"\nFormato:\nFRASE: [Mensaje c\u00f3smico]\nCONT: [Exactamente 3 oraciones cortas pero profundas que contin\u00faan la frase y tocan la emoci\u00f3n del lector. Habla de t\u00fa con calidez. No menciones el d\u00eda, la fecha ni el mes. Sin asteriscos.]";
+    var _variedad = "\n\nIMPORTANTE: Crea un mensaje COMPLETAMENTE ORIGINAL y distinto a cualquier otro d\u00eda. Usa palabras e im\u00e1genes frescas, evita clich\u00e9s. NO menciones ning\u00fan nombre propio. (ref "+_day+")";
+    try {
+      var raw = await askClaude(prompt + _variedad);
+      var fraseMatch = raw.match(/FRASE:\s*(.+)/);
+      var introMatch = raw.match(/CONT:\s*([\s\S]+)/);
+      var _qq = fraseMatch?fraseMatch[1].replace(/["\u201C\u201D]/g,"").trim():null;
+      var _cc = introMatch?introMatch[1].trim():raw;
+      setHoroMsg({quote:_qq, cont:_cc, ...TAB_CONFIG["Astros"]});
+      try { localStorage.setItem(_key, JSON.stringify({date:_day, quote:_qq, cont:_cc})); } catch(e){}
+    } catch(e) {
+      setHoroMsg({quote:"No se pudo generar el mensaje. Intenta de nuevo.",cont:"",icon:"\u264c",label:"HOR\u00d3SCOPO",color:C.purpleL});
+    }
+    setHoroLoading(false);
   }
   async function generateMsg(tab) {
     if(tab==="Voz") return;
@@ -746,7 +779,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
       </div>
 
       {user.plan==="elite" && user.zodiac && (
-        <div onClick={()=>{setActiveTab("Astros");generateMsg("Astros");setTimeout(function(){var e=document.getElementById("seccion-mensaje");if(e)e.scrollIntoView({behavior:"smooth",block:"start"});},120);}} style={{cursor:"pointer",position:"relative",overflow:"hidden",margin:"0 16px 12px",padding:"16px 16px",borderRadius:14,background:"linear-gradient(160deg, #ff2bd4 0%, #b06bff 30%, #2f6bff 55%, #00e8d0 78%, #15e85f 100%)",border:"1.5px solid rgba(255,255,255,0.85)",display:"flex",alignItems:"center",gap:12}}>
+        <div onClick={()=>{generateHoro();}} style={{cursor:"pointer",position:"relative",overflow:"hidden",margin:"0 16px 12px",padding:"16px 16px",borderRadius:14,background:"linear-gradient(160deg, #ff2bd4 0%, #b06bff 30%, #2f6bff 55%, #00e8d0 78%, #15e85f 100%)",border:"1.5px solid rgba(255,255,255,0.85)",display:"flex",alignItems:"center",gap:12}}>
           {[{x:6,y:28,s:11,d:0},{x:18,y:68,s:8,d:0.7},{x:30,y:18,s:9,d:1.3},{x:72,y:22,s:10,d:0.4},{x:84,y:62,s:8,d:1.1},{x:94,y:35,s:11,d:0.9},{x:60,y:78,s:9,d:1.6}].map((st,i)=>(
             <span key={i} style={{position:"absolute",left:st.x+"%",top:st.y+"%",fontSize:st.s,animation:"tw 4s ease-in-out infinite",animationDelay:st.d+"s",pointerEvents:"none"}}>⭐</span>
           ))}
@@ -757,16 +790,9 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           </span>
         </div>
       )}
-      {user.plan==="elite" && (
-        <div onClick={()=>{setActiveTab("Voz");setTimeout(function(){var e=document.getElementById("seccion-mensaje");if(e)e.scrollIntoView({behavior:"smooth",block:"start"});},120);}} style={{cursor:"pointer",position:"relative",overflow:"hidden",margin:"0 16px 12px",padding:"16px 16px",borderRadius:14,background:"linear-gradient(160deg, #ff2bd4 0%, #b06bff 30%, #2f6bff 55%, #00e8d0 78%, #15e85f 100%)",border:"1.5px solid rgba(255,255,255,0.85)",display:"flex",alignItems:"center",gap:12}}>
-          {[{x:6,y:28,s:11,d:0},{x:18,y:68,s:8,d:0.7},{x:30,y:18,s:9,d:1.3},{x:72,y:22,s:10,d:0.4},{x:84,y:62,s:8,d:1.1},{x:94,y:35,s:11,d:0.9},{x:60,y:78,s:9,d:1.6}].map((st,i)=>(
-            <span key={i} style={{position:"absolute",left:st.x+"%",top:st.y+"%",fontSize:st.s,animation:"tw 4s ease-in-out infinite",animationDelay:st.d+"s",pointerEvents:"none"}}>⭐</span>
-          ))}
-          <span style={{position:"relative",width:46,height:46,borderRadius:"50%",background:"rgba(255,255,255,0.25)",border:"1px solid rgba(255,255,255,0.75)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:25,flexShrink:0}}>🎙️</span>
-          <span style={{position:"relative",flex:1,textAlign:"center",fontFamily:S.fontFamily}}>
-            <span style={{display:"block",color:"#ffffff",fontSize:18,fontWeight:700,fontFamily:S.fontFamily,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Habla con tu Guía</span>
-            <span style={{display:"block",color:"#ffffff",fontSize:13,fontWeight:700,letterSpacing:1,textTransform:"uppercase",fontFamily:S.fontFamily,marginTop:3,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Te responde con voz ›</span>
-          </span>
+      {user.plan==="elite" && (horoLoading || horoMsg) && (
+        <div style={{margin:"0 16px 12px"}}>
+          {horoLoading ? <Card><Spinner/></Card> : <MsgCard {...horoMsg} bg={bg} onClose={()=>setHoroMsg(null)}/>}
         </div>
       )}
       {showInsignias && (
@@ -830,7 +856,33 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           ))}
         </div>
 
-        {activeTab==="Voz" ? (
+        {!msg&&!loading&&(
+          <Card>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+              <span style={{fontSize:18}}>{cfg.icon}</span>
+              <span style={{color:cfg.color,fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,fontFamily:S.fontUI}}>{cfg.label}</span>
+            </div>
+            <Btn onClick={()=>generateMsg(activeTab)} style={{width:"100%",padding:"14px",borderRadius:12,background:`${cfg.color}22`,border:`1px solid ${cfg.color}55`,color:cfg.color,fontSize:15,fontWeight:700,fontFamily:S.fontUI}}>📖 Leer Mi Mensaje</Btn>
+          </Card>
+        )}
+        {loading&&<Card><Spinner/></Card>}
+        {msg&&!loading&&<MsgCard {...msg} bg={bg} onClose={()=>setMsg(null)}/>}
+
+        
+
+        {user.plan==="elite" && (
+          <div onClick={()=>setVozOpen(function(o){return !o;})} style={{cursor:"pointer",position:"relative",overflow:"hidden",margin:"0 0 12px",padding:"16px 16px",borderRadius:14,background:"linear-gradient(160deg, #ff2bd4 0%, #b06bff 30%, #2f6bff 55%, #00e8d0 78%, #15e85f 100%)",border:"1.5px solid rgba(255,255,255,0.85)",display:"flex",alignItems:"center",gap:12}}>
+            {[{x:6,y:28,s:11,d:0},{x:18,y:68,s:8,d:0.7},{x:30,y:18,s:9,d:1.3},{x:72,y:22,s:10,d:0.4},{x:84,y:62,s:8,d:1.1},{x:94,y:35,s:11,d:0.9},{x:60,y:78,s:9,d:1.6}].map((st,i)=>(
+              <span key={i} style={{position:"absolute",left:st.x+"%",top:st.y+"%",fontSize:st.s,animation:"tw 4s ease-in-out infinite",animationDelay:st.d+"s",pointerEvents:"none"}}>⭐</span>
+            ))}
+            <span style={{position:"relative",width:46,height:46,borderRadius:"50%",background:"rgba(255,255,255,0.25)",border:"1px solid rgba(255,255,255,0.75)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:25,flexShrink:0}}>🎙️</span>
+            <span style={{position:"relative",flex:1,textAlign:"center",fontFamily:S.fontFamily}}>
+              <span style={{display:"block",color:"#ffffff",fontSize:18,fontWeight:700,fontFamily:S.fontFamily,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Habla con tu Guía</span>
+              <span style={{display:"block",color:"#ffffff",fontSize:13,fontWeight:700,letterSpacing:1,textTransform:"uppercase",fontFamily:S.fontFamily,marginTop:3,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Te responde con voz ›</span>
+            </span>
+          </div>
+        )}
+        {user.plan==="elite" && vozOpen && (
           <Card>
             <div style={{textAlign:"center",marginBottom:12}}>
               <div style={{fontSize:30}}>🎙️</div>
@@ -854,24 +906,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
             )}
             <p style={{color:C.muted,fontSize:11,fontFamily:S.fontUI,textAlign:"center",margin:"14px 0 0",lineHeight:1.4,opacity:0.8}}>Tu guía te acompaña con cariño, pero no sustituye la ayuda de un profesional.</p>
           </Card>
-        ) : (
-          <div>
-        {!msg&&!loading&&(
-          <Card>
-            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
-              <span style={{fontSize:18}}>{cfg.icon}</span>
-              <span style={{color:cfg.color,fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,fontFamily:S.fontUI}}>{cfg.label}</span>
-            </div>
-            <Btn onClick={()=>generateMsg(activeTab)} style={{width:"100%",padding:"14px",borderRadius:12,background:`${cfg.color}22`,border:`1px solid ${cfg.color}55`,color:cfg.color,fontSize:15,fontWeight:700,fontFamily:S.fontUI}}>📖 Leer Mi Mensaje</Btn>
-          </Card>
         )}
-        {loading&&<Card><Spinner/></Card>}
-        {msg&&!loading&&<MsgCard {...msg} bg={bg} onClose={()=>setMsg(null)}/>}
-          </div>
-        )}
-
-        
-
         <Card style={{marginBottom:12}}>
           <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 6px",textAlign:"center"}}>⭐ Mi Intención Del Día</p>
           
