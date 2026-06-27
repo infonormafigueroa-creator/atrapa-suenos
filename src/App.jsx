@@ -110,6 +110,8 @@ function Stars() {
         @keyframes fadeUp { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: translateY(0) } }
         @keyframes pulse { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.04) } }
         @keyframes slideIn { from { transform: translateX(100%) } to { transform: translateX(0) } }
+        .prisma-card { position: relative; }
+        .prisma-card::before { content:""; position:absolute; inset:0; border-radius:inherit; padding:2px; background:linear-gradient(145deg,#ff2bd4,#b06bff,#2f6bff,#00e8d0,#15e85f); -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
       `}</style>
       {pts.map((p,i)=>(
         <div key={i} style={{
@@ -135,8 +137,8 @@ function Btn({children, onClick, style={}, disabled=false}) {
 
 function Card({children, style={}}) {
   return (
-    <div style={{
-      background:C.card,border:`1px solid ${C.border}`,
+    <div className="prisma-card" style={{
+      background:C.card,position:"relative",
       borderRadius:16,padding:"16px",...style
     }}>{children}</div>
   );
