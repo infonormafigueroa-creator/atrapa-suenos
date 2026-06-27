@@ -194,6 +194,8 @@ function Welcome({onSignup, onLogin, onGuest, onLegal}) {
         <DreamCatcher size={140}/>
       </div>
 
+      <p style={{color:C.goldL,fontSize:17,fontFamily:S.fontFamily,fontStyle:"italic",fontWeight:600,lineHeight:1.55,margin:"0 8px 20px",maxWidth:330,textAlign:"center",opacity:0.95}}>“Que sueñes bonito... y que atrapes todos tus sueños.”</p>
+
       <p style={{
         color:C.gold,fontSize:16,fontWeight:800,fontFamily:S.fontUI,
         textTransform:"uppercase",letterSpacing:2,margin:"0 0 6px",textAlign:"center",lineHeight:1.3
