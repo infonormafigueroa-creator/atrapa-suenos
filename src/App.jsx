@@ -382,6 +382,9 @@ function MsgCard({icon, label, quote, cont, onClose, bg}) {
 }
 
 function Plans({onBack, onActivate, user}) {
+  const PRISMA_PAL=["#ff2bd4","#b06bff","#2f6bff","#00e8d0","#15e85f","#ffc21f"];
+  const PRISMA_ANG=[90,68,108,80,120,72];
+  const prismaSep=(i)=>{const k=i%6;return "linear-gradient("+PRISMA_ANG[i%6]+"deg,"+PRISMA_PAL.slice(k).concat(PRISMA_PAL.slice(0,k)).join(",")+")";};
   return (
     <div style={{padding:"calc(env(safe-area-inset-top, 0px) + 26px) 16px calc(env(safe-area-inset-bottom, 0px) + 36px)",position:"relative",zIndex:1,maxWidth:560,margin:"0 auto"}}>
 
@@ -391,17 +394,22 @@ function Plans({onBack, onActivate, user}) {
           <h3 style={{color:"#1a0a00",fontSize:22,fontWeight:900,fontFamily:S.fontFamily,margin:0}}>Atrapa Sueños Elite</h3>
         </div>
         {[
-          {e:"♈",l:"Horóscopo Profundo"},{e:"❤️",l:"Amor Personalizado"},
-          {e:"💰",l:"Dinero Y Abundancia"},{e:"🧠",l:"IA Guía Personal Ilimitada"},
-          {e:"🎯",l:"Propósito Y Metas"},{e:"🌅",l:"Rituales De Mañana Y Noche"},
-          {e:"⭐",l:"Mi Sueño Del Día Premium"},
-        ].map(({e,l})=>(
-          <div key={l} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 0",borderBottom:`1px solid ${C.border}`}}>
-            <div style={{display:"flex",alignItems:"center",gap:12}}>
-              <span style={{fontSize:22}}>{e}</span>
-              <span style={{color:C.text,fontSize:16,fontFamily:S.fontUI}}>{l}</span>
+          {e:"🔮",l:"Horóscopo personalizado"},{e:"💕",l:"Amor"},
+          {e:"🍀",l:"Abundancia"},{e:"✨",l:"Manifestación"},
+          {e:"🎯",l:"Metas"},{e:"🌟",l:"Mi Gran Sueño"},
+          {e:"☀️",l:"Reflexión de la mañana"},{e:"🌙",l:"Reflexión de la noche"},
+          {e:"📊",l:"Guía Personal · IA ilimitada"},{e:"😊",l:"Guía Emocional"},
+          {e:"🎨",l:"Fondos y colores premium"},
+        ].map(({e,l},i,arr)=>(
+          <div key={l}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 0"}}>
+              <div style={{display:"flex",alignItems:"center",gap:12}}>
+                <span style={{fontSize:21}}>{e}</span>
+                <span style={{color:C.text,fontSize:15,fontFamily:S.fontUI}}>{l}</span>
+              </div>
+              <span style={{background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",borderRadius:20,padding:"5px 14px",fontSize:11,fontWeight:800,fontFamily:S.fontUI}}>ELITE</span>
             </div>
-            <span style={{background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",borderRadius:20,padding:"6px 16px",fontSize:12,fontWeight:800,fontFamily:S.fontUI}}>ELITE</span>
+            {i<arr.length-1 && <div style={{height:2,borderRadius:2,background:prismaSep(i),opacity:0.9,margin:"0"}} />}
           </div>
         ))}
         <Btn onClick={()=>{window.location.href="https://buy.stripe.com/28E28s4RYe6U4nqca91wY00"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:20,padding:"15px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Mensual — $9.99/mes</Btn>
@@ -570,9 +578,8 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
 
     try {
       var _enfoques = ["la naturaleza","un recuerdo querido","el futuro que sueñas","la fuerza interior","la calma profunda","un nuevo comienzo","la conexión con otros","la valentía","la esperanza","la sabiduría del corazón","la libertad","la transformación","la paz interior","la abundancia","el agradecimiento","tu luz propia","el momento presente","los pequeños milagros","la resiliencia","la ternura"];
-      var _tabH = 0; for (var _ti=0; _ti<tab.length; _ti++) { _tabH += tab.charCodeAt(_ti); }
-      var _enfoque = _enfoques[(parseInt(_day.replace(/-/g,""),10) + _tabH) % _enfoques.length];
-      var _variedad = "\n\nIMPORTANTE: Crea un mensaje COMPLETAMENTE ORIGINAL y distinto a cualquier otro día, inspirándote sutilmente en " + _enfoque + ". Empieza con una apertura ORIGINAL y diferente a la de otras secciones; evita inicios genéricos o repetidos (no empieces igual que otras frases). Usa palabras e imágenes frescas, evita clichés y estructuras repetidas. Que se sienta nuevo y único. NO menciones ningún nombre propio ni el nombre de la persona. (ref " + _day + ")";
+      var _enfoque = _enfoques[parseInt(_day.replace(/-/g,""),10) % _enfoques.length];
+      var _variedad = "\n\nIMPORTANTE: Crea un mensaje COMPLETAMENTE ORIGINAL y distinto a cualquier otro día, inspirándote sutilmente en " + _enfoque + ". Usa palabras e imágenes frescas, evita frases cliché y estructuras repetidas. Que se sienta nuevo y único. NO menciones ningún nombre propio ni el nombre de la persona. (ref " + _day + ")";
       const raw = await askClaude((prompts[tab]||prompts["Hoy"]) + _variedad);
       const fraseMatch = raw.match(/FRASE:\s*(.+)/);
       const introMatch = raw.match(/CONT:\s*([\s\S]+)/);
