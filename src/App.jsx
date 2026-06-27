@@ -386,12 +386,12 @@ function Plans({onBack, onActivate, user}) {
   const PRISMA_ANG=[90,68,108,80,120,72];
   const prismaSep=(i)=>{const k=i%6;return "linear-gradient("+PRISMA_ANG[i%6]+"deg,"+PRISMA_PAL.slice(k).concat(PRISMA_PAL.slice(0,k)).join(",")+")";};
   return (
-    <div style={{padding:"calc(env(safe-area-inset-top, 0px) + 26px) 16px calc(env(safe-area-inset-bottom, 0px) + 36px)",position:"relative",zIndex:1,maxWidth:560,margin:"0 auto"}}>
+    <div style={{padding:"calc(env(safe-area-inset-top, 0px) + 12px) 16px calc(env(safe-area-inset-bottom, 0px) + 14px)",position:"relative",zIndex:1,maxWidth:560,margin:"0 auto"}}>
 
 
       <div>
-        <div style={{background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",borderRadius:14,padding:"16px",textAlign:"center",margin:"4px 0 20px"}}>
-          <h3 style={{color:"#1a0a00",fontSize:22,fontWeight:900,fontFamily:S.fontFamily,margin:0}}>Atrapa Sueños Elite</h3>
+        <div style={{background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",borderRadius:14,padding:"10px",textAlign:"center",margin:"0 0 10px"}}>
+          <h3 style={{color:"#1a0a00",fontSize:18,fontWeight:900,fontFamily:S.fontFamily,margin:0}}>Atrapa Sueños Elite</h3>
         </div>
         {[
           {e:"🔮",l:"Horóscopo personalizado"},{e:"💕",l:"Amor"},
@@ -402,19 +402,19 @@ function Plans({onBack, onActivate, user}) {
           {e:"🎨",l:"Fondos y colores premium"},
         ].map(({e,l},i,arr)=>(
           <div key={l}>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 0"}}>
-              <div style={{display:"flex",alignItems:"center",gap:12}}>
-                <span style={{fontSize:21}}>{e}</span>
-                <span style={{color:C.text,fontSize:15,fontFamily:S.fontUI}}>{l}</span>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"5px 0"}}>
+              <div style={{display:"flex",alignItems:"center",gap:10}}>
+                <span style={{fontSize:19}}>{e}</span>
+                <span style={{color:C.text,fontSize:14,fontFamily:S.fontUI}}>{l}</span>
               </div>
-              <span style={{background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",borderRadius:20,padding:"5px 14px",fontSize:11,fontWeight:800,fontFamily:S.fontUI}}>ELITE</span>
+              <span style={{background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",borderRadius:20,padding:"4px 12px",fontSize:10,fontWeight:800,fontFamily:S.fontUI}}>ELITE</span>
             </div>
             {i<arr.length-1 && <div style={{height:2,borderRadius:2,background:prismaSep(i),opacity:0.9,margin:"0"}} />}
           </div>
         ))}
-        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/28E28s4RYe6U4nqca91wY00"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:20,padding:"15px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Mensual — $9.99/mes</Btn>
-        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/4gM5kEfwC3sg4nq5LL1wY01"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:12,padding:"15px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Anual — $79.99/año · -33%</Btn>
-        <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:18,padding:"12px",borderRadius:10,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:14,fontFamily:S.fontUI}}>← Volver</Btn>
+        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/28E28s4RYe6U4nqca91wY00"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:12,padding:"12px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:15,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Mensual — $9.99/mes</Btn>
+        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/4gM5kEfwC3sg4nq5LL1wY01"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:8,padding:"12px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:15,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Anual — $79.99/año · -33%</Btn>
+        <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:10,padding:"9px",borderRadius:10,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:13,fontFamily:S.fontUI}}>← Volver</Btn>
         <p style={{display:"none"}}>🔧 Activar modo prueba</p>
       </div>
     </div>
@@ -862,7 +862,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         
         {user.plan==="elite" && <Btn onClick={onShowAnimo} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📊 Historial de Ánimo</Btn>}
         
-        {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginBottom:18,padding:"20px",borderRadius:16,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:19,fontWeight:900,fontFamily:S.fontUI,boxShadow:"0 6px 22px "+C.gold+"55"}}>Ver Plan Elite</Btn>}
+        {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginBottom:18,padding:"16px",borderRadius:16,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontFamily:S.fontUI,boxShadow:"0 8px 26px "+C.gold+"66",border:"2px solid #fff7e0"}}><span style={{display:"block",fontSize:19,fontWeight:900}}>✨ Ver Plan Elite ✨</span><span style={{display:"block",fontSize:12,fontWeight:700,marginTop:3,opacity:0.85}}>Desbloquea todas las funciones 🌈</span></Btn>}
         <div id="seccion-progreso" />
         <Card style={{marginBottom:12}}>
           <div style={{background:"linear-gradient(135deg, "+C.gold+"22, "+C.goldL+"11)",border:"1px solid "+C.gold+"66",borderRadius:14,padding:"16px",marginBottom:14,display:"flex",alignItems:"center",justifyContent:"center",gap:10,boxShadow:"0 0 22px "+C.gold+"22"}}>
