@@ -466,7 +466,7 @@ function EliteSettings({user, onDone}) {
   );
 }
 
-function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg, guestDiasRestantes, onShowDiario, onShowGratitud, onShowBienestar, onShowAnimo}) {
+function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg, guestDiasRestantes, onShowDiario, onShowGratitud, onShowBienestar, onShowAnimo}) {
   const today = new Date();
   const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",timeZone:"America/New_York"});
   const dateDisplay = dateStr.charAt(0).toUpperCase()+dateStr.slice(1);
@@ -865,6 +865,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         
         {!user.guest && <Btn onClick={onLogout} style={{width:"100%",marginTop:10,padding:"13px",borderRadius:12,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:13,fontFamily:S.fontUI}}>🚪 Cerrar Sesión</Btn>}
         <p style={{color:C.muted,fontSize:11,fontFamily:S.fontUI,textAlign:"center",lineHeight:1.5,margin:"18px 10px 4px",opacity:0.85}}>Atrapa Sueños es una app de bienestar emocional y motivación. No brinda consejo médico ni sustituye atención profesional.</p>
+        <p onClick={onLegal} style={{color:C.goldL,fontSize:12,fontFamily:S.fontUI,textAlign:"center",margin:"4px 10px 8px",cursor:"pointer",textDecoration:"underline",opacity:0.9}}>Información Legal · Privacidad · Términos</p>
       </div>
     </div>
   );
@@ -1131,6 +1132,7 @@ function Legal({onBack}) {
     <div style={{minHeight:"100vh",position:"relative",zIndex:1,maxWidth:560,margin:"0 auto",padding:"calc(env(safe-area-inset-top, 0px) + 26px) 20px calc(env(safe-area-inset-bottom, 0px) + 36px)"}}>
       <h2 style={{color:C.goldL,fontSize:24,fontWeight:900,fontFamily:S.fontFamily,margin:"0 0 2px",textAlign:"center"}}>Información Legal</h2>
       <p style={{color:C.muted,fontSize:12,fontFamily:S.fontUI,textAlign:"center",margin:"0 0 6px"}}>Atrapa Sueños · Estados Unidos</p>
+      <p style={{color:C.muted,fontSize:11,fontFamily:S.fontUI,textAlign:"center",margin:"0 0 6px",opacity:0.85}}>Última actualización: junio 2026</p>
       <h3 style={sec}>🔒 Política de Privacidad</h3>
       <p style={pp}>En Atrapa Sueños tu privacidad es muy importante. Aquí te explicamos qué información guardamos y cómo la cuidamos.</p>
       <p style={li}>• Qué guardamos: tu nombre, correo electrónico, fecha de nacimiento, género, signo zodiacal y las entradas que decidas crear (sueños, gratitud, bienestar y estados de ánimo).</p>
@@ -1163,6 +1165,7 @@ export default function App() {
   const [authMode, setAuthMode] = useState("signup");
   const [user, setUser] = useState({plan:"free"});
   const [bg, setBg] = useState("canva");
+  const [legalReturn, setLegalReturn] = useState("welcome");
 
   async function handleSetup(data) {
     setUser(u=>({...u,...data}));
@@ -1282,13 +1285,13 @@ export default function App() {
       <Stars/>
       <div style={{maxWidth:560,margin:"0 auto",position:"relative",zIndex:1}}>
       {screen==="loading"&&<div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 24px",textAlign:"center",position:"relative",zIndex:1}}><h1 style={{fontSize:52,fontWeight:900,fontFamily:S.fontFamily,background:"linear-gradient(135deg, #d99a08 0%, #ec6fb0 50%, #8a3ee0 100%)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",margin:"0 0 4px",lineHeight:1.1,letterSpacing:1,filter:"drop-shadow(1px 1px 0 rgba(80,45,0,0.85)) drop-shadow(-1px 1px 0 rgba(80,45,0,0.85)) drop-shadow(0 0 1px rgba(60,30,0,0.9))"}}>Atrapa<br/>Sueños</h1><div style={{margin:"20px 0",animation:"pulse 3s ease-in-out infinite"}}><DreamCatcher size={140}/></div><p style={{color:C.gold,fontSize:16,fontWeight:800,fontFamily:S.fontUI,textTransform:"uppercase",letterSpacing:2,margin:"0 0 6px",textAlign:"center",lineHeight:1.3}}>✨ TU GUÍA DE MOTIVACIÓN<br/>PARA CADA DÍA ✨</p><p style={{color:C.goldL,fontSize:12,fontFamily:S.fontUI,fontWeight:700,letterSpacing:1.5,margin:0,opacity:0.95,textAlign:"center"}}>INSPIRACIÓN · MOTIVACIÓN · AFIRMACIÓN</p></div>}
-      {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{ try{ if(!localStorage.getItem("as_guest_start")) localStorage.setItem("as_guest_start", hoyES()); }catch(e){} var _st=null; try{_st=localStorage.getItem("as_guest_start");}catch(e){} if(_st && diasDesde(_st)>=5){setAuthMode("signup");setScreen("auth");return;} setUser(u=>({...u,guest:true}));setScreen("setup");}} onLegal={()=>setScreen("legal")}/>}
-      {screen==="legal"&&<Legal onBack={()=>setScreen("welcome")}/>}
+      {screen==="welcome"&&<Welcome onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}} onGuest={()=>{ try{ if(!localStorage.getItem("as_guest_start")) localStorage.setItem("as_guest_start", hoyES()); }catch(e){} var _st=null; try{_st=localStorage.getItem("as_guest_start");}catch(e){} if(_st && diasDesde(_st)>=5){setAuthMode("signup");setScreen("auth");return;} setUser(u=>({...u,guest:true}));setScreen("setup");}} onLegal={()=>{setLegalReturn("welcome");setScreen("legal");}}/>}
+      {screen==="legal"&&<Legal onBack={()=>setScreen(legalReturn)}/>}
       {screen==="resetPassword"&&<ResetPassword onDone={handleAuthSuccess}/>}
       {screen==="auth"&&<Auth mode={authMode} onSuccess={handleAuthSuccess} onBack={()=>setScreen("welcome")}/>}
       {screen==="setup"&&<Setup onDone={handleSetup}/>}
       {screen==="dashboard"&&guestBloqueado&&<GuestWall onSignup={()=>{setAuthMode("signup");setScreen("auth");}} onLogin={()=>{setAuthMode("login");setScreen("auth");}}/>}
-      {screen==="dashboard"&&!guestBloqueado&&<Dashboard user={user} onShowDiario={()=>setScreen("diario")} onShowGratitud={()=>setScreen("gratitud")} onShowBienestar={()=>setScreen("bienestar")} onShowAnimo={()=>setScreen("animo")} guestDiasRestantes={guestDiasRestantes} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}} bg={bg} onChangeBg={(id)=>{setBg(id); if(user.id){try{supabase.from("profiles").update({background:id}).eq("id",user.id);}catch(e){}}}}/>}
+      {screen==="dashboard"&&!guestBloqueado&&<Dashboard user={user} onShowDiario={()=>setScreen("diario")} onLegal={()=>{setLegalReturn("dashboard");setScreen("legal");}} onShowGratitud={()=>setScreen("gratitud")} onShowBienestar={()=>setScreen("bienestar")} onShowAnimo={()=>setScreen("animo")} guestDiasRestantes={guestDiasRestantes} onShowPlans={()=>setScreen("plans")} onShowEliteSettings={()=>setScreen("eliteSettings")} onLogin={()=>{setUser({plan:"free"});setScreen("welcome");}} onLogout={async()=>{try{await supabase.auth.signOut();}catch(e){} setUser({plan:"free"});setScreen("welcome");}} bg={bg} onChangeBg={(id)=>{setBg(id); if(user.id){try{supabase.from("profiles").update({background:id}).eq("id",user.id);}catch(e){}}}}/>}
       {screen==="plans"&&<Plans user={user} onBack={()=>setScreen("dashboard")} onActivate={()=>{setUser(u=>({...u,plan:"elite"}));setScreen("eliteSettings");}}/>}
       {screen==="eliteSettings"&&<EliteSettings user={user} onDone={handleEliteSettings}/>}
       {screen==="diario"&&<DreamJournal user={user} onBack={()=>setScreen("dashboard")}/>}
