@@ -570,8 +570,9 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
 
     try {
       var _enfoques = ["la naturaleza","un recuerdo querido","el futuro que sueñas","la fuerza interior","la calma profunda","un nuevo comienzo","la conexión con otros","la valentía","la esperanza","la sabiduría del corazón","la libertad","la transformación","la paz interior","la abundancia","el agradecimiento","tu luz propia","el momento presente","los pequeños milagros","la resiliencia","la ternura"];
-      var _enfoque = _enfoques[parseInt(_day.replace(/-/g,""),10) % _enfoques.length];
-      var _variedad = "\n\nIMPORTANTE: Crea un mensaje COMPLETAMENTE ORIGINAL y distinto a cualquier otro día, inspirándote sutilmente en " + _enfoque + ". Usa palabras e imágenes frescas, evita frases cliché y estructuras repetidas. Que se sienta nuevo y único. NO menciones ningún nombre propio ni el nombre de la persona. (ref " + _day + ")";
+      var _tabH = 0; for (var _ti=0; _ti<tab.length; _ti++) { _tabH += tab.charCodeAt(_ti); }
+      var _enfoque = _enfoques[(parseInt(_day.replace(/-/g,""),10) + _tabH) % _enfoques.length];
+      var _variedad = "\n\nIMPORTANTE: Crea un mensaje COMPLETAMENTE ORIGINAL y distinto a cualquier otro día, inspirándote sutilmente en " + _enfoque + ". Empieza con una apertura ORIGINAL y diferente a la de otras secciones; evita inicios genéricos o repetidos (no empieces igual que otras frases). Usa palabras e imágenes frescas, evita clichés y estructuras repetidas. Que se sienta nuevo y único. NO menciones ningún nombre propio ni el nombre de la persona. (ref " + _day + ")";
       const raw = await askClaude((prompts[tab]||prompts["Hoy"]) + _variedad);
       const fraseMatch = raw.match(/FRASE:\s*(.+)/);
       const introMatch = raw.match(/CONT:\s*([\s\S]+)/);
