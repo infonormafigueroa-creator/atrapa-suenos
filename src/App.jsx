@@ -519,7 +519,7 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
   const planEmoji = user.plan==="elite"?"✨":"⭐";
 
   const TABS_FREE = [{id:"Hoy",e:"🌅"},{id:"Amor Propio",e:"💖"},{id:"Inspiración",e:"💡"},{id:"Afirmar",e:"✨"},{id:"Gratitud",e:"🙏"},{id:"Noche",e:"🌙"}];
-  const TABS_ELITE = [{id:"Ritual ☀️",e:"☀️"},{id:"Amor",e:"💕"},{id:"Dinero",e:"🍀"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Mi Guía",e:"📊"},{id:"Guía Emocional",e:"😊"},{id:"Ritual 🌙",e:"🌙"},{id:"Voz",e:"🎙️"}];
+  const TABS_ELITE = [{id:"Ritual ☀️",e:"☀️"},{id:"Amor",e:"💕"},{id:"Dinero",e:"🍀"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Mi Guía",e:"📊"},{id:"Guía Emocional",e:"😊"},{id:"Ritual 🌙",e:"🌙"}];
   const tabs = user.plan==="elite"?TABS_ELITE:TABS_FREE;
 
   const TAB_CONFIG = {
@@ -552,8 +552,12 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
       var u = new SpeechSynthesisUtterance(texto);
       u.lang = "es-ES"; u.rate = 0.95; u.pitch = 1.05;
       var vs = window.speechSynthesis.getVoices()||[];
-      var pref = vs.find(function(v){return /es(-|_)?(ES|MX|US|419)/i.test(v.lang);}) || vs.find(function(v){return /^es/i.test(v.lang);});
-      if(pref) u.voice = pref;
+      function _pick(fn){ for(var i=0;i<vs.length;i++){ if(fn(vs[i])) return vs[i]; } return null; }
+      var pref = _pick(function(v){return /paulina/i.test(v.name);})
+        || _pick(function(v){return /es(-|_)?MX/i.test(v.lang);})
+        || _pick(function(v){return /es(-|_)?(US|419|MX|CO|AR|CL|PE)/i.test(v.lang);})
+        || _pick(function(v){return /^es/i.test(v.lang);});
+      if(pref){ u.voice = pref; u.lang = pref.lang; }
       u.onstart = function(){ setVozSpeaking(true); };
       u.onend = function(){ setVozSpeaking(false); };
       u.onerror = function(){ setVozSpeaking(false); };
@@ -616,8 +620,9 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
 
     try {
       var _enfoques = ["la naturaleza","un recuerdo querido","el futuro que sueñas","la fuerza interior","la calma profunda","un nuevo comienzo","la conexión con otros","la valentía","la esperanza","la sabiduría del corazón","la libertad","la transformación","la paz interior","la abundancia","el agradecimiento","tu luz propia","el momento presente","los pequeños milagros","la resiliencia","la ternura"];
-      var _enfoque = _enfoques[parseInt(_day.replace(/-/g,""),10) % _enfoques.length];
-      var _variedad = "\n\nIMPORTANTE: Crea un mensaje COMPLETAMENTE ORIGINAL y distinto a cualquier otro día, inspirándote sutilmente en " + _enfoque + ". Usa palabras e imágenes frescas, evita frases cliché y estructuras repetidas. Que se sienta nuevo y único. NO menciones ningún nombre propio ni el nombre de la persona. (ref " + _day + ")";
+      var _tabH = 0; for (var _ti=0; _ti<tab.length; _ti++) { _tabH += tab.charCodeAt(_ti); }
+      var _enfoque = _enfoques[(parseInt(_day.replace(/-/g,""),10) + _tabH) % _enfoques.length];
+      var _variedad = "\n\nIMPORTANTE: Crea un mensaje COMPLETAMENTE ORIGINAL y distinto a cualquier otro día, inspirándote sutilmente en " + _enfoque + ". Empieza con una apertura ORIGINAL y diferente a la de otras secciones; evita inicios genéricos o repetidos (no empieces igual que otras frases). Usa palabras e imágenes frescas, evita clichés y estructuras repetidas. Que se sienta nuevo y único. NO menciones ningún nombre propio ni el nombre de la persona. (ref " + _day + ")";
       const raw = await askClaude((prompts[tab]||prompts["Hoy"]) + _variedad);
       const fraseMatch = raw.match(/FRASE:\s*(.+)/);
       const introMatch = raw.match(/CONT:\s*([\s\S]+)/);
@@ -746,9 +751,21 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
             <span key={i} style={{position:"absolute",left:st.x+"%",top:st.y+"%",fontSize:st.s,animation:"tw 4s ease-in-out infinite",animationDelay:st.d+"s",pointerEvents:"none"}}>⭐</span>
           ))}
           <span style={{position:"relative",width:46,height:46,borderRadius:"50%",background:"rgba(255,255,255,0.25)",border:"1px solid rgba(255,255,255,0.75)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:25,flexShrink:0}}>{(ZODIAC.find(z=>z.s===user.zodiac)||{}).e}</span>
-          <span style={{position:"relative",flex:1,textAlign:"left"}}>
-            <span style={{display:"block",color:"#ffffff",fontSize:17,fontWeight:800,fontFamily:S.fontUI,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Tu horóscopo · {user.zodiac}</span>
-            <span style={{display:"block",color:"#ffffff",fontSize:13.5,fontWeight:800,letterSpacing:1,textTransform:"uppercase",fontFamily:S.fontUI,marginTop:3,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Lee tu mensaje de hoy ›</span>
+          <span style={{position:"relative",flex:1,textAlign:"center",fontFamily:S.fontFamily}}>
+            <span style={{display:"block",color:"#ffffff",fontSize:18,fontWeight:700,fontFamily:S.fontFamily,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Tu horóscopo · {user.zodiac}</span>
+            <span style={{display:"block",color:"#ffffff",fontSize:13,fontWeight:700,letterSpacing:1,textTransform:"uppercase",fontFamily:S.fontFamily,marginTop:3,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Lee tu mensaje de hoy ›</span>
+          </span>
+        </div>
+      )}
+      {user.plan==="elite" && (
+        <div onClick={()=>{setActiveTab("Voz");setTimeout(function(){var e=document.getElementById("seccion-mensaje");if(e)e.scrollIntoView({behavior:"smooth",block:"start"});},120);}} style={{cursor:"pointer",position:"relative",overflow:"hidden",margin:"0 16px 12px",padding:"16px 16px",borderRadius:14,background:"linear-gradient(160deg, #ff2bd4 0%, #b06bff 30%, #2f6bff 55%, #00e8d0 78%, #15e85f 100%)",border:"1.5px solid rgba(255,255,255,0.85)",display:"flex",alignItems:"center",gap:12}}>
+          {[{x:6,y:28,s:11,d:0},{x:18,y:68,s:8,d:0.7},{x:30,y:18,s:9,d:1.3},{x:72,y:22,s:10,d:0.4},{x:84,y:62,s:8,d:1.1},{x:94,y:35,s:11,d:0.9},{x:60,y:78,s:9,d:1.6}].map((st,i)=>(
+            <span key={i} style={{position:"absolute",left:st.x+"%",top:st.y+"%",fontSize:st.s,animation:"tw 4s ease-in-out infinite",animationDelay:st.d+"s",pointerEvents:"none"}}>⭐</span>
+          ))}
+          <span style={{position:"relative",width:46,height:46,borderRadius:"50%",background:"rgba(255,255,255,0.25)",border:"1px solid rgba(255,255,255,0.75)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:25,flexShrink:0}}>🎙️</span>
+          <span style={{position:"relative",flex:1,textAlign:"center",fontFamily:S.fontFamily}}>
+            <span style={{display:"block",color:"#ffffff",fontSize:18,fontWeight:700,fontFamily:S.fontFamily,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Habla con tu Guía</span>
+            <span style={{display:"block",color:"#ffffff",fontSize:13,fontWeight:700,letterSpacing:1,textTransform:"uppercase",fontFamily:S.fontFamily,marginTop:3,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Te responde con voz ›</span>
           </span>
         </div>
       )}
