@@ -689,14 +689,14 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
       </div>
 
       {user.plan==="elite" && user.zodiac && (
-        <div onClick={()=>{setActiveTab("Astros");generateMsg("Astros");setTimeout(function(){var e=document.getElementById("seccion-mensaje");if(e)e.scrollIntoView({behavior:"smooth",block:"start"});},120);}} style={{cursor:"pointer",position:"relative",overflow:"hidden",margin:"0 16px 12px",padding:"15px 16px",borderRadius:14,background:C.purple+"22",border:"1.5px solid "+C.goldL,display:"flex",alignItems:"center",gap:12}}>
+        <div onClick={()=>{setActiveTab("Astros");generateMsg("Astros");setTimeout(function(){var e=document.getElementById("seccion-mensaje");if(e)e.scrollIntoView({behavior:"smooth",block:"start"});},120);}} style={{cursor:"pointer",position:"relative",overflow:"hidden",margin:"0 16px 12px",padding:"16px 16px",borderRadius:14,background:"linear-gradient(160deg, #ff2bd4 0%, #b06bff 30%, #2f6bff 55%, #00e8d0 78%, #15e85f 100%)",border:"1.5px solid rgba(255,255,255,0.85)",display:"flex",alignItems:"center",gap:12}}>
           {[{x:6,y:28,s:11,d:0},{x:18,y:68,s:8,d:0.7},{x:30,y:18,s:9,d:1.3},{x:72,y:22,s:10,d:0.4},{x:84,y:62,s:8,d:1.1},{x:94,y:35,s:11,d:0.9},{x:60,y:78,s:9,d:1.6}].map((st,i)=>(
             <span key={i} style={{position:"absolute",left:st.x+"%",top:st.y+"%",fontSize:st.s,animation:"tw 4s ease-in-out infinite",animationDelay:st.d+"s",pointerEvents:"none"}}>⭐</span>
           ))}
-          <span style={{position:"relative",width:46,height:46,borderRadius:"50%",background:C.goldL+"22",border:"1px solid "+C.goldL,display:"flex",alignItems:"center",justifyContent:"center",fontSize:25,flexShrink:0}}>{(ZODIAC.find(z=>z.s===user.zodiac)||{}).e}</span>
+          <span style={{position:"relative",width:46,height:46,borderRadius:"50%",background:"rgba(255,255,255,0.25)",border:"1px solid rgba(255,255,255,0.75)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:25,flexShrink:0}}>{(ZODIAC.find(z=>z.s===user.zodiac)||{}).e}</span>
           <span style={{position:"relative",flex:1,textAlign:"left"}}>
-            <span style={{display:"block",color:C.white,fontSize:17,fontWeight:800,fontFamily:S.fontUI}}>Tu horóscopo · {user.zodiac}</span>
-            <span style={{display:"block",color:C.goldL,fontSize:13,fontFamily:S.fontUI,marginTop:2}}>Lee tu mensaje de hoy ›</span>
+            <span style={{display:"block",color:"#ffffff",fontSize:17,fontWeight:800,fontFamily:S.fontUI,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Tu horóscopo · {user.zodiac}</span>
+            <span style={{display:"block",color:"#ffffff",fontSize:13.5,fontWeight:800,letterSpacing:1,textTransform:"uppercase",fontFamily:S.fontUI,marginTop:3,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Lee tu mensaje de hoy ›</span>
           </span>
         </div>
       )}
