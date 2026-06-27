@@ -501,7 +501,7 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
   const planEmoji = user.plan==="elite"?"✨":"⭐";
 
   const TABS_FREE = [{id:"Hoy",e:"🌅"},{id:"Amor Propio",e:"💖"},{id:"Inspiración",e:"💡"},{id:"Afirmar",e:"✨"},{id:"Gratitud",e:"🙏"},{id:"Noche",e:"🌙"}];
-  const TABS_ELITE = [{id:"Astros",e:"♈️"},{id:"Amor",e:"💕"},{id:"Dinero",e:"💰"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Ritual ☀️",e:"☀️"},{id:"Ritual 🌙",e:"🌙"},{id:"Mi Guía",e:"📊"},{id:"Guía Emocional",e:"😊"},{id:"Bienestar Salud",e:"⚖️"},{id:"Reflexiones",e:"💎"}];
+  const TABS_ELITE = [{id:"Astros",e:"♈️"},{id:"Amor",e:"💕"},{id:"Dinero",e:"🍀"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Ritual ☀️",e:"☀️"},{id:"Ritual 🌙",e:"🌙"},{id:"Mi Guía",e:"📊"},{id:"Guía Emocional",e:"😊"},{id:"Bienestar Salud",e:"⚖️"},{id:"Reflexiones",e:"💎"}];
   const tabs = user.plan==="elite"?TABS_ELITE:TABS_FREE;
 
   const TAB_CONFIG = {
@@ -514,7 +514,7 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
     "Bienestar":{icon:"🌿",label:"BIENESTAR",color:C.green},
     "Astros":{icon:"♈️",label:"HORÓSCOPO",color:C.purpleL},
     "Amor":{icon:"💕",label:"AMOR",color:C.pink},
-    "Dinero":{icon:"💰",label:"ABUNDANCIA",color:C.gold},
+    "Dinero":{icon:"🍀",label:"ABUNDANCIA",color:C.gold},
     "Manifestación":{icon:"✨",label:"MANIFESTACIÓN",color:C.goldL},
     "Propósito":{icon:"🎯",label:"METAS",color:C.purpleL},
     "Ritual ☀️":{icon:"☀️",label:"REFLEXIÓN",color:C.goldL},
