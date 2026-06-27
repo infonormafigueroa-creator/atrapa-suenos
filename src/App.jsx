@@ -23,6 +23,7 @@ const S = {
   fontUI:     "'Segoe UI', system-ui, sans-serif",
 };
 
+const CANVA = "linear-gradient(160deg, #5bc4c7 0%, #4959e0 50%, #7330df 100%)";
 const BACKGROUNDS = [
   {id:"turquesa",name:"Turquesa",grad:"radial-gradient(ellipse at 50% 0%, #2fd4c4 0%, #1a7a78 45%, #07262e 100%)"},
   {id:"rojo",name:"Rojo",grad:"radial-gradient(ellipse at 50% 0%, #e23b3b 0%, #8a1f1f 45%, #2a0808 100%)"},
@@ -1155,7 +1156,7 @@ export default function App() {
   const [screen, setScreen] = useState("loading");
   const [authMode, setAuthMode] = useState("signup");
   const [user, setUser] = useState({plan:"free"});
-  const [bg, setBg] = useState("noche");
+  const [bg, setBg] = useState("canva");
 
   async function handleSetup(data) {
     setUser(u=>({...u,...data}));
@@ -1209,7 +1210,7 @@ export default function App() {
             nuevaRacha = 1;
           }
           try { await supabase.from("profiles").update({ streak: nuevaRacha, last_active: hoyStr, email: authUser.email }).eq("id", authUser.id); } catch (e) {}
-          setBg(profile.background || "turquesa");
+          setBg(profile.background || "canva");
           setUser({
             name: profile.name,
             gender: profile.gender,
@@ -1263,7 +1264,7 @@ export default function App() {
   return (
     <div style={{
       minHeight:"100vh",
-      background:(BACKGROUNDS.find(b=>b.id===bg)||BACKGROUNDS[0]).grad,
+      background:(BACKGROUNDS.find(b=>b.id===bg)||{grad:CANVA}).grad,
       color:C.text,fontFamily:S.fontUI,position:"relative",overflowX:"hidden"
     }}>
       {/* ESTRELLAS */}
