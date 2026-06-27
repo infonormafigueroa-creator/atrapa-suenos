@@ -1203,8 +1203,8 @@ export default function App() {
             const ultima = new Date(profile.last_active+"T00:00:00");
             const hoyD = new Date(hoyStr+"T00:00:00");
             const dias = Math.round((hoyD - ultima) / 86400000);
-            if (dias === 1) { nuevaRacha = (profile.streak || 1) + 1; }
-            else if (dias > 1) { nuevaRacha = 1; }
+            if (dias >= 1) { nuevaRacha = (profile.streak || 1) + 1; }
+            
           } else {
             nuevaRacha = 1;
           }
