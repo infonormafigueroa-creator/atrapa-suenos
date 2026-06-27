@@ -501,7 +501,7 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
   const planEmoji = user.plan==="elite"?"✨":"⭐";
 
   const TABS_FREE = [{id:"Hoy",e:"🌅"},{id:"Amor Propio",e:"💖"},{id:"Inspiración",e:"💡"},{id:"Afirmar",e:"✨"},{id:"Gratitud",e:"🙏"},{id:"Noche",e:"🌙"}];
-  const TABS_ELITE = [{id:"Amor",e:"💕"},{id:"Dinero",e:"🍀"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Ritual ☀️",e:"☀️"},{id:"Ritual 🌙",e:"🌙"},{id:"Mi Guía",e:"📊"},{id:"Guía Emocional",e:"😊"}];
+  const TABS_ELITE = [{id:"Ritual ☀️",e:"☀️"},{id:"Amor",e:"💕"},{id:"Dinero",e:"🍀"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Mi Guía",e:"📊"},{id:"Guía Emocional",e:"😊"},{id:"Ritual 🌙",e:"🌙"}];
   const tabs = user.plan==="elite"?TABS_ELITE:TABS_FREE;
 
   const TAB_CONFIG = {
@@ -678,7 +678,6 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
               <span style={{background:`${C.goldL}22`,border:`1px solid ${C.goldL}`,color:C.goldL,borderRadius:10,padding:"6px 13px",fontSize:13,fontWeight:800,fontFamily:S.fontUI,whiteSpace:"nowrap",lineHeight:1}}>{planLabel}</span>
             </div>
             <p style={{color:C.purpleL,fontSize:14,fontWeight:600,fontFamily:S.fontUI,margin:"2px 0 0",textAlign:"left"}}>{dateDisplay}</p>
-            <p style={{color:C.goldL,fontSize:10,fontWeight:700,fontFamily:S.fontUI,letterSpacing:1.3,margin:"4px 0 0",opacity:0.75,textAlign:"left"}}>INSPIRACIÓN · MOTIVACIÓN · AFIRMACIÓN</p>
           </div>
           <div style={{display:"flex",gap:8}}>
             <Btn onClick={()=>{var e=document.getElementById("seccion-progreso");if(e)e.scrollIntoView({behavior:"smooth",block:"start"});}} style={{background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:10,padding:"8px 10px",fontSize:16}}>🏆</Btn>
@@ -686,6 +685,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
             {user.plan==="elite"&&<Btn onClick={onShowEliteSettings} style={{background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:10,padding:"8px 10px",fontSize:16}}>⚙️</Btn>}
           </div>
         </div>
+        <p style={{color:C.goldL,fontSize:10,fontWeight:700,fontFamily:S.fontUI,letterSpacing:1.5,margin:"6px 0 0",opacity:0.8,textAlign:"center",whiteSpace:"nowrap"}}>INSPIRACIÓN · MOTIVACIÓN · AFIRMACIÓN</p>
       </div>
 
       {user.plan==="elite" && user.zodiac && (
@@ -757,7 +757,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         {user.plan==="elite" && <p style={{color:C.goldL,fontSize:14,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,textAlign:"center",margin:"0 0 10px"}}>✨ Tus Guías Elite</p>}
         <div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:8,marginBottom:12}}>
           {tabs.map(t=>(
-            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);generateMsg(t.id);}} style={{padding:user.plan==="elite"?"7px 4px":"10px 6px",borderRadius:12,fontSize:user.plan==="elite"?11:13,fontFamily:S.fontUI,textAlign:"center",background:activeTab===t.id?`${C.gold}22`:C.cardDark,border:`1.5px solid ${activeTab===t.id?C.gold:C.border}`,color:activeTab===t.id?C.gold:C.text,fontWeight:600,textTransform:"uppercase",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:user.plan==="elite"?2:4,minHeight:user.plan==="elite"?56:70}}><span style={{fontSize:user.plan==="elite"?16:20}}>{t.e}</span><span style={{lineHeight:1.15}}>{(TAB_CONFIG[t.id]||{}).tab||(TAB_CONFIG[t.id]||{}).label||t.id}</span></Btn>
+            <Btn key={t.id} onClick={()=>{setActiveTab(t.id);generateMsg(t.id);}} style={{padding:user.plan==="elite"?"7px 4px":"10px 6px",borderRadius:12,fontSize:user.plan==="elite"?11:13,fontFamily:S.fontUI,textAlign:"center",border:"2px solid transparent",background:activeTab===t.id?"linear-gradient(145deg, #ff2bd4 0%, #b06bff 30%, #2f6bff 55%, #00e8d0 78%, #15e85f 100%)":"linear-gradient("+C.cardDark+","+C.cardDark+") padding-box, linear-gradient(145deg, #ff2bd4 0%, #b06bff 30%, #2f6bff 55%, #00e8d0 78%, #15e85f 100%) border-box",color:activeTab===t.id?"#ffffff":C.text,textShadow:activeTab===t.id?"0 1px 4px rgba(0,0,0,0.5)":"none",fontWeight:600,textTransform:"uppercase",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:user.plan==="elite"?2:4,minHeight:user.plan==="elite"?56:70}}><span style={{fontSize:user.plan==="elite"?16:20}}>{t.e}</span><span style={{lineHeight:1.15}}>{(TAB_CONFIG[t.id]||{}).tab||(TAB_CONFIG[t.id]||{}).label||t.id}</span></Btn>
           ))}
         </div>
 
