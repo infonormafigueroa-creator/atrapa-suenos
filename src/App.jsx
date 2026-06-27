@@ -492,6 +492,10 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
   const [intention, setIntention] = useState("");
   const [intentionText, setIntentionText] = useState("");
   const [comboMsg, setComboMsg] = useState(null);
+  const [reviewStars, setReviewStars] = useState(0);
+  const [reviewText, setReviewText] = useState("");
+  const [reviewSending, setReviewSending] = useState(false);
+  const [reviewDone, setReviewDone] = useState(()=>{ try{ return localStorage.getItem("as_reviewed")==="1"; }catch(e){ return false; } });
   const [comboLoading, setComboLoading] = useState(false);
   const [msg, setMsg] = useState(null);
   const [isBday, setIsBday] = useState(false);
@@ -878,6 +882,23 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
 
 
         
+        <Card style={{marginBottom:12}}>
+          {reviewDone ? (
+            <p style={{color:C.goldL,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center",margin:0}}>⭐ ¡Gracias por tu reseña! 💜</p>
+          ) : (
+            <div>
+              <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,textAlign:"center",margin:"0 0 4px"}}>⭐ Califica tu experiencia</p>
+              <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,textAlign:"center",margin:"0 0 12px"}}>Tu opinión nos ayuda muchísimo 💜</p>
+              <div style={{display:"flex",justifyContent:"center",gap:8,marginBottom:14}}>
+                {[1,2,3,4,5].map(s=>(
+                  <span key={s} onClick={()=>setReviewStars(s)} style={{cursor:"pointer",fontSize:34,lineHeight:1,filter:s<=reviewStars?"none":"grayscale(1)",opacity:s<=reviewStars?1:0.45,transition:"all .15s"}}>⭐</span>
+                ))}
+              </div>
+              <textarea value={reviewText} onChange={e=>setReviewText(e.target.value)} placeholder="Cuéntanos qué te parece (opcional)..." style={{width:"100%",minHeight:70,background:C.cardDark,border:"1px solid "+C.border,borderRadius:10,padding:"12px",color:C.goldL,fontSize:14,fontFamily:S.fontUI,outline:"none",boxSizing:"border-box",resize:"vertical",marginBottom:12}}/>
+              <Btn onClick={async()=>{ if(!reviewStars||reviewSending)return; setReviewSending(true); try{ await supabase.from("reviews").insert({user_id:user.id,rating:reviewStars,comment:reviewText||null}); }catch(e){} try{ localStorage.setItem("as_reviewed","1"); }catch(e){} setReviewDone(true); setReviewSending(false); }} disabled={!reviewStars||reviewSending} style={{width:"100%",padding:"13px",borderRadius:12,background:reviewStars?C.gold:C.cardDark,border:"1px solid "+C.gold,color:reviewStars?"#1a0a00":C.muted,fontSize:14,fontWeight:800,fontFamily:S.fontUI}}>{reviewSending?"Enviando...":"Enviar reseña"}</Btn>
+            </div>
+          )}
+        </Card>
         {!user.guest && <Btn onClick={onLogout} style={{width:"100%",marginTop:10,padding:"13px",borderRadius:12,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:13,fontFamily:S.fontUI}}>🚪 Cerrar Sesión</Btn>}
         <p style={{color:C.muted,fontSize:11,fontFamily:S.fontUI,textAlign:"center",lineHeight:1.5,margin:"18px 10px 4px",opacity:0.85}}>Atrapa Sueños es una app de bienestar emocional y motivación. No brinda consejo médico ni sustituye atención profesional.</p>
         <p onClick={onLegal} style={{color:C.goldL,fontSize:12,fontFamily:S.fontUI,textAlign:"center",margin:"4px 10px 8px",cursor:"pointer",textDecoration:"underline",opacity:0.9}}>Información Legal · Privacidad · Términos</p>
