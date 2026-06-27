@@ -774,10 +774,10 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           
           
           {(intention||intentionText)&&(
-            <div style={{background:C.purple+"22",border:"1px solid "+C.purple,borderRadius:12,padding:"16px",textAlign:"center"}}>
-              <p style={{color:C.purpleL,fontSize:11,margin:"0 0 6px",textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI}}>Tu intención de hoy</p>
-              <p style={{color:C.goldL,fontSize:19,fontWeight:700,fontFamily:S.fontUI,margin:"0 0 12px"}}>{intentionText||intention}</p>
-              <button onClick={()=>{setDream("");setIntention("");setIntentionText("");}} style={{background:C.gold+"22",border:"1px solid "+C.gold,borderRadius:20,padding:"6px 16px",color:C.goldL,fontSize:12,fontFamily:S.fontUI,cursor:"pointer"}}>Cambiar</button>
+            <div style={{background:C.gold+"18",border:"1px solid "+C.gold,borderRadius:12,padding:"14px",textAlign:"center",marginTop:14}}>
+              
+              <span style={{color:C.goldL,fontSize:18,fontWeight:700,fontFamily:S.fontUI}}>Tu intención de hoy: {(INTENCIONES_ELITE.find(x=>x[1]===intention)||INTENCIONES_FREE.find(x=>x[1]===intention)||["",""])[0]} {intentionText||intention}</span>
+              
             </div>
           )}
         </Card>
