@@ -194,17 +194,15 @@ function Welcome({onSignup, onLogin, onGuest, onLegal}) {
         <DreamCatcher size={140}/>
       </div>
 
-      <p style={{color:C.goldL,fontSize:17,fontFamily:S.fontFamily,fontStyle:"italic",fontWeight:600,lineHeight:1.55,margin:"0 8px 20px",maxWidth:330,textAlign:"center",opacity:0.95}}>“Que sueñes bonito... y que atrapes todos tus sueños.”</p>
+      <div style={{textAlign:"center",margin:"2px 10px 24px",maxWidth:360,fontFamily:S.fontFamily,fontStyle:"italic",color:C.goldL,opacity:0.97}}>
+        <div style={{fontSize:26,fontWeight:600,lineHeight:1.25}}>“Que sueñes bonito...</div>
+        <div style={{fontSize:19,fontWeight:600,lineHeight:1.3,marginTop:2}}>y que atrapes todos tus sueños.”</div>
+      </div>
 
       <p style={{
         color:C.gold,fontSize:16,fontWeight:800,fontFamily:S.fontUI,
-        textTransform:"uppercase",letterSpacing:2,margin:"0 0 6px",textAlign:"center",lineHeight:1.3
+        textTransform:"uppercase",letterSpacing:2,margin:"0 0 26px",textAlign:"center",lineHeight:1.3
       }}>✨ TU GUÍA DE MOTIVACIÓN<br/>PARA CADA DÍA ✨</p>
-
-      <p style={{
-        color:C.goldL,fontSize:12,fontFamily:S.fontUI,fontWeight:700,
-        letterSpacing:1.5,margin:"0 0 28px",opacity:0.95,textAlign:"center"
-      }}>INSPIRACIÓN · MOTIVACIÓN · AFIRMACIÓN</p>
 
       <Btn onClick={onSignup} style={{
         width:"100%",maxWidth:340,padding:"18px",borderRadius:14,
@@ -680,6 +678,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
               <span style={{background:`${C.goldL}22`,border:`1px solid ${C.goldL}`,color:C.goldL,borderRadius:10,padding:"6px 13px",fontSize:13,fontWeight:800,fontFamily:S.fontUI,whiteSpace:"nowrap",lineHeight:1}}>{planLabel}</span>
             </div>
             <p style={{color:C.purpleL,fontSize:14,fontWeight:600,fontFamily:S.fontUI,margin:"2px 0 0",textAlign:"left"}}>{dateDisplay}</p>
+            <p style={{color:C.goldL,fontSize:10,fontWeight:700,fontFamily:S.fontUI,letterSpacing:1.3,margin:"4px 0 0",opacity:0.75,textAlign:"left"}}>INSPIRACIÓN · MOTIVACIÓN · AFIRMACIÓN</p>
           </div>
           <div style={{display:"flex",gap:8}}>
             <Btn onClick={()=>{var e=document.getElementById("seccion-progreso");if(e)e.scrollIntoView({behavior:"smooth",block:"start"});}} style={{background:C.cardDark,border:`1px solid ${C.border}`,borderRadius:10,padding:"8px 10px",fontSize:16}}>🏆</Btn>
