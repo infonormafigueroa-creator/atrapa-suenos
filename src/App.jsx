@@ -24,12 +24,12 @@ const S = {
 };
 
 const BACKGROUNDS = [
-  {id:"noche",name:"Noche Estrellada",grad:"linear-gradient(160deg, #5bc4c7 0%, #4959e0 50%, #7330df 100%)"},
-  {id:"amanecer",name:"Amanecer",grad:"radial-gradient(ellipse at 50% 0%, #e8a92e 0%, #8a5e18 45%, #2e1d07 100%)"},
-  {id:"mistico",name:"Místico",grad:"radial-gradient(ellipse at 50% 0%, #9b59d0 0%, #5a2f8a 45%, #1e0f33 100%)"},
-  {id:"oceano",name:"Océano",grad:"radial-gradient(ellipse at 50% 0%, #2fd4c4 0%, #1a7a78 45%, #07262e 100%)"},
-  {id:"rosa",name:"Atardecer Rosa",grad:"radial-gradient(ellipse at 50% 0%, #ff6fa5 0%, #8c3962 45%, #2a0f1d 100%)"},
-  {id:"bosque",name:"Bosque",grad:"radial-gradient(ellipse at 50% 0%, #3fbf5a 0%, #1f7a3a 45%, #07260f 100%)"},
+  {id:"turquesa",name:"Turquesa",grad:"radial-gradient(ellipse at 50% 0%, #2fd4c4 0%, #1a7a78 45%, #07262e 100%)"},
+  {id:"rojo",name:"Rojo",grad:"radial-gradient(ellipse at 50% 0%, #e23b3b 0%, #8a1f1f 45%, #2a0808 100%)"},
+  {id:"verde",name:"Verde",grad:"radial-gradient(ellipse at 50% 0%, #2fbf5a 0%, #1a7a3a 45%, #07260f 100%)"},
+  {id:"azulroyal",name:"Azul Royal",grad:"radial-gradient(ellipse at 50% 0%, #3a5fe0 0%, #1f348f 45%, #08122e 100%)"},
+  {id:"mostaza",name:"Amarillo Mostaza",grad:"radial-gradient(ellipse at 50% 0%, #d9a81f 0%, #8a6810 45%, #2a1f07 100%)"},
+  {id:"negro",name:"Negro",grad:"radial-gradient(ellipse at 50% 0%, #3a3a3a 0%, #1a1a1a 45%, #000000 100%)"},
   {id:"terracota",name:"Terracota",grad:"radial-gradient(ellipse at 50% 0%, #c25a3a 0%, #7a3320 45%, #2a1108 100%)",elite:true},
   {id:"coral",name:"Coral",grad:"radial-gradient(ellipse at 50% 0%, #e0795a 0%, #a8472e 45%, #2e1208 100%)",elite:true},
   {id:"durazno",name:"Durazno",grad:"radial-gradient(ellipse at 50% 0%, #d98a5a 0%, #94542f 45%, #2e1810 100%)",elite:true},
@@ -1209,7 +1209,7 @@ export default function App() {
             nuevaRacha = 1;
           }
           try { await supabase.from("profiles").update({ streak: nuevaRacha, last_active: hoyStr, email: authUser.email }).eq("id", authUser.id); } catch (e) {}
-          setBg(profile.background || "noche");
+          setBg(profile.background || "turquesa");
           setUser({
             name: profile.name,
             gender: profile.gender,
