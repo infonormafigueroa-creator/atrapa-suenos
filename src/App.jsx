@@ -517,6 +517,7 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
   const [horoMsg, setHoroMsg] = useState(null);
   const [horoLoading, setHoroLoading] = useState(false);
   const [vozOpen, setVozOpen] = useState(false);
+  const [vozLiked, setVozLiked] = useState(false);
 
   const planLabel = user.plan==="elite"?"Elite":"Gratis";
   const planColor = user.plan==="elite"?C.gold:C.gold;
@@ -894,7 +895,11 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
             {vozMsg && !vozLoading && (
               <div style={{marginTop:14,background:C.gold+"14",border:"1px solid "+C.gold+"55",borderRadius:14,padding:"16px"}}>
                 <p style={{color:C.text,fontSize:16,fontFamily:S.fontFamily,lineHeight:1.6,margin:0,fontStyle:"italic",textAlign:"center"}}>{vozMsg}</p>
-                <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:14,flexWrap:"wrap"}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:20,marginTop:14}}>
+                  <span onClick={()=>setVozLiked(!vozLiked)} style={{fontSize:22,cursor:"pointer"}}>{vozLiked?"❤️":"🤍"}</span>
+                  <span onClick={()=>shareQuote(vozMsg, bg)} style={{fontSize:22,cursor:"pointer"}}>📤</span>
+                </div>
+                <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:12,flexWrap:"wrap"}}>
                   {vozSpeaking ? (
                     <button onClick={stopVoz} style={{background:C.cardDark,border:"1px solid "+C.purple,borderRadius:20,padding:"8px 18px",color:C.purpleL,fontSize:13,fontFamily:S.fontUI,cursor:"pointer"}}>🔇 Detener</button>
                   ) : (
@@ -905,6 +910,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
               </div>
             )}
             <p style={{color:C.muted,fontSize:11,fontFamily:S.fontUI,textAlign:"center",margin:"14px 0 0",lineHeight:1.4,opacity:0.8}}>Tu guía te acompaña con cariño, pero no sustituye la ayuda de un profesional.</p>
+            <Btn onClick={()=>{stopVoz();setVozOpen(false);}} style={{display:"block",width:"100%",marginTop:14,padding:"11px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:14,fontFamily:S.fontUI}}>✕ Cerrar</Btn>
           </Card>
         )}
         <Card style={{marginBottom:12}}>
