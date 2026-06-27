@@ -520,7 +520,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
     const zodiacInfo = user.zodiac?`Signo zodiacal: ${user.zodiac}.`:"";
     const loveInfo = user.love?`Situación amorosa: ${user.love}.`:"";
     const moodInfo = mood?`Estado de ánimo: ${mood}.`:"";
-    const nameInfo = user.name?("Se llama "+user.name+"."):"";
+    const nameInfo = "";
     const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
     const birthInfo = (user.birthday && user.birthday.length===10 && user.birthday.slice(5)!=="00-00")?("Cumpleaños: "+parseInt(user.birthday.slice(8,10),10)+" de "+(MESES[parseInt(user.birthday.slice(5,7),10)-1]||"")+"."):"";
 
@@ -549,7 +549,7 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
     try {
       var _enfoques = ["la naturaleza","un recuerdo querido","el futuro que sueñas","la fuerza interior","la calma profunda","un nuevo comienzo","la conexión con otros","la valentía","la esperanza","la sabiduría del corazón","la libertad","la transformación","la paz interior","la abundancia","el agradecimiento","tu luz propia","el momento presente","los pequeños milagros","la resiliencia","la ternura"];
       var _enfoque = _enfoques[parseInt(_day.replace(/-/g,""),10) % _enfoques.length];
-      var _variedad = "\n\nIMPORTANTE: Crea un mensaje COMPLETAMENTE ORIGINAL y distinto a cualquier otro día, inspirándote sutilmente en " + _enfoque + ". Usa palabras e imágenes frescas, evita frases cliché y estructuras repetidas. Que se sienta nuevo y único. (ref " + _day + ")";
+      var _variedad = "\n\nIMPORTANTE: Crea un mensaje COMPLETAMENTE ORIGINAL y distinto a cualquier otro día, inspirándote sutilmente en " + _enfoque + ". Usa palabras e imágenes frescas, evita frases cliché y estructuras repetidas. Que se sienta nuevo y único. NO menciones ningún nombre propio ni el nombre de la persona. (ref " + _day + ")";
       const raw = await askClaude((prompts[tab]||prompts["Hoy"]) + _variedad);
       const fraseMatch = raw.match(/FRASE:\s*(.+)/);
       const introMatch = raw.match(/CONT:\s*([\s\S]+)/);
@@ -573,10 +573,10 @@ function Dashboard({user, onShowPlans, onShowEliteSettings, onLogin, onLogout, b
     var _cday = hoyES();
     var _ckey = "as_combo_" + _cday + "_" + _emo + "_" + _inten;
     if (!force) { try { var _cs = localStorage.getItem(_ckey); if (_cs) { setComboMsg(JSON.parse(_cs)); setComboLoading(false); return; } } catch(e){} }
-    var _cn = user.name ? ("Se llama " + user.name + ".") : "";
+    var _cn = "";
     var _cg = user.gender ? ("Usuario " + user.gender + ".") : "";
     var _nonce = force ? (" Crea un enfoque completamente distinto a versiones anteriores (variante " + Math.floor(Math.random()*9999) + ").") : "";
-    var _cprompt = "Eres un acompañante personal cálido y profundamente humano. " + _cn + " " + _cg + " Hoy la persona se siente así: " + _emo + ". La energía que desea cultivar hoy es: " + _inten + ". Crea un mensaje ÚNICO que combine AMBAS: parte de cómo se siente y guíala con calidez hacia esa energía; la combinación debe cambiar por completo el contenido. Si la emoción es difícil y la intención es positiva, valida brevemente pero NO te quedes en el problema: ayúdala a avanzar hacia esa intención con un paso pequeño y posible. Varía el recurso cada día (metáfora, micro-historia, pregunta de reflexión, ejercicio breve de respiración o mindfulness, visualización, afirmación, mini reto consciente o idea de journaling); nunca repitas el mismo enfoque ni uses plantillas. Que se sienta escrito solo para ella hoy, como un acompañamiento personal, inteligente y profundamente humano. Tono cálido, humano, inspirador, cercano, elegante, positivo y respetuoso; nunca robótico ni genérico, y nunca menciones que eres una IA." + _nonce + "\nFormato EXACTO:\nFRASE: [Una frase corta y poderosa que conecte su emoción con su intención]\nCONT: [Exactamente 3 oraciones cortas pero profundas que la acompañen y la guíen hacia su intención. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]";
+    var _cprompt = "Eres un acompañante personal cálido y profundamente humano. " + _cn + " " + _cg + " Hoy la persona se siente así: " + _emo + ". La energía que desea cultivar hoy es: " + _inten + ". Crea un mensaje ÚNICO que combine AMBAS: parte de cómo se siente y guíala con calidez hacia esa energía; la combinación debe cambiar por completo el contenido. Si la emoción es difícil y la intención es positiva, valida brevemente pero NO te quedes en el problema: ayúdala a avanzar hacia esa intención con un paso pequeño y posible. Varía el recurso cada día (metáfora, micro-historia, pregunta de reflexión, ejercicio breve de respiración o mindfulness, visualización, afirmación, mini reto consciente o idea de journaling); nunca repitas el mismo enfoque ni uses plantillas. Que se sienta escrito solo para ella hoy, como un acompañamiento personal, inteligente y profundamente humano. Tono cálido, humano, inspirador, cercano, elegante, positivo y respetuoso; nunca robótico ni genérico, y nunca menciones que eres una IA ni ningún nombre propio." + _nonce + "\nFormato EXACTO:\nFRASE: [Una frase corta y poderosa que conecte su emoción con su intención]\nCONT: [Exactamente 3 oraciones cortas pero profundas que la acompañen y la guíen hacia su intención. Habla de tú con calidez. No menciones el día, la fecha ni el mes. Sin asteriscos.]";
     try {
       var _craw = await askClaude(_cprompt);
       var _cfm = _craw.match(/FRASE:\s*(.+)/);
@@ -634,7 +634,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
     var _key = "as_anniv";
     try { var _s = localStorage.getItem(_key); if (_s) { var _o = JSON.parse(_s); if (_o.date === _day) { setMsg({quote:_o.quote, cont:_o.cont, icon:"💍", label:"¡FELIZ ANIVERSARIO!", color:C.gold}); setLoading(false); return; } } } catch(e){}
     var _pareja = user.partner_name ? (" La pareja de la persona se llama "+user.partner_name+".") : "";
-    var _prompt = "Eres un coach espiritual cálido y cercano. Hoy es el aniversario de pareja de la persona, cuyo nombre es "+(user.name||"")+"."+_pareja+" Genera una felicitación de aniversario emotiva y romántica dirigida a la pareja, celebrando su amor y su unión.\nFormato EXACTO:\nFRASE: [Una frase corta y poderosa de felicitación de aniversario]\nCONT: [Exactamente 3 oraciones cortas, cálidas y románticas sobre su amor y su camino juntos. Habla con cariño. No menciones la fecha.]";
+    var _prompt = "Eres un coach espiritual cálido y cercano. Hoy es el aniversario de pareja de la persona."+_pareja+" Genera una felicitación de aniversario emotiva y romántica dirigida a la pareja, celebrando su amor y su unión.\nFormato EXACTO:\nFRASE: [Una frase corta y poderosa de felicitación de aniversario]\nCONT: [Exactamente 3 oraciones cortas, cálidas y románticas sobre su amor y su camino juntos. Habla con cariño. No menciones la fecha.]";
     try {
       const raw = await askClaude(_prompt);
       const fraseMatch = raw.match(/FRASE:\s*(.+)/);
