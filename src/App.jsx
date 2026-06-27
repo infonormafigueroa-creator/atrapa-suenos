@@ -509,13 +509,17 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
   const [isBday, setIsBday] = useState(false);
   const [isAnniv, setIsAnniv] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [vozInput, setVozInput] = useState("");
+  const [vozMsg, setVozMsg] = useState(null);
+  const [vozLoading, setVozLoading] = useState(false);
+  const [vozSpeaking, setVozSpeaking] = useState(false);
 
   const planLabel = user.plan==="elite"?"Elite":"Gratis";
   const planColor = user.plan==="elite"?C.gold:C.gold;
   const planEmoji = user.plan==="elite"?"✨":"⭐";
 
   const TABS_FREE = [{id:"Hoy",e:"🌅"},{id:"Amor Propio",e:"💖"},{id:"Inspiración",e:"💡"},{id:"Afirmar",e:"✨"},{id:"Gratitud",e:"🙏"},{id:"Noche",e:"🌙"}];
-  const TABS_ELITE = [{id:"Ritual ☀️",e:"☀️"},{id:"Amor",e:"💕"},{id:"Dinero",e:"🍀"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Mi Guía",e:"📊"},{id:"Guía Emocional",e:"😊"},{id:"Ritual 🌙",e:"🌙"}];
+  const TABS_ELITE = [{id:"Ritual ☀️",e:"☀️"},{id:"Amor",e:"💕"},{id:"Dinero",e:"🍀"},{id:"Manifestación",e:"✨"},{id:"Propósito",e:"🎯"},{id:"Mi Gran Sueño",e:"🌟"},{id:"Mi Guía",e:"📊"},{id:"Guía Emocional",e:"😊"},{id:"Ritual 🌙",e:"🌙"},{id:"Voz",e:"🎙️"}];
   const tabs = user.plan==="elite"?TABS_ELITE:TABS_FREE;
 
   const TAB_CONFIG = {
@@ -538,9 +542,43 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
     "Guía Emocional":{icon:"😊",label:"GUÍA EMOCIONAL",color:C.pink},
     "Bienestar Salud":{icon:"⚖️",label:"EQUILIBRIO",color:C.green},
     "Reflexiones":{icon:"💎",label:"REFLEXIONES ELITE",color:C.goldL},
+    "Voz":{icon:"🎙️",label:"HABLA CON TU GUÍA",tab:"VOZ",color:C.purpleL},
   };
 
+  function speakVoz(texto){
+    try{
+      if(!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(texto);
+      u.lang = "es-ES"; u.rate = 0.95; u.pitch = 1.05;
+      var vs = window.speechSynthesis.getVoices()||[];
+      var pref = vs.find(function(v){return /es(-|_)?(ES|MX|US|419)/i.test(v.lang);}) || vs.find(function(v){return /^es/i.test(v.lang);});
+      if(pref) u.voice = pref;
+      u.onstart = function(){ setVozSpeaking(true); };
+      u.onend = function(){ setVozSpeaking(false); };
+      u.onerror = function(){ setVozSpeaking(false); };
+      window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+  function stopVoz(){ try{ window.speechSynthesis.cancel(); setVozSpeaking(false); }catch(e){} }
+  async function generateVoz(){
+    var entrada = (vozInput||"").trim();
+    if(!entrada || vozLoading) return;
+    try{ if(window.speechSynthesis){ window.speechSynthesis.cancel(); window.speechSynthesis.speak(new SpeechSynthesisUtterance(" ")); } }catch(e){}
+    setVozLoading(true); setVozMsg(null);
+    try{
+      var _nombre = (user&&user.name) ? (" Su nombre es "+user.name+".") : "";
+      var prompt = "Eres una guía de bienestar cálida, cercana y empática que habla en español."+_nombre+" La persona te cuenta lo siguiente: «"+entrada+"». Respóndele en segunda persona (tú), con mucho cariño y calma, en 2 a 4 frases cortas y naturales pensadas para escucharse en voz alta (sin listas ni emojis). Valida lo que siente, ofrécele una perspectiva amable y una pequeña acción o respiración que la reconforte. MUY IMPORTANTE: no eres médica ni psicóloga; no des diagnósticos ni consejo médico. Si la persona expresa una crisis grave, deseos de hacerse daño o una emergencia, anímala con suavidad a buscar de inmediato la ayuda de un profesional o una persona de confianza.";
+      var texto = (await askClaude(prompt)||"").trim();
+      setVozMsg(texto);
+      speakVoz(texto);
+    }catch(e){
+      setVozMsg("Lo siento, no pude responder en este momento. Intenta de nuevo en un ratito.");
+    }
+    setVozLoading(false);
+  }
   async function generateMsg(tab) {
+    if(tab==="Voz") return;
     setLoading(true); setMsg(null);
     var _day = hoyES();
     var _key = "as_msg_" + tab;
@@ -775,6 +813,32 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           ))}
         </div>
 
+        {activeTab==="Voz" ? (
+          <Card>
+            <div style={{textAlign:"center",marginBottom:12}}>
+              <div style={{fontSize:30}}>🎙️</div>
+              <p style={{color:C.gold,fontSize:15,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"6px 0 4px"}}>Habla Con Tu Guía</p>
+              <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:0,lineHeight:1.4}}>Cuéntale lo que sientes o lo que te preocupa, y tu guía te responderá con voz.</p>
+            </div>
+            <textarea value={vozInput} onChange={e=>setVozInput(e.target.value)} placeholder="Hoy me siento... / Necesito un consejo sobre..." rows={4} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"12px",color:C.goldL,fontSize:15,fontFamily:S.fontUI,outline:"none",boxSizing:"border-box",resize:"vertical",lineHeight:1.4}}/>
+            <Btn onClick={generateVoz} style={{width:"100%",marginTop:10,padding:"14px",borderRadius:14,background:(vozLoading||!vozInput.trim())?C.cardDark:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:(vozLoading||!vozInput.trim())?C.muted:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>{vozLoading?"Tu guía está pensando...":"🎙️ Hablar con mi Guía"}</Btn>
+            {vozMsg && !vozLoading && (
+              <div style={{marginTop:14,background:C.gold+"14",border:"1px solid "+C.gold+"55",borderRadius:14,padding:"16px"}}>
+                <p style={{color:C.text,fontSize:16,fontFamily:S.fontFamily,lineHeight:1.6,margin:0,fontStyle:"italic",textAlign:"center"}}>{vozMsg}</p>
+                <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:14,flexWrap:"wrap"}}>
+                  {vozSpeaking ? (
+                    <button onClick={stopVoz} style={{background:C.cardDark,border:"1px solid "+C.purple,borderRadius:20,padding:"8px 18px",color:C.purpleL,fontSize:13,fontFamily:S.fontUI,cursor:"pointer"}}>🔇 Detener</button>
+                  ) : (
+                    <button onClick={()=>speakVoz(vozMsg)} style={{background:C.cardDark,border:"1px solid "+C.purple,borderRadius:20,padding:"8px 18px",color:C.purpleL,fontSize:13,fontFamily:S.fontUI,cursor:"pointer"}}>🔊 Escuchar otra vez</button>
+                  )}
+                  <button onClick={()=>{stopVoz();setVozMsg(null);setVozInput("");}} style={{background:C.cardDark,border:"1px solid "+C.border,borderRadius:20,padding:"8px 18px",color:C.text,fontSize:13,fontFamily:S.fontUI,cursor:"pointer"}}>✨ Nueva</button>
+                </div>
+              </div>
+            )}
+            <p style={{color:C.muted,fontSize:11,fontFamily:S.fontUI,textAlign:"center",margin:"14px 0 0",lineHeight:1.4,opacity:0.8}}>Tu guía te acompaña con cariño, pero no sustituye la ayuda de un profesional.</p>
+          </Card>
+        ) : (
+          <div>
         {!msg&&!loading&&(
           <Card>
             <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
@@ -786,6 +850,8 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         )}
         {loading&&<Card><Spinner/></Card>}
         {msg&&!loading&&<MsgCard {...msg} bg={bg} onClose={()=>setMsg(null)}/>}
+          </div>
+        )}
 
         
 
