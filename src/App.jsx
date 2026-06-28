@@ -393,41 +393,71 @@ function MsgCard({icon, label, quote, cont, onClose, bg}) {
 }
 
 function Plans({onBack, onActivate, user}) {
-  const PRISMA_PAL=["#ff2bd4","#b06bff","#2f6bff","#00e8d0","#15e85f","#ffc21f"];
-  const PRISMA_ANG=[90,68,108,80,120,72];
-  const prismaSep=(i)=>{const k=i%6;return "linear-gradient("+PRISMA_ANG[i%6]+"deg,"+PRISMA_PAL.slice(k).concat(PRISMA_PAL.slice(0,k)).join(",")+")";};
+  const PRISMA_BORDER="linear-gradient(145deg,#ff2bd4,#b06bff,#2f6bff,#00e8d0,#15e85f)";
+  const [sel,setSel]=useState(null);
+  const mensualURL="https://buy.stripe.com/28E28s4RYe6U4nqca91wY00"+((user&&user.id)?("?client_reference_id="+user.id):"");
+  const anualURL="https://buy.stripe.com/4gM5kEfwC3sg4nq5LL1wY01"+((user&&user.id)?("?client_reference_id="+user.id):"");
+  const FEATURES=[
+    {e:"🔮",l:"Horóscopo personalizado",d:"Tu horóscopo diario según tu signo zodiacal, pensado para tu energía de hoy."},
+    {e:"💕",l:"Amor",d:"Guía y mensajes para tu vida amorosa, tu relación y, sobre todo, tu amor propio."},
+    {e:"🍀",l:"Abundancia",d:"Afirmaciones y enfoque para atraer prosperidad y abundancia a tu vida."},
+    {e:"✨",l:"Manifestación",d:"Acompañamiento para manifestar tus deseos y dar forma a lo que quieres atraer."},
+    {e:"🎯",l:"Metas",d:"Claridad y motivación para definir tus metas y avanzar paso a paso."},
+    {e:"🌟",l:"Mi Gran Sueño",d:"Un espacio dedicado a tu sueño más grande, para mantenerlo vivo cada día."},
+    {e:"☀️",l:"Reflexión de la mañana",d:"Empieza el día con una reflexión que te centra y te llena de intención."},
+    {e:"🌙",l:"Reflexión de la noche",d:"Cierra tu día con calma, gratitud y una mirada amorosa a lo vivido."},
+    {e:"📊",l:"Guía Personal · IA ilimitada",d:"Conversa sin límites con tu guía personal de IA, cuando quieras y sobre lo que quieras."},
+    {e:"😊",l:"Guía Emocional",d:"Apoyo cálido para entender y acompañar tus emociones día a día."},
+    {e:"💬",l:"Habla con tu Guía",d:"Escribe lo que sientes y tu guía te responde con voz, con cariño y cercanía."},
+    {e:"🎨",l:"Fondos y colores premium",d:"Personaliza tu app con fondos y colores exclusivos, como el Prisma vibrante."},
+  ];
   return (
-    <div style={{padding:"calc(env(safe-area-inset-top, 0px) + 12px) 16px calc(env(safe-area-inset-bottom, 0px) + 14px)",position:"relative",zIndex:1,maxWidth:560,margin:"0 auto"}}>
-
-
-      <div>
-        <div style={{background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",borderRadius:14,padding:"10px",textAlign:"center",margin:"0 0 10px"}}>
-          <h3 style={{color:"#1a0a00",fontSize:18,fontWeight:900,fontFamily:S.fontFamily,margin:0}}>Atrapa Sueños Elite</h3>
+    <div style={{position:"relative",minHeight:"100vh"}}>
+      <div style={{position:"fixed",inset:0,zIndex:0,background:"radial-gradient(120% 60% at 50% 0%, #2a1a55 0%, #160d33 55%, #0f0a26 100%)"}} />
+      <div style={{position:"relative",zIndex:1,padding:"calc(env(safe-area-inset-top, 0px) + 16px) 16px calc(env(safe-area-inset-bottom, 0px) + 18px)",maxWidth:560,margin:"0 auto"}}>
+        <h1 style={{textAlign:"center",color:"#fff",fontFamily:S.fontFamily,fontSize:30,fontWeight:700,margin:"4px 0 0"}}>Atrapa Sueños <span style={{color:C.gold}}>Elite</span> ✨</h1>
+        <p style={{textAlign:"center",color:"#b9a8e0",fontSize:14,lineHeight:1.4,margin:"8px 14px 0",fontFamily:S.fontUI}}>Desbloquea la experiencia completa y transforma cada día.</p>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,margin:"16px 0 14px"}}>
+          <div style={{height:1,flex:1,background:"linear-gradient(90deg,transparent,#7858b0,transparent)"}} />
+          <span style={{color:C.gold,fontSize:14}}>⭐</span>
+          <div style={{height:1,flex:1,background:"linear-gradient(90deg,transparent,#7858b0,transparent)"}} />
         </div>
-        {[
-          {e:"🔮",l:"Horóscopo personalizado"},{e:"💕",l:"Amor"},
-          {e:"🍀",l:"Abundancia"},{e:"✨",l:"Manifestación"},
-          {e:"🎯",l:"Metas"},{e:"🌟",l:"Mi Gran Sueño"},
-          {e:"☀️",l:"Reflexión de la mañana"},{e:"🌙",l:"Reflexión de la noche"},
-          {e:"📊",l:"Guía Personal · IA ilimitada"},{e:"😊",l:"Guía Emocional"},
-          {e:"🎨",l:"Fondos y colores premium"},
-        ].map(({e,l},i,arr)=>(
-          <div key={l}>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"5px 0"}}>
-              <div style={{display:"flex",alignItems:"center",gap:10}}>
-                <span style={{fontSize:19}}>{e}</span>
-                <span style={{color:C.text,fontSize:14,fontFamily:S.fontUI}}>{l}</span>
-              </div>
-              <span style={{background:`linear-gradient(135deg,${C.gold},${C.goldL})`,color:"#1a0a00",borderRadius:20,padding:"4px 12px",fontSize:10,fontWeight:800,fontFamily:S.fontUI}}>ELITE</span>
-            </div>
-            {i<arr.length-1 && <div style={{height:2,borderRadius:2,background:prismaSep(i),opacity:0.9,margin:"0"}} />}
+        {FEATURES.map((f)=>(
+          <div key={f.l} onClick={()=>setSel(f)} style={{display:"flex",alignItems:"center",gap:13,border:"2px solid transparent",borderRadius:14,padding:"13px 15px",marginBottom:10,cursor:"pointer",background:"linear-gradient(#1c1238,#1c1238) padding-box, "+PRISMA_BORDER+" border-box"}}>
+            <span style={{fontSize:22,flexShrink:0,width:26,textAlign:"center"}}>{f.e}</span>
+            <span style={{flex:1,color:"#f3eaff",fontSize:15.5,fontFamily:S.fontUI}}>{f.l}</span>
+            <span style={{color:C.gold,fontSize:18,flexShrink:0}}>›</span>
           </div>
         ))}
-        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/28E28s4RYe6U4nqca91wY00"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:12,padding:"12px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:15,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Mensual — $9.99/mes</Btn>
-        <Btn onClick={()=>{window.location.href="https://buy.stripe.com/4gM5kEfwC3sg4nq5LL1wY01"+((user&&user.id)?("?client_reference_id="+user.id):"");}} style={{width:"100%",marginTop:8,padding:"12px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:15,fontWeight:900,fontFamily:S.fontUI}}>💳 Pagar Anual — $79.99/año · -33%</Btn>
-        <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:10,padding:"9px",borderRadius:10,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:13,fontFamily:S.fontUI}}>← Volver</Btn>
-        <p style={{display:"none"}}>🔧 Activar modo prueba</p>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11,marginTop:18,alignItems:"end"}}>
+          <div style={{background:"rgba(30,20,58,0.85)",border:"1px solid #4a3a7a",borderRadius:18,padding:"16px 12px",textAlign:"center"}}>
+            <div style={{color:"#b9a8e0",fontSize:12,fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",fontFamily:S.fontUI}}>Mensual</div>
+            <div style={{color:"#fff",fontSize:32,fontWeight:800,lineHeight:1.1,margin:"6px 0 0",fontFamily:S.fontUI}}>$9.99</div>
+            <div style={{color:"#b9a8e0",fontSize:13,fontFamily:S.fontUI}}>/mes</div>
+            <Btn onClick={()=>{window.location.href=mensualURL;}} style={{width:"100%",marginTop:11,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:13,fontWeight:800,borderRadius:12,padding:"11px 6px",fontFamily:S.fontUI}}>Comenzar ahora</Btn>
+          </div>
+          <div style={{position:"relative",border:"2px solid transparent",borderRadius:18,padding:"16px 12px",textAlign:"center",background:"linear-gradient(rgba(30,20,58,0.95),rgba(30,20,58,0.95)) padding-box, "+PRISMA_BORDER+" border-box",boxShadow:"0 0 22px rgba(176,107,255,0.45)"}}>
+            <div style={{position:"absolute",top:-13,left:"50%",transform:"translateX(-50%)",background:"linear-gradient(135deg,#9d4edd,#7b2cbf)",color:"#fff",fontSize:10,fontWeight:800,padding:"5px 12px",borderRadius:20,whiteSpace:"nowrap",fontFamily:S.fontUI}}>⭐ MÁS POPULAR</div>
+            <div style={{color:"#b9a8e0",fontSize:12,fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",fontFamily:S.fontUI}}>Anual</div>
+            <div style={{color:"#fff",fontSize:32,fontWeight:800,lineHeight:1.1,margin:"6px 0 0",fontFamily:S.fontUI}}>$79.99</div>
+            <div style={{color:"#b9a8e0",fontSize:13,fontFamily:S.fontUI}}>/año</div>
+            <div style={{display:"inline-block",background:"#9d4edd33",border:"1px solid #9d4edd",color:"#d9b8ff",fontSize:10,fontWeight:700,padding:"3px 9px",borderRadius:12,marginTop:7,fontFamily:S.fontUI}}>Ahorra 33%</div>
+            <Btn onClick={()=>{window.location.href=anualURL;}} style={{width:"100%",marginTop:9,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:13,fontWeight:800,borderRadius:12,padding:"11px 6px",fontFamily:S.fontUI}}>Elegir anual</Btn>
+          </div>
+        </div>
+        <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:16,padding:"9px",borderRadius:10,background:"transparent",border:"none",color:"#b9a8e0",fontSize:13,fontFamily:S.fontUI}}>← Volver</Btn>
       </div>
+      {sel && (
+        <div onClick={()=>setSel(null)} style={{position:"fixed",inset:0,background:"rgba(8,5,20,0.8)",zIndex:50,display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
+          <div onClick={e=>e.stopPropagation()} className="prisma-card" style={{width:"100%",maxWidth:340,background:"linear-gradient(160deg,#241644,#1a1030)",borderRadius:22,padding:"28px 20px 20px",textAlign:"center",animation:"fadeUp .25s ease-out"}}>
+            <div style={{fontSize:46}}>{sel.e}</div>
+            <div style={{color:C.gold,fontSize:20,fontWeight:800,fontFamily:S.fontFamily,margin:"12px 0 8px"}}>{sel.l}</div>
+            <p style={{color:"#e2d8f5",fontSize:14.5,lineHeight:1.6,margin:"0 0 18px",fontFamily:S.fontUI}}>{sel.d}</p>
+            <Btn onClick={()=>{window.location.href=anualURL;}} style={{width:"100%",background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:14,fontWeight:800,borderRadius:12,padding:"12px",fontFamily:S.fontUI}}>✨ Hazte Elite</Btn>
+            <Btn onClick={()=>setSel(null)} style={{width:"100%",marginTop:8,background:"transparent",border:"none",color:"#b9a8e0",fontSize:13,fontFamily:S.fontUI}}>Cerrar</Btn>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
