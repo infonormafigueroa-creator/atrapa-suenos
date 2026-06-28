@@ -112,6 +112,11 @@ function Stars() {
         @keyframes slideIn { from { transform: translateX(100%) } to { transform: translateX(0) } }
         .prisma-card { position: relative; }
         .prisma-card::before { content:""; position:absolute; inset:0; border-radius:inherit; padding:2px; background:linear-gradient(145deg,#ff2bd4,#b06bff,#2f6bff,#00e8d0,#15e85f); -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
+        .as-acc-b { display:grid; grid-template-rows:0fr; opacity:0; transition:grid-template-rows .42s cubic-bezier(.4,0,.2,1), opacity .35s ease; }
+        .as-acc.open .as-acc-b { grid-template-rows:1fr; opacity:1; }
+        .as-acc-b > div { overflow:hidden; min-height:0; }
+        .as-chev { display:inline-block; transition:transform .42s cubic-bezier(.4,0,.2,1); }
+        .as-acc.open .as-chev { transform:rotate(180deg); }
       `}</style>
       {pts.map((p,i)=>(
         <div key={i} style={{
@@ -484,6 +489,21 @@ function EliteSettings({user, onDone}) {
   );
 }
 
+function Sec({icon, title, desc, open, onToggle, children}) {
+  return (
+    <div className={"as-acc"+(open?" open":"")} style={{background:"rgba(69,48,122,0.92)",border:"1px solid "+C.border,borderRadius:16,marginBottom:10,overflow:"hidden"}}>
+      <div onClick={onToggle} style={{display:"flex",alignItems:"center",gap:12,padding:"15px 16px",cursor:"pointer"}}>
+        <span style={{fontSize:19,flexShrink:0}}>{icon}</span>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{color:C.text,fontSize:14.5,fontWeight:700,fontFamily:S.fontUI}}>{title}</div>
+          {desc && <div style={{color:C.muted,fontSize:11.5,fontFamily:S.fontUI,marginTop:2}}>{desc}</div>}
+        </div>
+        <span className="as-chev" style={{color:C.purpleL,fontSize:15,flexShrink:0}}>⌄</span>
+      </div>
+      <div className="as-acc-b"><div><div style={{padding:"2px 16px 16px"}}>{children}</div></div></div>
+    </div>
+  );
+}
 var _VOZ_URI = null;
 function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg, guestDiasRestantes, onShowDiario, onShowGratitud, onShowBienestar, onShowAnimo}) {
   const today = new Date();
@@ -518,6 +538,8 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
   const [horoLoading, setHoroLoading] = useState(false);
   const [vozOpen, setVozOpen] = useState(false);
   const [vozLiked, setVozLiked] = useState(false);
+  const [openSec, setOpenSec] = useState({});
+  const toggleSec = (k)=>setOpenSec(function(s){ var n={}; for(var x in s){n[x]=s[x];} n[k]=!n[k]; return n; });
 
   const planLabel = user.plan==="elite"?"Elite":"Gratis";
   const planColor = user.plan==="elite"?C.gold:C.gold;
@@ -881,9 +903,12 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
               <span style={{display:"block",color:"#ffffff",fontSize:18,fontWeight:700,fontFamily:S.fontFamily,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Habla con tu Guía</span>
               <span style={{display:"block",color:"#ffffff",fontSize:13,fontWeight:700,letterSpacing:1,textTransform:"uppercase",fontFamily:S.fontFamily,marginTop:3,textShadow:"0 1px 5px rgba(0,0,0,0.55)"}}>Te responde con voz ›</span>
             </span>
+            <span style={{position:"relative",color:"#ffffff",fontSize:17,flexShrink:0,transition:"transform .42s cubic-bezier(.4,0,.2,1)",transform:vozOpen?"rotate(180deg)":"none",textShadow:"0 1px 4px rgba(0,0,0,0.5)"}}>⌄</span>
           </div>
         )}
-        {user.plan==="elite" && vozOpen && (
+        {user.plan==="elite" && (
+          <div className={"as-acc"+(vozOpen?" open":"")}>
+            <div className="as-acc-b"><div>
           <Card>
             <div style={{textAlign:"center",marginBottom:12}}>
               <div style={{fontSize:30}}>🎙️</div>
@@ -912,11 +937,9 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
             <p style={{color:C.muted,fontSize:11,fontFamily:S.fontUI,textAlign:"center",margin:"14px 0 0",lineHeight:1.4,opacity:0.8}}>Tu guía te acompaña con cariño, pero no sustituye la ayuda de un profesional.</p>
             <Btn onClick={()=>{stopVoz();setVozOpen(false);}} style={{display:"block",width:"100%",marginTop:14,padding:"11px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:14,fontFamily:S.fontUI}}>✕ Cerrar</Btn>
           </Card>
+            </div></div></div>
         )}
-        <Card style={{marginBottom:12}}>
-          <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 6px",textAlign:"center"}}>⭐ Mi Intención Del Día</p>
-          
-          <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:"0 0 14px",textAlign:"center"}}>¿Qué energía deseas cultivar hoy?</p>
+        <Sec icon="⭐" title="Mi Intención del Día" desc="¿Qué energía deseas cultivar hoy?" open={!!openSec.intencion} onToggle={()=>toggleSec("intencion")}>
           <div style={{display:"grid",gridTemplateColumns:user.plan==="elite"?"repeat(4, minmax(0, 1fr))":"repeat(3, minmax(0, 1fr))",gap:8,marginBottom:14}}>
             {(user.plan==="elite"?INTENCIONES_ELITE:INTENCIONES_FREE).map(([e,l])=>(
               <button key={l} onClick={()=>{setIntention(l);setComboMsg(null);}} style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,background:intention===l?C.gold+"22":C.cardDark,border:"1.5px solid "+(intention===l?C.gold:C.border),borderRadius:12,padding:"11px 3px",color:intention===l?C.gold:C.text,fontSize:11,fontFamily:S.fontUI,cursor:"pointer",fontWeight:intention===l?700:400,textAlign:"center",lineHeight:1.15}}>
@@ -938,10 +961,9 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
               
             </div>
           )}
-        </Card>
+        </Sec>
 
-        <Card style={{marginBottom:12}}>
-          <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"0 0 10px",textAlign:"center"}}>😊 ¿CÓMO TE SIENTES HOY?</p>
+        <Sec icon="😊" title="¿Cómo te sientes hoy?" desc="Registra tu estado emocional." open={!!openSec.animo} onToggle={()=>toggleSec("animo")}>
           <div style={{display:"grid",gridTemplateColumns:user.plan==="elite"?"repeat(4, 1fr)":"repeat(3, 1fr)",gap:6}}>
             {(user.plan==="elite"?MOODS_ELITE:MOODS_FREE).map(m=>(
               <Btn key={m.l} onClick={()=>{setMood(m.l);setComboMsg(null);}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"8px 3px",borderRadius:12,background:mood===m.l?`${C.gold}33`:C.cardDark,border:`1.5px solid ${mood===m.l?C.gold:C.border}`,color:C.text,fontSize:11,fontFamily:S.fontUI,minWidth:52}}>
@@ -960,7 +982,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
               <Btn onClick={onShowPlans} style={{display:"block",margin:"12px auto 0",padding:"11px 22px",borderRadius:12,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",color:"#1a0a00",fontSize:13,fontWeight:800,fontFamily:S.fontUI}}>Cambia al Plan Elite Aquí</Btn>
             </div>
           )}
-        </Card>
+        </Sec>
 
 
         {user.plan==="elite" && mood && (intention||intentionText) && (
@@ -979,16 +1001,17 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           </Card>
         )}
 
-        {user.plan==="elite" && <p style={{color:C.goldL,fontSize:14,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,textAlign:"center",margin:"6px 0 10px"}}>📔 Tus Diarios y Registros</p>}
-        {user.plan==="elite" && <Btn onClick={onShowDiario} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📔 Mi Diario de Sueños</Btn>}
-        
-        {user.plan==="elite" && <Btn onClick={onShowGratitud} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>🙏 Diario de Gratitud</Btn>}
-        
-        {user.plan==="elite" && <Btn onClick={onShowAnimo} style={{width:"100%",marginBottom:12,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📊 Historial de Ánimo</Btn>}
+        {user.plan==="elite" && (
+          <Sec icon="📔" title="Mis Diarios" desc="Sueños, gratitud e historial de ánimo." open={!!openSec.diarios} onToggle={()=>toggleSec("diarios")}>
+            <Btn onClick={onShowDiario} style={{width:"100%",marginBottom:10,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📔 Mi Diario de Sueños</Btn>
+            <Btn onClick={onShowGratitud} style={{width:"100%",marginBottom:10,padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>🙏 Diario de Gratitud</Btn>
+            <Btn onClick={onShowAnimo} style={{width:"100%",padding:"15px",borderRadius:14,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center"}}>📊 Historial de Ánimo</Btn>
+          </Sec>
+        )}
         
         {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginBottom:18,padding:"16px",borderRadius:16,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontFamily:S.fontUI,boxShadow:"0 8px 26px "+C.gold+"66",border:"2px solid #fff7e0"}}><span style={{display:"block",fontSize:19,fontWeight:900}}>✨ Ver Plan Elite ✨</span><span style={{display:"block",fontSize:11,fontWeight:800,marginTop:3,opacity:0.85,letterSpacing:1}}>DESBLOQUEA TODAS LAS FUNCIONES</span></Btn>}
         <div id="seccion-progreso" />
-        <Card style={{marginBottom:12}}>
+        <Sec icon="🏆" title="Tu progreso e Insignias" desc={(streak===1?"1 día":streak+" días")+" · Tus logros y rachas"} open={!!openSec.progreso} onToggle={()=>toggleSec("progreso")}>
           <div style={{background:"linear-gradient(135deg, "+C.gold+"22, "+C.goldL+"11)",border:"1px solid "+C.gold+"66",borderRadius:14,padding:"16px",marginBottom:14,display:"flex",alignItems:"center",justifyContent:"center",gap:10,boxShadow:"0 0 22px "+C.gold+"22"}}>
             <span style={{fontSize:22}}>🏆</span>
             <p style={{margin:0,fontFamily:S.fontFamily,color:C.goldL,fontSize:20,fontWeight:600,letterSpacing:0.3,whiteSpace:"nowrap"}}>Tu progreso: <span style={{fontWeight:700}}>{streak}</span> {streak===1?"día":"días"}</p>
@@ -1008,19 +1031,17 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
             })}
           </div>
           <Btn onClick={()=>setShowInsignias(true)} style={{width:"100%",padding:"10px",borderRadius:10,background:C.cardDark,border:"1px solid "+C.border,color:C.purpleL,fontSize:13,fontFamily:S.fontUI}}>🏅 Ver todas las insignias</Btn>
-        </Card>
+        </Sec>
 
 
 
 
         
-        <Card style={{marginBottom:12}}>
+        <Sec icon="⭐" title="Califica tu experiencia" desc="Tu opinión nos ayuda muchísimo 💜" open={!!openSec.resena} onToggle={()=>toggleSec("resena")}>
           {reviewDone ? (
             <p style={{color:C.goldL,fontSize:15,fontWeight:700,fontFamily:S.fontUI,textAlign:"center",margin:0}}>⭐ ¡Gracias por tu reseña! 💜</p>
           ) : (
             <div>
-              <p style={{color:C.gold,fontSize:17,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,textAlign:"center",margin:"0 0 4px"}}>⭐ Califica tu experiencia</p>
-              <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,textAlign:"center",margin:"0 0 12px"}}>Tu opinión nos ayuda muchísimo 💜</p>
               <div style={{display:"flex",justifyContent:"center",gap:8,marginBottom:14}}>
                 {[1,2,3,4,5].map(s=>(
                   <span key={s} onClick={()=>setReviewStars(s)} style={{cursor:"pointer",fontSize:34,lineHeight:1,filter:s<=reviewStars?"none":"grayscale(1)",opacity:s<=reviewStars?1:0.45,transition:"all .15s"}}>⭐</span>
@@ -1030,7 +1051,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
               <Btn onClick={async()=>{ if(!reviewStars||reviewSending)return; setReviewSending(true); try{ await supabase.from("reviews").insert({user_id:user.id,rating:reviewStars,comment:reviewText||null}); }catch(e){} try{ localStorage.setItem("as_reviewed","1"); }catch(e){} setReviewDone(true); setReviewSending(false); }} disabled={!reviewStars||reviewSending} style={{width:"100%",padding:"13px",borderRadius:12,background:reviewStars?C.gold:C.cardDark,border:"1px solid "+C.gold,color:reviewStars?"#1a0a00":C.muted,fontSize:14,fontWeight:800,fontFamily:S.fontUI}}>{reviewSending?"Enviando...":"Enviar reseña"}</Btn>
             </div>
           )}
-        </Card>
+        </Sec>
         {!user.guest && <Btn onClick={onLogout} style={{width:"100%",marginTop:10,padding:"13px",borderRadius:12,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:13,fontFamily:S.fontUI}}>🚪 Cerrar Sesión</Btn>}
         <p style={{color:C.muted,fontSize:11,fontFamily:S.fontUI,textAlign:"center",lineHeight:1.5,margin:"18px 10px 4px",opacity:0.85}}>Atrapa Sueños es una app de bienestar emocional y motivación. No brinda consejo médico ni sustituye atención profesional.</p>
         <p onClick={onLegal} style={{color:C.goldL,fontSize:12,fontFamily:S.fontUI,textAlign:"center",margin:"4px 10px 8px",cursor:"pointer",textDecoration:"underline",opacity:0.9}}>Información Legal · Privacidad · Términos</p>
