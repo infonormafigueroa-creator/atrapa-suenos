@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "./supabaseClient";
 
 const C = {
@@ -344,10 +344,19 @@ async function shareQuote(quote, bg) {
 function MsgCard({icon, label, quote, cont, onClose, bg}) {
   const [expanded, setExpanded] = useState(false);
   const [liked, setLiked] = useState(false);
+  const cardRef = useRef(null);
+  useEffect(() => {
+    function onDocClick(e){
+      if (cardRef.current && !cardRef.current.contains(e.target)) { if(onClose) onClose(); }
+    }
+    const t = setTimeout(function(){ document.addEventListener("click", onDocClick); }, 0);
+    return function(){ clearTimeout(t); document.removeEventListener("click", onDocClick); };
+  }, [onClose]);
   const renderText = (t) => (t||"").split("\n").filter(l=>l.trim()).map((line,i)=>(
     <p key={i} style={{margin:"0 0 8px"}}>{line}</p>
   ));
   return (
+    <div ref={cardRef} onClick={cont?(()=>setExpanded(v=>!v)):undefined} style={{cursor:cont?"pointer":"default"}}>
     <Card style={{animation:"fadeUp .4s ease-out",marginTop:12}}>
       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:12}}>
         <span style={{fontSize:16}}>{icon}</span>
@@ -368,21 +377,18 @@ function MsgCard({icon, label, quote, cont, onClose, bg}) {
       <div style={{color:C.goldL,fontSize:20,fontFamily:S.fontFamily,lineHeight:1.7}}>
         {expanded && renderText(cont)}
       </div>
-      {cont && !expanded && (
-        <Btn onClick={()=>setExpanded(true)} style={{width:"100%",marginTop:8,padding:"12px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.purpleL+"55",color:C.purpleL,fontSize:14,fontWeight:700,fontFamily:S.fontUI}}>Leer más ▾</Btn>
-      )}
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:16}}>
-        <div style={{display:"flex",gap:14}}>
-          <span onClick={()=>setLiked(!liked)} style={{fontSize:22,cursor:"pointer"}}>{liked?"❤️":"🤍"}</span>
-          <span onClick={()=>shareQuote(quote, bg)} style={{fontSize:22,cursor:"pointer"}}>📤</span>
+      {cont && (
+        <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,marginTop:expanded?6:8,color:C.purpleL,fontSize:14,fontWeight:700,fontFamily:S.fontUI}}>
+          <span>{expanded?"Leer menos":"Leer más"}</span>
+          <span style={{display:"inline-block",fontSize:13,transition:"transform .42s cubic-bezier(.4,0,.2,1)",transform:expanded?"rotate(180deg)":"none"}}>⌄</span>
         </div>
-        <Btn onClick={onClose} style={{
-          background:C.cardDark,border:`1px solid ${C.border}`,
-          borderRadius:20,padding:"8px 18px",color:C.text,
-          fontSize:13,fontFamily:S.fontUI
-        }}>✕ Cerrar</Btn>
+      )}
+      <div style={{display:"flex",alignItems:"center",gap:16,marginTop:16}}>
+        <span onClick={(e)=>{e.stopPropagation();setLiked(!liked);}} style={{fontSize:22,cursor:"pointer"}}>{liked?"❤️":"🤍"}</span>
+        <span onClick={(e)=>{e.stopPropagation();shareQuote(quote, bg);}} style={{fontSize:22,cursor:"pointer"}}>📤</span>
       </div>
     </Card>
+    </div>
   );
 }
 
@@ -1052,7 +1058,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
             </div>
           )}
         </Sec>
-        {!user.guest && <Btn onClick={onLogout} style={{width:"100%",marginTop:10,padding:"13px",borderRadius:12,background:C.gold+"22",border:"1px solid "+C.gold,color:C.goldL,fontSize:13,fontFamily:S.fontUI}}>🚪 Cerrar Sesión</Btn>}
+        {!user.guest && <p onClick={onLogout} style={{textAlign:"center",color:C.muted,fontSize:12,fontFamily:S.fontUI,cursor:"pointer",margin:"16px 0 2px",opacity:0.7}}>Cerrar sesión</p>}
         <p style={{color:C.muted,fontSize:11,fontFamily:S.fontUI,textAlign:"center",lineHeight:1.5,margin:"18px 10px 4px",opacity:0.85}}>Atrapa Sueños es una app de bienestar emocional y motivación. No brinda consejo médico ni sustituye atención profesional.</p>
         <p onClick={onLegal} style={{color:C.goldL,fontSize:12,fontFamily:S.fontUI,textAlign:"center",margin:"4px 10px 8px",cursor:"pointer",textDecoration:"underline",opacity:0.9}}>Información Legal · Privacidad · Términos</p>
       </div>
