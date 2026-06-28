@@ -900,7 +900,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
         
 
         {user.plan==="elite" && (
-          <div onClick={()=>setVozOpen(function(o){return !o;})} style={{cursor:"pointer",position:"relative",overflow:"hidden",margin:"0 0 12px",padding:"16px 16px",borderRadius:14,background:"linear-gradient(160deg, #ff2bd4 0%, #b06bff 30%, #2f6bff 55%, #00e8d0 78%, #15e85f 100%)",border:"1.5px solid rgba(255,255,255,0.85)",display:"flex",alignItems:"center",gap:12}}>
+          <div onClick={()=>setVozOpen(function(o){return !o;})} style={{cursor:"pointer",position:"relative",overflow:"hidden",margin:"16px 0 12px",padding:"16px 16px",borderRadius:14,background:"linear-gradient(160deg, #ff2bd4 0%, #b06bff 30%, #2f6bff 55%, #00e8d0 78%, #15e85f 100%)",border:"1.5px solid rgba(255,255,255,0.85)",display:"flex",alignItems:"center",gap:12}}>
             {[{x:6,y:28,s:11,d:0},{x:18,y:68,s:8,d:0.7},{x:30,y:18,s:9,d:1.3},{x:72,y:22,s:10,d:0.4},{x:84,y:62,s:8,d:1.1},{x:94,y:35,s:11,d:0.9},{x:60,y:78,s:9,d:1.6}].map((st,i)=>(
               <span key={i} style={{position:"absolute",left:st.x+"%",top:st.y+"%",fontSize:st.s,animation:"tw 4s ease-in-out infinite",animationDelay:st.d+"s",pointerEvents:"none"}}>⭐</span>
             ))}
