@@ -341,16 +341,17 @@ async function shareQuote(quote, bg) {
   } catch(e){}
 }
 
-function MsgCard({icon, label, quote, cont, onClose, bg}) {
+function MsgCard({icon, label, quote, cont, onClose, bg, elite}) {
   const [expanded, setExpanded] = useState(false);
   const [liked, setLiked] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
   const cardRef = useRef(null);
   useEffect(() => {
     function onDocClick(e){
       if (cardRef.current && !cardRef.current.contains(e.target)) { if(onClose) onClose(); }
     }
     const t = setTimeout(function(){ document.addEventListener("click", onDocClick); }, 0);
-    return function(){ clearTimeout(t); document.removeEventListener("click", onDocClick); };
+    return function(){ clearTimeout(t); document.removeEventListener("click", onDocClick); asStop(); };
   }, [onClose]);
   const renderText = (t) => (t||"").split("\n").filter(l=>l.trim()).map((line,i)=>(
     <p key={i} style={{margin:"0 0 8px"}}>{line}</p>
@@ -386,6 +387,7 @@ function MsgCard({icon, label, quote, cont, onClose, bg}) {
       <div style={{display:"flex",alignItems:"center",gap:16,marginTop:16}}>
         <span onClick={(e)=>{e.stopPropagation();setLiked(!liked);}} style={{fontSize:22,cursor:"pointer"}}>{liked?"❤️":"🤍"}</span>
         <span onClick={(e)=>{e.stopPropagation();shareQuote(quote, bg);}} style={{fontSize:22,cursor:"pointer"}}>📤</span>
+        {elite && <span onClick={(e)=>{e.stopPropagation(); if(speaking){ asStop(); setSpeaking(false); } else { asSpeak((quote?('"'+quote+'". '):"")+(cont||""), null, function(){setSpeaking(true);}, function(){setSpeaking(false);}); } }} style={{fontSize:22,cursor:"pointer"}} title="Escuchar">{speaking?"⏹️":"🔊"}</span>}
       </div>
     </Card>
     </div>
@@ -540,7 +542,33 @@ function Sec({icon, title, desc, open, onToggle, children}) {
     </div>
   );
 }
-var _VOZ_URI = null;
+var _VOZ_URI = (function(){ try{ return localStorage.getItem("as_voz_uri")||null; }catch(e){ return null; } })();
+function asGetVoces(){ try{ return (window.speechSynthesis.getVoices()||[]).filter(function(v){return /^es/i.test(v.lang);}); }catch(e){ return []; } }
+function asPickVoice(){
+  var vs=[]; try{ vs=window.speechSynthesis.getVoices()||[]; }catch(e){}
+  function pk(fn){ for(var i=0;i<vs.length;i++){ if(fn(vs[i])) return vs[i]; } return null; }
+  var pref=null;
+  if(_VOZ_URI){ pref=pk(function(v){return v.voiceURI===_VOZ_URI;}); }
+  if(!pref){ pref=pk(function(v){return /paulina/i.test(v.name);})||pk(function(v){return /es(-|_)?MX/i.test(v.lang);})||pk(function(v){return /es(-|_)?(US|419|MX|CO|AR|CL|PE)/i.test(v.lang);})||pk(function(v){return /^es/i.test(v.lang);}); if(pref){ _VOZ_URI=pref.voiceURI; } }
+  return pref;
+}
+function asSpeak(texto, voiceOverride, onStart, onEnd){
+  try{
+    if(!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(texto);
+    u.rate=0.95; u.pitch=1.05; u.lang="es-ES";
+    var v=voiceOverride||asPickVoice();
+    if(v){ u.voice=v; u.lang=v.lang; }
+    u.onstart=function(){ if(onStart) onStart(); };
+    u.onend=function(){ if(onEnd) onEnd(); };
+    u.onerror=function(){ if(onEnd) onEnd(); };
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+function asStop(){ try{ window.speechSynthesis.cancel(); }catch(e){} }
+function asSaveVoz(uri){ _VOZ_URI=uri; try{ localStorage.setItem("as_voz_uri", uri); }catch(e){} }
+function asVozName(uri){ var vs=asGetVoces(); for(var i=0;i<vs.length;i++){ if(vs[i].voiceURI===uri) return vs[i].name.replace(/\(.*\)/,"").trim(); } var p=asPickVoice(); return p? p.name.replace(/\(.*\)/,"").trim() : "Automática"; }
 function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, onLogout, bg, onChangeBg, guestDiasRestantes, onShowDiario, onShowGratitud, onShowBienestar, onShowAnimo}) {
   const today = new Date();
   const dateStr = today.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",timeZone:"America/New_York"});
@@ -576,6 +604,16 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
   const [vozLiked, setVozLiked] = useState(false);
   const [openSec, setOpenSec] = useState({});
   const toggleSec = (k)=>setOpenSec(function(s){ var n={}; if(!s[k]){ n[k]=true; } return n; });
+  const [showVozPicker, setShowVozPicker] = useState(false);
+  const [voces, setVoces] = useState([]);
+  const [vozUri, setVozUri] = useState(_VOZ_URI);
+  useEffect(function(){
+    function load(){ setVoces(asGetVoces()); }
+    load();
+    try{ if("speechSynthesis" in window){ window.speechSynthesis.onvoiceschanged = load; } }catch(e){}
+    var t=setTimeout(load,500);
+    return function(){ clearTimeout(t); };
+  }, []);
 
   const planLabel = user.plan==="elite"?"Elite":"Gratis";
   const planColor = user.plan==="elite"?C.gold:C.gold;
@@ -851,7 +889,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
       )}
       {user.plan==="elite" && (horoLoading || horoMsg) && (
         <div style={{margin:"0 16px 12px"}}>
-          {horoLoading ? <Card><Spinner/></Card> : <MsgCard {...horoMsg} bg={bg} onClose={()=>setHoroMsg(null)}/>}
+          {horoLoading ? <Card><Spinner/></Card> : <MsgCard {...horoMsg} bg={bg} elite={user.plan==="elite"} onClose={()=>setHoroMsg(null)}/>}
         </div>
       )}
       {showInsignias && (
@@ -925,7 +963,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           </Card>
         )}
         {loading&&<Card><Spinner/></Card>}
-        {msg&&!loading&&<MsgCard {...msg} bg={bg} onClose={()=>setMsg(null)}/>}
+        {msg&&!loading&&<MsgCard {...msg} bg={bg} elite={user.plan==="elite"} onClose={()=>setMsg(null)}/>}
 
         
 
@@ -951,6 +989,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
               <p style={{color:C.gold,fontSize:15,fontWeight:800,textTransform:"uppercase",letterSpacing:1,fontFamily:S.fontUI,margin:"6px 0 4px"}}>Habla Con Tu Guía</p>
               <p style={{color:C.muted,fontSize:13,fontFamily:S.fontUI,margin:0,lineHeight:1.4}}>Cuéntale lo que sientes o lo que te preocupa, y tu guía te responderá con voz.</p>
             </div>
+            <Btn onClick={()=>setShowVozPicker(true)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",width:"100%",marginBottom:12,padding:"11px 14px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:13,fontFamily:S.fontUI}}><span>🔊 Voz de tu Guía: <b style={{color:C.goldL}}>{asVozName(vozUri)}</b></span><span style={{color:C.gold,fontSize:16}}>›</span></Btn>
             <textarea value={vozInput} onChange={e=>setVozInput(e.target.value)} placeholder="Hoy me siento... / Necesito un consejo sobre..." rows={4} style={{width:"100%",background:C.cardDark,border:"1px solid "+C.border,borderRadius:12,padding:"12px",color:C.goldL,fontSize:15,fontFamily:S.fontUI,outline:"none",boxSizing:"border-box",resize:"vertical",lineHeight:1.4}}/>
             <Btn onClick={generateVoz} style={{width:"100%",marginTop:10,padding:"14px",borderRadius:14,background:(vozLoading||!vozInput.trim())?C.cardDark:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:(vozLoading||!vozInput.trim())?C.muted:"#1a0a00",fontSize:16,fontWeight:900,fontFamily:S.fontUI}}>{vozLoading?"Tu guía está pensando...":"🎙️ Hablar con mi Guía"}</Btn>
             {vozMsg && !vozLoading && (
@@ -974,6 +1013,35 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
             <Btn onClick={()=>{stopVoz();setVozOpen(false);}} style={{display:"block",width:"100%",marginTop:14,padding:"11px",borderRadius:12,background:C.cardDark,border:"1px solid "+C.border,color:C.text,fontSize:14,fontFamily:S.fontUI}}>✕ Cerrar</Btn>
           </Card>
             </div></div></div>
+        )}
+        {showVozPicker && (
+          <div onClick={()=>setShowVozPicker(false)} style={{position:"fixed",inset:0,background:"rgba(8,5,20,0.8)",zIndex:60,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+            <div onClick={e=>e.stopPropagation()} style={{width:"100%",maxWidth:520,background:"linear-gradient(160deg,#241644,#191030)",borderRadius:"22px 22px 0 0",border:"1px solid "+C.border,padding:"8px 0 18px",maxHeight:"82vh",display:"flex",flexDirection:"column"}}>
+              <div style={{width:40,height:5,borderRadius:3,background:"#5b4596",margin:"8px auto 12px"}} />
+              <div style={{textAlign:"center",padding:"0 18px 12px",borderBottom:"1px solid #2e2450"}}>
+                <div style={{color:C.gold,fontSize:18,fontWeight:800,fontFamily:S.fontFamily}}>🎙️ Elige tu voz</div>
+                <div style={{color:C.muted,fontSize:12,marginTop:4,fontFamily:S.fontUI}}>Toca ▶ Probar para escuchar y elige tu favorita</div>
+              </div>
+              <div style={{overflowY:"auto",padding:"8px 12px",flex:1}}>
+                {voces.length===0 ? (
+                  <p style={{color:C.muted,fontSize:13,textAlign:"center",padding:20,lineHeight:1.5,fontFamily:S.fontUI}}>No se detectaron voces en español en este dispositivo. En iPhone puedes descargar más en Ajustes → Accesibilidad → Contenido hablado → Voces → Español.</p>
+                ) : voces.map(function(v){
+                  var sel = v.voiceURI===vozUri;
+                  return (
+                    <div key={v.voiceURI} onClick={()=>{ setVozUri(v.voiceURI); asSaveVoz(v.voiceURI); }} style={{display:"flex",alignItems:"center",gap:11,padding:"12px",borderRadius:12,marginBottom:6,cursor:"pointer",background:sel?"linear-gradient(#241644,#241644) padding-box, linear-gradient(145deg,#ff2bd4,#b06bff,#2f6bff,#00e8d0,#15e85f) border-box":C.cardDark,border:sel?"2px solid transparent":"1px solid "+C.border}}>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{color:C.text,fontSize:14.5,fontWeight:600,fontFamily:S.fontUI}}>{v.name.replace(/\(.*\)/,"").trim()}</div>
+                        <div style={{color:C.muted,fontSize:11,fontFamily:S.fontUI,marginTop:1}}>Español · {v.lang.toUpperCase()}</div>
+                      </div>
+                      <button onClick={(e)=>{ e.stopPropagation(); asSpeak("Que sueñes bonito... y que atrapes todos tus sueños.", v); }} style={{background:C.cardDark,border:"1px solid "+C.border,color:C.goldL,borderRadius:20,padding:"7px 13px",fontSize:12,fontWeight:700,fontFamily:S.fontUI,cursor:"pointer",flexShrink:0}}>▶ Probar</button>
+                      <span style={{width:20,textAlign:"center",color:C.green,fontSize:16,flexShrink:0}}>{sel?"✓":""}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <Btn onClick={()=>setShowVozPicker(false)} style={{margin:"10px 16px 0",padding:"13px",borderRadius:14,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:15,fontWeight:800,fontFamily:S.fontUI}}>Listo ✨</Btn>
+            </div>
+          </div>
         )}
         <Sec icon="⭐" title="Mi Intención del Día" desc="¿Qué energía deseas cultivar hoy?" open={!!openSec.intencion} onToggle={()=>toggleSec("intencion")}>
           <div style={{display:"grid",gridTemplateColumns:user.plan==="elite"?"repeat(4, minmax(0, 1fr))":"repeat(3, minmax(0, 1fr))",gap:8,marginBottom:14}}>
