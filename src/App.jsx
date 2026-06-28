@@ -545,7 +545,7 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
   const [vozOpen, setVozOpen] = useState(false);
   const [vozLiked, setVozLiked] = useState(false);
   const [openSec, setOpenSec] = useState({});
-  const toggleSec = (k)=>setOpenSec(function(s){ var n={}; for(var x in s){n[x]=s[x];} n[k]=!n[k]; return n; });
+  const toggleSec = (k)=>setOpenSec(function(s){ var n={}; if(!s[k]){ n[k]=true; } return n; });
 
   const planLabel = user.plan==="elite"?"Elite":"Gratis";
   const planColor = user.plan==="elite"?C.gold:C.gold;
@@ -1015,7 +1015,6 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
           </Sec>
         )}
         
-        {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginBottom:18,padding:"16px",borderRadius:16,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontFamily:S.fontUI,boxShadow:"0 8px 26px "+C.gold+"66",border:"2px solid #fff7e0"}}><span style={{display:"block",fontSize:19,fontWeight:900}}>✨ Ver Plan Elite ✨</span><span style={{display:"block",fontSize:11,fontWeight:800,marginTop:3,opacity:0.85,letterSpacing:1}}>DESBLOQUEA TODAS LAS FUNCIONES</span></Btn>}
         <div id="seccion-progreso" />
         <Sec icon="🏆" title="Tu progreso e Insignias" desc={(streak===1?"1 día":streak+" días")+" · Tus logros y rachas"} open={!!openSec.progreso} onToggle={()=>toggleSec("progreso")}>
           <div style={{background:"linear-gradient(135deg, "+C.gold+"22, "+C.goldL+"11)",border:"1px solid "+C.gold+"66",borderRadius:14,padding:"16px",marginBottom:14,display:"flex",alignItems:"center",justifyContent:"center",gap:10,boxShadow:"0 0 22px "+C.gold+"22"}}>
@@ -1058,6 +1057,7 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
             </div>
           )}
         </Sec>
+        {user.plan==="free"&&<Btn onClick={onShowPlans} style={{width:"100%",marginTop:14,marginBottom:4,padding:"16px",borderRadius:16,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontFamily:S.fontUI,boxShadow:"0 8px 26px "+C.gold+"66",border:"2px solid #fff7e0"}}><span style={{display:"block",fontSize:19,fontWeight:900}}>✨ Ver Plan Elite ✨</span><span style={{display:"block",fontSize:11,fontWeight:800,marginTop:3,opacity:0.85,letterSpacing:1}}>DESBLOQUEA TODAS LAS FUNCIONES</span></Btn>}
         {!user.guest && <p onClick={onLogout} style={{textAlign:"center",color:C.muted,fontSize:12,fontFamily:S.fontUI,cursor:"pointer",margin:"16px 0 2px",opacity:0.7}}>Cerrar sesión</p>}
         <p style={{color:C.muted,fontSize:11,fontFamily:S.fontUI,textAlign:"center",lineHeight:1.5,margin:"18px 10px 4px",opacity:0.85}}>Atrapa Sueños es una app de bienestar emocional y motivación. No brinda consejo médico ni sustituye atención profesional.</p>
         <p onClick={onLegal} style={{color:C.goldL,fontSize:12,fontFamily:S.fontUI,textAlign:"center",margin:"4px 10px 8px",cursor:"pointer",textDecoration:"underline",opacity:0.9}}>Información Legal · Privacidad · Términos</p>
