@@ -384,7 +384,7 @@ function MsgCard({icon, label, quote, cont, onClose, bg, elite}) {
           <span style={{display:"inline-block",fontSize:13,transition:"transform .42s cubic-bezier(.4,0,.2,1)",transform:expanded?"rotate(180deg)":"none"}}>⌄</span>
         </div>
       )}
-      <div style={{display:"flex",alignItems:"center",gap:16,marginTop:16}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:24,marginTop:16}}>
         <span onClick={(e)=>{e.stopPropagation();setLiked(!liked);}} style={{fontSize:22,cursor:"pointer"}}>{liked?"❤️":"🤍"}</span>
         <span onClick={(e)=>{e.stopPropagation();shareQuote(quote, bg);}} style={{fontSize:22,cursor:"pointer"}}>📤</span>
         {elite && <span onClick={(e)=>{e.stopPropagation(); if(speaking){ asStop(); setSpeaking(false); } else { asSpeak((quote?('"'+quote+'". '):"")+(cont||""), null, function(){setSpeaking(true);}, function(){setSpeaking(false);}); } }} style={{fontSize:22,cursor:"pointer"}} title="Escuchar">{speaking?"⏹️":"🔊"}</span>}
