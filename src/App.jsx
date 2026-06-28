@@ -585,6 +585,7 @@ function Dashboard({user, onLegal, onShowPlans, onShowEliteSettings, onLogin, on
   const [intention, setIntention] = useState("");
   const [intentionText, setIntentionText] = useState("");
   const [comboMsg, setComboMsg] = useState(null);
+  const [comboSpeaking, setComboSpeaking] = useState(false);
   const [reviewStars, setReviewStars] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [reviewSending, setReviewSending] = useState(false);
@@ -1097,7 +1098,10 @@ CONT: [Exactamente 3 oraciones cortas pero profundas y cálidas sobre este nuevo
               <div>
                 {comboMsg.quote && <p style={{color:C.goldL,fontSize:18,fontWeight:700,fontFamily:S.fontFamily,fontStyle:"italic",textAlign:"center",margin:"0 0 12px",lineHeight:1.4}}>{comboMsg.quote}</p>}
                 <p style={{color:C.text,fontSize:15,fontFamily:S.fontFamily,textAlign:"center",lineHeight:1.6,margin:0}}>{comboMsg.cont}</p>
-                <button onClick={()=>generateCombo(true)} disabled={comboLoading} style={{display:"block",margin:"16px auto 0",background:"none",border:"1px solid "+C.purple,borderRadius:20,padding:"7px 18px",color:C.purpleL,fontSize:12,fontFamily:S.fontUI,cursor:"pointer"}}>{comboLoading?"Creando...":"🔄 Generar otro"}</button>
+                <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:16,flexWrap:"wrap"}}>
+                  <button onClick={()=>{ if(comboSpeaking){ asStop(); setComboSpeaking(false); } else { asSpeak((comboMsg.quote?('"'+comboMsg.quote+'". '):"")+(comboMsg.cont||""), null, function(){setComboSpeaking(true);}, function(){setComboSpeaking(false);}); } }} style={{background:"none",border:"1px solid "+C.purple,borderRadius:20,padding:"7px 18px",color:C.purpleL,fontSize:12,fontFamily:S.fontUI,cursor:"pointer"}}>{comboSpeaking?"⏹️ Detener":"🔊 Escuchar"}</button>
+                  <button onClick={()=>generateCombo(true)} disabled={comboLoading} style={{background:"none",border:"1px solid "+C.purple,borderRadius:20,padding:"7px 18px",color:C.purpleL,fontSize:12,fontFamily:S.fontUI,cursor:"pointer"}}>{comboLoading?"Creando...":"🔄 Generar otro"}</button>
+                </div>
               </div>
             ) : (
               <button onClick={()=>generateCombo(false)} disabled={comboLoading} style={{width:"100%",padding:"14px",borderRadius:14,background:"linear-gradient(135deg, "+C.gold+", "+C.goldL+")",border:"none",color:"#1a0a00",fontSize:16,fontWeight:800,fontFamily:S.fontUI,cursor:"pointer"}}>{comboLoading?"Creando tu mensaje...":"✨ Recibir mi mensaje de hoy"}</button>
