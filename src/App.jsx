@@ -400,37 +400,46 @@ function Plans({onBack, onActivate, user}) {
   const mensualURL="https://buy.stripe.com/28E28s4RYe6U4nqca91wY00"+((user&&user.id)?("?client_reference_id="+user.id):"");
   const anualURL="https://buy.stripe.com/4gM5kEfwC3sg4nq5LL1wY01"+((user&&user.id)?("?client_reference_id="+user.id):"");
   const FEATURES=[
-    {e:"🔮",l:"Horóscopo personalizado",d:"Tu horóscopo diario según tu signo zodiacal, pensado para tu energía de hoy."},
-    {e:"💕",l:"Amor",d:"Guía y mensajes para tu vida amorosa, tu relación y, sobre todo, tu amor propio."},
-    {e:"🍀",l:"Abundancia",d:"Afirmaciones y enfoque para atraer prosperidad y abundancia a tu vida."},
-    {e:"✨",l:"Manifestación",d:"Acompañamiento para manifestar tus deseos y dar forma a lo que quieres atraer."},
-    {e:"🎯",l:"Metas",d:"Claridad y motivación para definir tus metas y avanzar paso a paso."},
-    {e:"🌟",l:"Mi Gran Sueño",d:"Un espacio dedicado a tu sueño más grande, para mantenerlo vivo cada día."},
-    {e:"☀️",l:"Reflexión de la mañana",d:"Empieza el día con una reflexión que te centra y te llena de intención."},
-    {e:"🌙",l:"Reflexión de la noche",d:"Cierra tu día con calma, gratitud y una mirada amorosa a lo vivido."},
-    {e:"📊",l:"Guía Personal · IA ilimitada",d:"Conversa sin límites con tu guía personal de IA, cuando quieras y sobre lo que quieras."},
-    {e:"😊",l:"Guía Emocional",d:"Apoyo cálido para entender y acompañar tus emociones día a día."},
-    {e:"💬",l:"Habla con tu Guía",d:"Escribe lo que sientes y tu guía te responde con voz, con cariño y cercanía."},
-    {e:"🎨",l:"Fondos y colores premium",d:"Personaliza tu app con fondos y colores exclusivos, como el Prisma vibrante."},
+    {e:"🔮",l:"Horóscopo personalizado",s:"Guía astral diaria para tu signo",d:"Tu horóscopo diario según tu signo zodiacal, pensado para tu energía de hoy."},
+    {e:"💕",l:"Amor",s:"Atrae el amor que mereces",d:"Guía y mensajes para tu vida amorosa, tu relación y, sobre todo, tu amor propio."},
+    {e:"🍀",l:"Abundancia",s:"Alinéate con la prosperidad",d:"Afirmaciones y enfoque para atraer prosperidad y abundancia a tu vida."},
+    {e:"✨",l:"Manifestación",s:"Da forma a lo que deseas",d:"Acompañamiento para manifestar tus deseos y dar forma a lo que quieres atraer."},
+    {e:"🎯",l:"Metas",s:"Enfócate y avanza",d:"Claridad y motivación para definir tus metas y avanzar paso a paso."},
+    {e:"🌟",l:"Mi Gran Sueño",s:"Conecta con tu propósito",d:"Un espacio dedicado a tu sueño más grande, para mantenerlo vivo cada día."},
+    {e:"☀️",l:"Reflexión de la mañana",s:"Empieza el día con intención",d:"Empieza el día con una reflexión que te centra y te llena de intención."},
+    {e:"🌙",l:"Reflexión de la noche",s:"Cierra tu día en calma",d:"Cierra tu día con calma, gratitud y una mirada amorosa a lo vivido."},
+    {e:"📊",l:"Guía Personal · IA ilimitada",s:"IA para acompañarte siempre",d:"Conversa sin límites con tu guía personal de IA, cuando quieras y sobre lo que quieras."},
+    {e:"😊",l:"Guía Emocional",s:"Apoyo para cada momento",d:"Apoyo cálido para entender y acompañar tus emociones día a día."},
+    {e:"💬",l:"Habla con tu Guía",s:"Conversa por voz cuando quieras",d:"Escribe lo que sientes y tu guía te responde con voz, con cariño y cercanía."},
+    {e:"🎨",l:"Fondos y colores premium",s:"Fondos y colores exclusivos",d:"Personaliza tu app con fondos y colores exclusivos, como el Prisma vibrante."},
   ];
+  const BADGES=[{e:"🔒",t:"Pago 100% seguro"},{e:"⚡",t:"Acceso inmediato"},{e:"🔄",t:"Cancela cuando quieras"},{e:"🛡️",t:"Actualizaciones incluidas"}];
   return (
     <div style={{position:"relative",minHeight:"100vh"}}>
       <div style={{position:"fixed",inset:0,zIndex:0,background:"radial-gradient(120% 60% at 50% 0%, #2a1a55 0%, #160d33 55%, #0f0a26 100%)"}} />
       <div style={{position:"relative",zIndex:1,padding:"calc(env(safe-area-inset-top, 0px) + 16px) 16px calc(env(safe-area-inset-bottom, 0px) + 18px)",maxWidth:560,margin:"0 auto"}}>
-        <h1 style={{textAlign:"center",color:"#fff",fontFamily:S.fontFamily,fontSize:30,fontWeight:700,margin:"4px 0 0"}}>Atrapa Sueños <span style={{color:C.gold}}>Elite</span> ✨</h1>
-        <p style={{textAlign:"center",color:"#b9a8e0",fontSize:14,lineHeight:1.4,margin:"8px 14px 0",fontFamily:S.fontUI}}>Desbloquea la experiencia completa y transforma cada día.</p>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,margin:"16px 0 14px"}}>
-          <div style={{height:1,flex:1,background:"linear-gradient(90deg,transparent,#7858b0,transparent)"}} />
-          <span style={{color:C.gold,fontSize:14}}>⭐</span>
-          <div style={{height:1,flex:1,background:"linear-gradient(90deg,transparent,#7858b0,transparent)"}} />
-        </div>
-        {FEATURES.map((f)=>(
-          <div key={f.l} onClick={()=>setSel(f)} style={{display:"flex",alignItems:"center",gap:13,border:"2px solid transparent",borderRadius:14,padding:"13px 15px",marginBottom:10,cursor:"pointer",background:"linear-gradient(#1c1238,#1c1238) padding-box, "+PRISMA_BORDER+" border-box"}}>
-            <span style={{fontSize:22,flexShrink:0,width:26,textAlign:"center"}}>{f.e}</span>
-            <span style={{flex:1,color:"#f3eaff",fontSize:15.5,fontFamily:S.fontUI}}>{f.l}</span>
-            <span style={{color:C.gold,fontSize:18,flexShrink:0}}>›</span>
+        <h1 style={{textAlign:"center",color:"#fff",fontFamily:S.fontFamily,fontSize:30,fontWeight:700,margin:"4px 0 0",letterSpacing:0.5}}>Atrapa Sueños</h1>
+        <p style={{textAlign:"center",color:"#b9a8e0",fontSize:11,fontWeight:700,letterSpacing:2,margin:"11px 0 1px",fontFamily:S.fontUI}}>DESBLOQUEA LA EXPERIENCIA</p>
+        <p style={{textAlign:"center",color:C.gold,fontSize:19,fontWeight:800,letterSpacing:3,margin:"0 0 16px",fontFamily:S.fontFamily}}>ELITE ✨</p>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:11,border:"1px solid transparent",borderRadius:14,padding:"12px",marginBottom:16,background:"linear-gradient(#1c1238,#1c1238) padding-box, linear-gradient(145deg,#b06bff,#2f6bff,#00e8d0) border-box"}}>
+          <span style={{fontSize:24}}>🎧</span>
+          <div style={{textAlign:"center"}}>
+            <div style={{color:"#cdbff0",fontSize:12,lineHeight:1.3,fontFamily:S.fontUI}}>Todo el plan Elite incluye</div>
+            <div style={{color:C.gold,fontSize:14,fontWeight:800,marginTop:2,fontFamily:S.fontUI}}>🔊 Audio completo</div>
           </div>
-        ))}
+        </div>
+        <div style={{border:"1.5px solid transparent",borderRadius:18,overflow:"hidden",background:"linear-gradient(#1a1130,#1a1130) padding-box, "+PRISMA_BORDER+" border-box"}}>
+          {FEATURES.map((f,i)=>(
+            <div key={f.l} onClick={()=>setSel(f)} style={{display:"flex",alignItems:"center",gap:13,padding:"12px 15px",cursor:"pointer",borderBottom:i<FEATURES.length-1?"1px solid #2b2348":"none"}}>
+              <span style={{fontSize:21,flexShrink:0,width:26,textAlign:"center"}}>{f.e}</span>
+              <span style={{flex:1,minWidth:0}}>
+                <span style={{display:"block",color:"#f3eaff",fontSize:14,fontWeight:600,lineHeight:1.2,fontFamily:S.fontUI}}>{f.l}</span>
+                <span style={{display:"block",color:"#9a86c4",fontSize:11,marginTop:2,lineHeight:1.3,fontFamily:S.fontUI}}>{f.s}</span>
+              </span>
+              <span style={{color:C.gold,fontSize:17,flexShrink:0}}>›</span>
+            </div>
+          ))}
+        </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11,marginTop:18,alignItems:"end"}}>
           <div style={{background:"rgba(30,20,58,0.85)",border:"1px solid #4a3a7a",borderRadius:18,padding:"16px 12px",textAlign:"center"}}>
             <div style={{color:"#b9a8e0",fontSize:12,fontWeight:800,letterSpacing:1.5,textTransform:"uppercase",fontFamily:S.fontUI}}>Mensual</div>
@@ -446,6 +455,13 @@ function Plans({onBack, onActivate, user}) {
             <div style={{display:"inline-block",background:"#9d4edd33",border:"1px solid #9d4edd",color:"#d9b8ff",fontSize:10,fontWeight:700,padding:"3px 9px",borderRadius:12,marginTop:7,fontFamily:S.fontUI}}>Ahorra 33%</div>
             <Btn onClick={()=>{window.location.href=anualURL;}} style={{width:"100%",marginTop:9,background:"linear-gradient(135deg,"+C.gold+","+C.goldL+")",color:"#1a0a00",fontSize:13,fontWeight:800,borderRadius:12,padding:"11px 6px",fontFamily:S.fontUI}}>Elegir anual</Btn>
           </div>
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",gap:4,marginTop:16,borderTop:"1px solid #2e2450",paddingTop:14}}>
+          {BADGES.map((b)=>(
+            <div key={b.t} style={{flex:1,textAlign:"center",color:"#9a86c4",fontSize:9,lineHeight:1.3,fontFamily:S.fontUI}}>
+              <span style={{fontSize:15,display:"block",marginBottom:3}}>{b.e}</span>{b.t}
+            </div>
+          ))}
         </div>
         <Btn onClick={onBack} style={{display:"block",width:"100%",marginTop:16,padding:"9px",borderRadius:10,background:"transparent",border:"none",color:"#b9a8e0",fontSize:13,fontFamily:S.fontUI}}>← Volver</Btn>
       </div>
